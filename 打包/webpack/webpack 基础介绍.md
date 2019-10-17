@@ -33,16 +33,22 @@ npm i -g webpack
 
 ##### 1.3.2 使用Webpack
 运行构建前，先将要完成该功能的最基础的JavaScript 文件和HTML 建立好，目录结构如下：
--- webpack-demo
-   | -- index.html
-   | -- main.js
-   | -- show.js
-   | --  package.json
-   | --  webpack.config.js
+
+|── webpack-demo
+
+   |── index.html
+
+   |── main.js
+
+   |── show.js
+
+   |──  package.json
+   
+   |──  webpack.config.js
 
 页面入口文件index.html 如下：
 // index.html
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +64,7 @@ npm i -g webpack
 </html>
 ```
 存放工具函数的show.js 文件的内容如下：
-```
+```javascript
 // 操作DOM 元素，将content 显示到网页上
 function show(content) {
     window.document.getElementById('app').innerText = "hello " + content;
@@ -67,14 +73,14 @@ module.exports = show;
 ```
 
 包含执行入口的main .js 文件的内容如下：
-```
+```javascript
 // 通过Common JS 规范导入show 函数
 const show = require("./show")
 show('webpack');
 ```
 
 package.json
-```
+```json
 {
   "name": "webpack-demo",
   "version": "1.0.0",
@@ -92,7 +98,7 @@ package.json
 ```
 
 Webpack 在执行构建时默认会从项目根目录下的webpack.config.js文件中读取配置，所以我们还需要新建它，其内容如下：
-```
+```javascript
 const path = require("path");
 module.exports = {
     //Javascript 执行的入口
@@ -111,13 +117,13 @@ Webpack 是一个打包模块化JavaScript 的工具，它会从main.j s 出发�
 
 #### 1.4 使用Loader
 本节继续优化这个网页，为项目引入CSS代码, 在根目录下新建一个main.css ，内容如下：
-```
+```css
 #app {
     text-align: center;
 }
 ```
 Webpack 将一切文件看作模块， css 文件也不例外。要引入main. css ，则需要像引入JavaScript 文件那样，修改入口文件main.js 如下：
-```
+```javascript
 // 通过commonjs规范引入css模块
 require("./main.css");
 // 通过Common JS 规范导入show 函数
@@ -125,7 +131,7 @@ const show = require("./show")
 show('webpack');
 ```
 但是这样修改后去执行Webpack 构建是会报错的，因为Webpack 不原生支持解析css文件。要支持非JavaScript 类型的文件，则需要使用Webpack 的Loader 机制。将Webpack 的配置修改如下：
-```
+```javascript
 const path = require("path");
 
 module.exports = {
@@ -155,7 +161,8 @@ module.exports = {
   }
 };
 ```
-Loader 可以看作具有文件转换功能的翻译员，配置里的module .rules 数组配置了一组规则， 告诉Webpack 在遇到哪些文件时使用哪些Loader 去加载和转换。如上配置告诉Webpack ， 在遇到以.css 结尾的文件时，先使用css-loader 读取css 文件，再由styleloader 将css 的内容注入JavaScript 里。在配置loader时需要注意：
+
+Loader 可以看作具有文件转换功能的翻译员，配置里的module.rules 数组配置了一组规则， 告诉Webpack 在遇到哪些文件时使用哪些Loader 去加载和转换。如上配置告诉Webpack ， 在遇到以.css 结尾的文件时，先使用css-loader 读取css 文件，再由styleloader 将css 的内容注入JavaScript 里。在配置loader时需要注意：
 - use 属性的值需要是一个由Loader 名称组成的数组， Loader 的执行顺序是由后到前的；
 - 每个Loader 都可以通过：
   - Url requerystring 的方式传入参数，例如css-loader?minimize 中的minimize 告诉css- loader 要开启css 压缩
@@ -171,8 +178,8 @@ npm i -D style-loader css-loader
 #### 1.5 使用Plugin
 Plugin 是用来扩展Webpack 功能的，通过在构建流程里注入钩子实现，它为Webpack 带来了很大的灵活性。
 
-上面一节通过Loader 加载了css 文件，本节通过Plugin 将注入bundle.j s 文件里的css 提取到单独的文件中，配置webpack.config.js修改如下：
-```
+上面一节通过Loader 加载了css 文件，本节通过Plugin 将注入bundle.js 文件里的css 提取到单独的文件中，配置webpack.config.js修改如下：
+```javascript
 const path = require("path");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -198,7 +205,7 @@ module.exports = {
   },
   plugins: [
       new ExtractTextPlugin({
-          // filename: `[name]_[hash:8].css` // 从. j s 文件中提取出来的.css 文件的名称
+          // filename: `[name]_[hash:8].css` // 从.js 文件中提取出来的.css 文件的名称
           filename: `[name]_style.css` // 暂时为了方便在html文件中引入css 采用固定格式文件名
       })
   ]
@@ -210,7 +217,7 @@ npm i -D extract-text-webpack-plugin
 ```
 
 安装成功后重新执行构建
-> 如果执行出现报错：
+>  如果执行出现报错：
 原因：extract-text-webpack-plugin还不能支持webpack4.0.0以上的版本
 解决：npm install --save-dev extract-text-webpack-plugin@next
 （"extract-text-webpack-plugin": "^4.0.0-beta.0"）
@@ -237,7 +244,7 @@ npm i -D webpack-dev-server
 i ｢wds｣: Project is running at http://localhost:8080/
 i ｢wds｣: webpack output is served from /
 ```
-这意味着DevServer 启动的HTTP 服务器监听在8080 端口， DevServer 启动后会一直驻留在后台保持运行，访问这个网址，就能获取项目根目录下的index.html 了。用浏览器打开这个地址时我们会发现页面空白，错误的原因是./dist/bundle.js 加载404了。同时我们会发现并没有文件输出到dist 目录，原因是DevServer 会将Webpack 构建出的文件保存在内存中，在要访问输出的文件时，必须通过HTTP 服务访问。由于DevServer不会理会webpack.config.js 里配置的output .path 属性，所以要获取bundle.js 的正确URL 是http: //localhost:8080/bundle.js，对应的index.html 应该修改为：
+这意味着DevServer 启动的HTTP 服务器监听在8080 端口， DevServer 启动后会一直驻留在后台保持运行，访问这个网址，就能获取项目根目录下的index.html 了。用浏览器打开这个地址时我们会发现页面空白，错误的原因是./dist/bundle.js 加载404了。同时我们会发现并没有文件输出到dist 目录，原因是DevServer 会将Webpack 构建出的文件保存在内存中，在要访问输出的文件时，必须通过HTTP 服务访问。由于DevServer不会理会webpack.config.js 里配置的output.path 属性，所以要获取bundle.js 的正确URL 是http: //localhost:8080/bundle.js，对应的index.html 应该修改为：
 ```
 <!DOCTYPE html>
 <html lang="en">
@@ -260,7 +267,7 @@ Webpack 在启动时可以开启监昕模式，之后Webpack 会监昕本地文�
 
 通过DevServer 启动的Webpack 会开启监听模式，当发生变化时重新执行构建，然后通知DevServer 。DevServer 会让Webpack 在构建出的JavaScript 代码里注入一个代理客户端用于控制网页，网页和DevServer 之间通过WebSocket 协议通信，以方便DevServer 主动向客户端发送命令。DevServer 在收到来自Webpack 的文件变化通知时，通过注入的客户端控制网页刷新。
 
-> 如果尝试修改index.html 文件并保存，则我们会发现这并不会触发以上机制， 导致这个问题的原因是Webpack 在启动时会以配置里的entry 为入口去递归解析出entry 所依赖的文件，只有entry 本身和依赖的文件才会被Webpack 添加到监听列表里。而index. html文件是脱离了JavaScript 模块化系统的，所以Webpack 不知道它的存在
+> 如果尝试修改index.html 文件并保存，则我们会发现这并不会触发以上机制， 导致这个问题的原因是Webpack 在启动时会以配置里的entry 为入口去递归解析出entry 所依赖的文件，只有entry 本身和依赖的文件才会被Webpack 添加到监听列表里。而index.html文件是脱离了JavaScript 模块化系统的，所以Webpack 不知道它的存在
 
 ##### 1.6.2 模块热替换
 除了通过重新刷新整个网页来实现实时预览， DevServer 还有一种被称作模块热替换的刷新技术。模块热替换能做到在不重新加载整个网页的情况下，通过将己更新的模块替换老模块，再重新执行一次来实现实时预览。模块热替换相对于默认的刷新机制能提供更快的响应速度和更好的开发体验。模块热替换默认是关闭的，要开启模块热替换，我们只需在启动DevServer 时带上--hot 参数，重启Dev Server 后再去更新文件就能体验到模块热替换的神奇了。
@@ -270,7 +277,7 @@ webpack-dev-server --hot
 启动参数配置参见[webpack官方文档](https://webpack.js.org/configuration/dev-server/)
 
 ##### 1.6.3 支持Source Map
-在浏览器中运行的JavaScript 代码都是编译器输出的代码，这些代码的可读性很差。如果在开发过程中遇到一个不知道原因的Bug，则我们可能需要通过断点调试去找出问题。在编译器输出的代码上进行断点调试是一件辛苦和不优雅的事情，调试工具可以通过Source Map( https ://www.html5 rocks. com/ en/tutorials/ developertoo ls/ sourcemaps／）映射代码，让我们在源代码上断点调试。Webpack 支持生成Source Map ，只需在启动时带上一devtool source-map参数。
+在浏览器中运行的JavaScript 代码都是编译器输出的代码，这些代码的可读性很差。如果在开发过程中遇到一个不知道原因的Bug，则我们可能需要通过断点调试去找出问题。在编译器输出的代码上进行断点调试是一件辛苦和不优雅的事情，调试工具可以通过Source Map( https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/）映射代码，让我们在源代码上断点调试。Webpack 支持生成Source Map ，只需在启动时带上一devtool source-map参数。
 ```
 webpack-dev-server --devtool source-map
 ```
@@ -283,28 +290,8 @@ webpack-dev-server --devtool source-map
 - Module ：模块，在Webpack 里一切皆模块，一个模块对应一个文件。Webpack 会从配置的Entry 开始递归找出所有依赖的模块。
 - Chunk ：代码块，一个Chunk 由多个模块组合而成，用于代码合并与分割。
 - Loader ：模块转换器，用于将模块的原内容按照需求转换成新内容。
-- Plugin ：扩展插件，在Webpack 构建流程中的特定时机注入扩展逻辑，来改变构建结
-果或做我们想要的事情。
+- Plugin ：扩展插件，在Webpack 构建流程中的特定时机注入扩展逻辑，来改变构建结果或做我们想要的事情。
 - Output：输出结果，在Webpack 经过一系列处理并得出最终想要的代码后输出结果。
 
 Webpack 在启动后会从Entry里配置的Module 开始，递归解析Entry 依赖的所有Module 。每找到一个Module ，就会根据配置的Loader 去找出对应的转换规则，对Module 进行转换后，再解析出当前Module 依赖的Module 这些模块会以Entry为单位进行分组， 一个Entry及其所有依赖的Module 被分到一个组也就是一个Chunk 。最后， Webpack 会将所有Chunk 转换成文件输出。在整个流程中， Webpack 会在恰当的时机执行Plugin 里定义的逻辑。
-
-### 2、webpack 配置
-配置Webpack 的方式有如下两种：
-- 通过一个JavaScript 文件描述配置，例如使用webpack.config.js文件里的配置；
-- 执行Webpack 可执行文件时通过命令行参数传入，例如webpack-dev-server --devtool source-map
-
-这两种方式可以相互搭配，例如执行Webpack 时通过命令webpack --config webpack-dev.config.js 指定配置文件，再去webpack-dev.config.j s 文件里描述部分配置。
-
-关于Webpack 的常用功能所提供的配置选项，请看[webpack官方网站](https://webpack.js.org/configuration/)
-
-
-安装配置所影响的功能来划分：
-- Entery： 配置模块的入口
-- output : 配置如何输出最终想要的代码
-- Resolve: 配置寻找模块的规则
-- Plugins: 配置扩展插件
-- DevServer: 配置DevServer
-- 其他配置项： 其他零散的配置项
-- 整体配置结构： 整体地描述各配置项的结构
 
