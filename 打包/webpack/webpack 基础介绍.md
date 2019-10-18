@@ -295,3 +295,4 @@ webpack-dev-server --devtool source-map
 
 Webpack 在启动后会从Entry里配置的Module 开始，递归解析Entry 依赖的所有Module 。每找到一个Module ，就会根据配置的Loader 去找出对应的转换规则，对Module 进行转换后，再解析出当前Module 依赖的Module 这些模块会以Entry为单位进行分组， 一个Entry及其所有依赖的Module 被分到一个组也就是一个Chunk 。最后， Webpack 会将所有Chunk 转换成文件输出。在整个流程中， Webpack 会在恰当的时机执行Plugin 里定义的逻辑。
 
+[下一篇： webpack配置详解](./webpack配置详解.md)

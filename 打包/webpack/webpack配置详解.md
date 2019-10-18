@@ -183,11 +183,99 @@ global.['LibraryName'] = lib_code;
 global.LibraryName.doSomething();
 ```
 #### 2.2.7 libraryExport
-// P53
+ou tput . libraryExpo rt 配置要导出的模块中哪些子模块需要被导出。它只有在output .libraryTarget 被设置成comrnonj S 或者comrnonjs2 时使用才有意义。
 
+假如要导出的模块源代码是：
+```
+export canst a=l;
+export default b=2 ;
+```
+而现在想让构建输出的代码只导出其中的a ，则可以将output.libraryExport 设置成a ， 那么构建输出的代码和使用方法将变成如下内容：
+```javascript
+// Webpack 输出的代码
+module.exports = lib_code [ 'a'];
+// 使用库的方法
+require('library-name-in-npm') === l;
+```
 
+以上只是output 中的常用配置项，还有部分几乎用不上的配置项没有在这里一一列举,详情查看[webpack官网](https://webpack.js.org/guides/getting-started/)
 
+### 2.2 Module
+module 配置处理模块的规则，下面对它进行详细讲解。
 
+#### 2.3.1 配置Loader
+rules 配置模块的读取和解析规则，通常用来配置Loader 。其类型是一个数组，数组里的每一项都描述了如何处理部分文件。配置一项rules 时大致可通过以下方式来完成。
+
+- 条件匹配：通过test 、include 、exclude 三个配置项来选中Loader 要应用规则的文件。
+- 应用规则： 对选中的文件通过use 配置项来应用Loader ，可以只应用一个Loader或者按照从后往前的顺序应用一组Loader ，同时可以分别向Loader 传入参数。
+- 重置顺序：一组Loader 的执行顺序默认是从右到左执行的，通过enforce 选项可以将其中一个Loader 的执行顺序放到最前或者最后。
+
+下面通过一个例子来说明具体的使用方法：
+
+```
+module: {
+    rules: [
+        {
+            // 命中Javascript文件
+            test: /\.js$/,
+            // 用babel -loader 转换JavaScript 文件
+            // ? cacheDirectory 表示传给babel-loader 的参数，用于缓存babel 的编译结果，加快重新编译的速度
+            use: ['babel-loader?cacheDirectory'],
+            // 只命中src 目录里的JavaScript 文件，加快Webpack 的搜索速度
+            include: path.resolve(__dirname, 'src')
+        },
+        {
+            // 命中sass文件
+            test: /\.scss$/,
+            // 使用一组Loader 去处理scss 文件
+            // 处理顺序为从后到前，即先交给sass-loader 处理，再将结果交给css-loader,最后交给style-loader
+            use: ['style-loader','css-loader','sass-loader'],
+            // 排除node modules 目录下的文件
+            exclude: path.resolve(__dirname, 'node_modules')
+        },
+        {
+            // 对非文本文件采用file-loader 加载
+            test: /\ . (gif | png | jpe?g | eot | woff | ttf | svg | pdf) $/,
+            use: ['file-loader']
+        }
+    ]
+}
+
+```
+在Loader 需要传入很多参数时，我们还可以通过一个Object 来描述，例如在上面的babel-loader 配置中有如下代码：
+```
+use: [
+    {
+        loader: 'babel-loder',
+        options: {
+            cacheDirectory: true
+        },
+        // enforce ：'post'的含义是将该Loader 的执行顺序放到最后
+        // enforce 的值还可以是pre ，代表将Loader 的执行顺序放到最前面
+        enforce: 'post'
+    },
+    // 省略其它loader
+]
+
+```
+在上面的例子中， test 、include 、exclude 这三个命中文件的配置项只传入了一个字符串或正则，其实它们也支持数组类型，使用如下：
+```
+{
+    test: [/\.jsx?$/,/\.tsx?/],
+    include: [
+        path.resolve(__dirname, 'src'),
+        path.resolve(__dirname, 'tests'),
+    ],
+    exclude: [
+        path.resolve(__dirname, 'node_modules'),
+        path.resolve(__dirname, 'bower_modules'),
+    ]
+}
+```
+数组里的每项之间是“或”的关系，即文件的路径只要满足数组中的任何一个条件，就会被命中。
+
+#### 2.3.2 noParse
+// P56
 
 
 
