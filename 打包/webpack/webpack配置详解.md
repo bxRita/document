@@ -171,14 +171,14 @@ this.LibraryName.doSomething();
 ```javascript
 //Webpack 输出的代码
 window ['LibraryName'] = lib_code ;
-／／ 使用库的方法
+// 使用库的方法
 window.LibraryName.doSomething ();
 ```
 ##### 6. global
 编写的库将通过window 赋值给通过library 指定的名称，输出和使用的代码如下：
 ```javascript
 //Webpack 输出的代码
-global.['LibraryName'] = lib_code;
+global['LibraryName'] = lib_code;
 // 使用库的方法
 global.LibraryName.doSomething();
 ```
@@ -275,10 +275,94 @@ use: [
 数组里的每项之间是“或”的关系，即文件的路径只要满足数组中的任何一个条件，就会被命中。
 
 #### 2.3.2 noParse
-// P56
+noParse 配置项可以让Webpack 忽略对部分没采用模块化的文件的递归解析和处理，这样做的好处是能提高构建性能。原因是一些库如jQuery、ChartJS 庞大又没有采用模块化标准，让Webpack 去解析这些文件既耗时又没有意义。
+noParse 是可选的配置项，类型需要是RegExp、［RegExp]、function 中的一种。
+
+例如， 若想要忽略jQuery 、ChartJS ，则可以使用如下代码：
+```
+// 使用正则表达式
+noParse: /jquery|chartjs/
+// 使用函数，从Webpack 3.0.0 开始支持
+noParse : (content)=> {
+// content 代表一个模块的文件路径
+// 返回true 或false
+return /jquery|chartjs/.test(content) ;
+}
+```
+> 注意，被忽略的文件里不应该包含import 、require 、define 等模块化语句，不然会导致在构建出的代码中包含无法在浏览器环境下执行的模块化语句。
 
 
+#### 2.3.2 parse
+
+因为Webpack 是以模块化的JavaScript 文件为入口的，所以内置了对模块化JavaScript的解析功能，支持AMD, CommonJS 、SystemJS 、ES6 。parser 属性可以更细粒度地配置哪些模块语法被解析、哪些不被解析。同noParse 配置项的区别在于， parser 可以精确到语法层面，而noParse 只能控制哪些文件不被解析。parser 的使用方法如下：
+```
+module: {
+    rules : [
+        test: /\.js/ ，
+        use: ['babel-loader'],
+        parser: {
+            amd: false , // 禁用AMD
+            commonjs : false, // 禁用CommonJS
+            system : false, // 禁用SystemJS
+            harmony : false , // 禁用ES6 import/export
+            requireinclude: false, // 禁用require.include
+            requireEnsure: false, // 禁用require.ensur e
+            requireContext: false, // 禁用require.context
+            browserify: false, // 禁用browserify
+            requireJs : false, // 禁用requirejs
+        }
+    ]
+}
+```
+
+### 2.4 Resolve
+Webpack 在启动后会从配置的入口模块出发找出所有依赖的模块， Resolve 配置Webpack如何寻找模块所对应的文件。Webpack 内置JavaScript 模块化语法解析功能，默认会采用模块化标准里约定的规则去寻找，但我们也可以根据自己的需要修改默认的规则。
+
+#### 2.4.1 alias
+resolve.alias 配置项通过别名来将原导入路径映射成一个新的导入路径。例如使用以下配置：
+```
+// Webpack alias 配置
+resolve:{
+    alias : {
+        components : './src/components/'
+    }
+}
+```
+当通过import Button from 'components/button'导入时，实际上被alias 等价替换成了import Button from './src/components/button'.
+
+以上alias 配置的含义是，将导入语句里的components 关键字替换成./src/components/
+
+这样做可能会命中太多导入语句， alias 还支持通过$符号来缩小范围到只命中以关键字结尾的导入语句：
+```
+resolve:{
+    alias : {
+        'react$' : '/path/to/react.min.js'
+    }
+}
+```
+react$ 只会命中以react 结尾的导入语句，即只会将import 'react' 关键字替换成import '/path/to/react.min.js'。
 
 
+#### 2.4.2 mainFields
+有一些第三方模块会针对不同的环境提供几份代码。例如分别提供采用了ES5 和ES6 的两份代码，这两份代码的位置写在package.json 文件里，代码如下：
+```
+{
+    "jsnext:main" : "es/index.js", // 采用ES6 语法的代码入口文件
+    "main": "lib/index.js" // 采用ES5 语法的代码入口文件
+}
+```
+Webpack 会根据mainFields 的配置去决定优先采用哪份代码， mainFields 默认如下：
 
+```
+mainFields : ['browser', 'main']
+```
+
+Webpack 会按照数组里的顺序在package.json 文件里寻找，只会使用找到的第l个文件。
+
+假如我们想优先采用ES6 的那份代码，则可以这样配置：
+
+mainFields : ['jsnext:main','browser','main']
+
+#### 2.4.3 extensions
+// 59
 
