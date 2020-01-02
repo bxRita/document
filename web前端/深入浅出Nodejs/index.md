@@ -700,5 +700,220 @@ if (hasDefine) {
 	return hello;
 });
 ```
+## 3. 异步IO
+### 3.1 为什么要异步I/O
+### 3.1.2 资源分配
+假设业务场景中有一组互不相关的任务需要完成，现在的主流方法有以下两种
+- 单线程串行依次执行
+- 多线程并行完成
+
+如果创建多线程的开销小于并行执行，那么多线程的方式时首选的。多线程的代价在于创建线程和执行期线程上下文切换的开销较大。另外，在复杂的业务中， 多线程编程经常面临锁、状态同步等问题，这是多线程被诟病的主要原因。但是多线程在多核CPU上能够有效提升CPU的利用率，这个优势时毋庸置疑的。   
+单线程同步编程模型会因阻塞I/O导致硬件资源得不到更优的使用。多线程编程模型也因为编程中的死锁、状态同步等问题让开发人员头疼。   
+Node在两者之间给出了它的方案：利用单线程，远离多线程死锁、状态同步等问题；利用异步I/O,让单线程远离阻塞，以更好的使用CPU。   
+异步I/O可以算作时Node 的特色，因为它时首个大规模将异步I/O应用在应用层上的平台，它力求在单线程上将资源分配的更高效。    
+异步I/O调用示意图：
+![异步I/O调用示意图](./imgs/5.png)
+
+### 3.2 异步I/O实现现状
+#### 3.2.1 异步I/O与非阻塞I/O
+操作系统内核对于I/O只有两种方式：阻塞与非阻塞。在调用阻塞I/O时，应用程序需要等待I/O完成才返回结果。  
+ ![调用阻塞IO](./imgs/6.png)
+阻塞I/O的一个特点是调用之后一定要等到系统内核层面完成所有操作后， 调用才结束。以读取磁盘上的一段文件为例，系统内核在完成磁盘寻道、读取数据、复制数据到内存中之后， 这个调用才结束。   
+阻塞I/O造成CPU等待I/O，浪费等待时间，CPU的处理能力不能得到充分利用。为了提高性能，内核提供了非阻塞I/O。非阻塞I/O跟阻塞I/O的差别为调用之后会立即返回 
+ ![调用非阻塞IO](./imgs/7.png)
+操作系统对计算机进行了抽象，将所有输入输出设备抽象为文件。内核在进行文件I/O操作时，通过文件描述符进行管理，而文件描述符类似与系统内核之间的凭证。应用程序如果需要进行I/O调用， 需要先打开文件描述符， 然后再分解文件描述符去实现文件的数据读写。此处非阻塞I/O与阻塞I/O的区别在于阻塞I/O完成整个获取数据的过程，而非阻塞I/O则不带数据直接返回，要获取数据，还需要通过文件描述符再次读取。    
+非阻塞I/O返回之后，CPU的时间片可以用来处理其它事务，此时的性能提升是明显的。    
+但非阻塞I/O也存在一些问题。由于完整的I/O并没有完成，立即返回的并不是业务层期望的数据，而仅仅是当前调用的状态。为了获取完整的数据，应用程序需要重复调用I/O操作来确认是否完成。这种重复调用判断操作是否完成的技术叫**轮询**     
+任意技术都并非完美的。阻塞I/O造成CPU等待浪费，非阻塞带来的麻烦却是需要轮询去确认是否完全完成数据获取，它会让CPU处理状态判断，是对CPU资源的浪费。这里我们且看轮询技术是如何演进的，以减少I/O状态判断的CPU损耗。   
+现在的轮询技术主要有以下这些。  
++ read.它是最原始、性能最低的一种，通过重复调用来检查I/O的状态来完成数据的读取。在得到最终数据前，CPU一直耗用在等待上。
+    ![通过read轮询示意图](./imgs/8.png)
++ select. 它是在read的基础上改进的一种方案，通过对文件描述符上的事件状态来进行判断。
+    ![通过select轮询示意图](./imgs/9.png)
+	select轮询具有一个较弱的限制，那就是由于它采用一个1024长度的数组来存储状态，所以它最多可以同时检查1024个文件描述符  
++ poll。该方案较select有所改进，采用链表的方式避免数组长度的限制，其它它能避免不需要的检查。但是当文件描述符较多的时候，它的性能还是十分低下。
+    ![通过poll轮询示意图](./imgs/10.png)
+
++ epoll。该方案是Linux下效率最高的I/O事件通知机制， 在进入轮询的时候，如果没有检查到I/O事件，将会进行休眠，直到事件发生将它唤醒。它是真实利用了事件通知、执行回调的方式，而不是遍历查询，所以不会浪费CPU，执行效率较高。
+    ![通过epoll轮询示意图](./imgs/11.png)
++ kqueue 。该方案的实现方式与epoll类似，不过它仅存在FreeBSD系统下。
+
+#### 3.2.2 理想的非阻塞异步I/O
+我们期望的完美的异步I/O应该是应用程序发起的非阻塞调用，无需通过遍历或者事件唤醒等方式轮询，可以直接处理下一个任务，只需在I/O完成后通过信号或回调将数据传递给应用程序即可。    
+![理想的异步I/O示意图](./imgs/12.png)
+幸运的是，在Linux下存在这样一种方式，它原生提供的一种异步I/O方式（AIO）就是通过信号或回调传递数据的。    
+但不幸的是，只有Linux下有，而且它还有缺陷——AIO仅支持内核I/O中的0——DIRECT方式读取，导致无法利用系统缓存。    
+
+#### 3.2.3 现实的异步I/O
+IOCP的异步I/O模型与Node的异步调用模型十分近似。在Windows平台下采用了IOCP实现异步I/O。   
+由于Windows平台与*nix平台的差异，Node提供了libuv作为抽象封装层，使得所有平台兼容性的判断都是由这一层来完成，并保证了上层的Node与下层的自定义线程池及IOCP之间各自独立。Node在编译期间会判断平台条件，选择性编译unix目录或是win目录下的源文件到目标程序中。   
+![基于libuv的架构示意图](./imgs/13.png)
+
+
+### 3.3 Node的异步I/O
+#### 3.3.1 事件循环
+在进程启动时， Node便会创建一个类似于while(true)的循环，每执行一次循环体的过程我们称为Tick。每个Tick的过程就是查看是否由事件待处理，如果有，就取出事件极其相关的回调函数。如果存在关联的回调函数，就执行它们。然后进入下个循环，如果不再有事件处理，就退出进程。
+![Tick流程图](./imgs/14.png)
+
+#### 3.3.2 观察者
+在每个Tick的过程中，如何判断是否有事件需要处理呢？这里必须要引入的概念是观察者。   
+浏览器采用了类似的机制。事件可能来自用户的点击或加载某些文件时产生，而这些产生事件都有对应的观察者。 在Node中，事件主要来源于网络请求、文件I/O等，这些事件对应的观察者有文件I/O观察者、网络I/O观察者等。    
+事件循环时一个典型的生产者/消费者模型。异步I/O、网络请求等则是事件的生产者，源源不断为Node提供不同类型的事件，这些事件被传递到对应的观察者那里，事件循环则从观察者那里取出事件并处理。    
+在Windows下，这个循环基于IOCP创建，而在*nix下则基于多线程创建。    
+
+#### 3.3.3 请求对象
+在这一节中， 我们将通过解释Windows下异步I/O（利用IOCP实现）的简单例子来探寻从JavaScript代码到系统内核之间都发生了什么。   
+对于一般的（非异步）回调函数，函数由我们自行调用，如下所示：
+```js
+var forEach = function(list, callback) {
+	for(var i = 0; i < list.length; i++>) {
+		callback(list[i], i, list);
+	}
+};
+```
+对于Node中的异步I/O调用而已，回调函数却不由开发者来调用。那么从我们发出调用后，到回调函数被执行， 中间发生了什么呢？事实上，从JavaScript发起调用到内核执行完I/O操作的过渡过程中，存在一种中间产物，它叫做**请求对象**     
+下面以fs.open()方法来作为例子，探索Node与底层之间时如何执行异步I/O调用以及回调函数究竟是如何被调用执行的：    
+```js
+fs.open = function(path, flags, mode, callback) {
+	// ...
+	binding.open(pathModule._makeLong(path), stringToFlags(flags), mode, callback);
+};
+```
+fs.open()的作用是根据指定路径和参数去打开一个文件，从而得到一个文件描述符，这是后续所有I/O操作的初始操作。从前面的代码中可以看到，JavaScript层面的代码通过调用C++核心模块进行下层的操作。
+![调用示意图](./imgs/15.png)
+从JavaScript调用Node的核心模块， 核心模块调用C++内建模块，内建模块通过libuv进行系统调用，这是Node里经典的调用方式。这里libuv作为封装层，有两个平台的实现，实质上是调用了uv_fs_open()方法。在uv_FS_OPEN的调用过程中，我们创建了一个FSReqWrap请求对象。从JavaScript层传入的参数和当前方法被封装在这个请求对象中，其中我们最为关注的回调函数 则被设置在这个对象的oncomplete_sym属性上：   
+```
+req_wrap->object_->Set(oncomplete_sym, callback);
+```
+对象包装完毕后， 在Windows下，则调用QueueUserWorkItem()方法将这个FsReqWrap对象推入线程池中等待执行， 该方法的代码如下：
+```js
+QueueUserWorkItem(&uv_fs_thread_proc, req, WT_EXECUTEDEFAULT)
+```
+QueueUserWorkItem()方法接收3个参数：第一个参数将要执行的方法的引用，这里引用的uv_fs_thread_proc，第二个参数是uv_fs_thread_proc()方法运行时所需要的参数；第三个参数时执行的标志。当线程池中有可用线程时， 我们会调用uv_fs_thread_proc()方法。uv_fs_thread_proc()方法会根据传入参数的类型调用相应底层函数。以uv_fs_open()为例，实际上调用fs__open()方法。     
+至此，JavaScript调用立即返回，由JavaScript层面发起的异步调用的第一阶段就此结束。JavaScript线程可以继续执行当前任务的后续操作。当前I/O操作在线程池中等待执行。不管它是否阻塞I/O，都不会影响到JavaScript线程的后续执行，如此就达到异步的目的。    
+请求对象时异步I/O过程中的重要中间产物， 所有的状态都保存在这个对象中， 包括送入线程池等待执行以及I/O操作完毕后的回调处理。    
+#### 3.3.4 执行回调
+组装好请求对象、送入I/O线程池等待执行，实际上完成了异步I/O的第一部分，回调通知时第二部分。   
+线程池中的I/O操作调用完毕之后，会将获取的结果存储在req->result属性上，然后调用PostQueuedCompletionStatus()通知IOCP，告知当前对象操作已完成：
+```js
+PostQueuedCompletionStatus((loop)->iocp, o, o, &((req)->overlapped))
+```
+PostQueuedCompletionStatus()方法的作用是像IOCP提交执行状态，并将线程归还线程池。通过PostQueuedCompletionStatus()方法提交的状态，可以通过GetQueuedCompletionStatus()提取。    
+在这个过程中， 我们其实还动用了事件循环的I/O观察者。在每次Tick的执行中，它会调用IOCP相关的GetQueuedCompletionStatus()方法检查线程池中是否有执行完的请求，如果存在，会将请求对象加入到I/O观察者的队列中，然后将其当做事件处理。    
+I/O观察者回调函数的行为就是取出请求对象的result属性作为参数，取出oncomplete_sym属性作为方法， 然后调用执行，以此达到调用JavaScript中传入的回调函数的目的。    
+![整个异步I/O的流程](./imgs/16.png)
+事件循环、观察者、请求对象、I/O线程池这四者共同构成了Node异步I/O模型的基本要素。    
+Windows下主要通过IOCP来像系统内核发送I/O调用和从内核获取已完成的I/O操作，配以事件循环，以此完成异步I/O的过程。在Linux下通过epoll实现这个过程，FreeBSD下通过kqueue实现。    
+#### 3.3.5 小结
+从前面实现异步I/O的过程描述中， 我们可以提取出异步I/O的几个关键词： 单线程、事件循环、观察者和I/O线程池。这里单线程和I/O线程池看起来有些悖论的样子。由于我们知道JavaScript是单线程的，所以按常识很容易理解为它不能充分利用多核CPU。事实上，在Node中，除了JavaScript是单线程外，Node自身其实是多线程的，只是I/O线程使用的CPU较少。另一个需要重视的观点则是，除了用户代码无法并行执行外，所有的I/O（磁盘I/O和网络I/O等）则是可以并行起来的。   
+
+
+### 3.4 非I/O的异步API
+setTimeout()、setInterval()、setImmediate()和process.nextTick()。
+
+#### 3.4.1 定时器
+setTimeout()和setInterval()与浏览器中的API是一致的， 分别用于单次和多次定时执行任务。它们的实现原理与异步I/O比较类似，只是不需要I/O线程池的参与。调用setTimeout()或者setInterval()创建的定时器会被插入到定时器观察者内部的一个红黑树中。每次Tick执行时，会从该红黑树中迭代取出定时器对象，检查是否超过定时时间，如果超过，就形成一个事件，它的回调函数将立即执行。  
+![setTimeout()的行为](./imgs/17.png)
+
+#### 3.4.2 process.nextTick()
+在未了解process.nextTick()之前，很多人也许为了立即异步执行一个任务，会这样调用setTimeout()来达到所需的效果：
+```js
+setTimeout(function(){
+	// todo
+}, 0)
+
+```
+由于事件循环自身的特点，定时器的精确度不够。而事实上，采用定时器需要动用红黑树，创建定时器对象和迭代等操作，而setTimeout(fn, 0)的方式较为浪费性能。实际上，process.nextTick()方法的操作相对较为轻量，具体代码如下：
+```js
+process.nextTick = function(callback) {
+	// on the way out, don't bother
+	if(process._exiting) return;
+
+	if(tickDepth >= process.maxTickDepth) maxTickWarn();
+
+	var tock = {callback: callback};
+	if(process.domain) tock.domain = process.domain;
+	nextTickQueue.push(tock);
+	if(nextTickQueue.length) {
+		process._needTickCallback();
+	}
+};
+```
+每次调用process.nextTick()方法，只会将回调函数放入队列中， 在下一轮Tick时取出执行。定时器中采用红黑树的操作时间复杂度为O(lg(n))，nextTick()的时间复杂度为O(1)。相较之下，process.nextTick()更高效。  
+
+#### 3.4.3 setImmediate()
+setImmediate()方法与process.nextTick()方法十分类似，都是将回调函数延迟执行。在Nodev0.9.1之前，setImmediate()还没实现，那时候实现类似的功能主要通过process.nextTick()来完成，该方法的代码如下所示：
+```js
+process.nextTick(function(){
+	console.log('延迟执行');
+})
+```
+上述代码的输出结果是：
+```
+正常执行
+延迟执行
+```
+而用setImmediate()实现时，相关代码如下：
+```
+setImmediate(function () {
+console.log('􁃽􀗿执行');
+});
+console.log('正常执行');
+```
+其执行结果完全一样：
+```
+正常执行
+延迟执行
+```
+但是两者之间其实是有细微差别的。将它们放在一起时，又会是怎样的优先级。实例代码如下：
+```js
+process.nextTick(function(){
+	console.log('nextTick 延迟执行');
+});
+setImmediate(function(){
+	console.log('setImmediate 延迟执行');
+});
+console.log('正常执行');
+```
+其执行结果如下：
+```
+正常执行
+nextTick 延迟执行
+setImmediate 延迟执行
+```
+从结果这里可以看到，process.nextTick()中的回调函数执行的优先级要高于setImmediate()。这里的原因在于事件循环对观察者的检查是有先后顺序的，process.nextTick()属于idle观察者，setImmediate()属于check观察者。在每一个轮循环检查中，idle观察者先于check观察者。    
+在具体实现上，process.nextTick()的回调函数保存在一个数组中，setImmediate()的结果则是保存在链表中。在行为上，process.nextTick()在每轮循环中会将数组中的回调函数全部执行完，而setImmediate()在每轮循环中执行链表中的一个回调函数。    
+### 3.5 事件驱动与高性能服务器
+
+## 4、异步编程
+### 4.1 函数式编程
+#### 4.1.1 高阶函数
+
+### 4.3 异步编程解决方案
+目前，异步编程的主要解决方案有如下3种。
++ 事件发布/订阅模式
++ Promise/Deferred模式
++ 流程控制库
+
+#### 4.3.1 事件发布/订阅模式
+事件监听器模式是一种广泛用于异步编程的模式，是回调函数的事件化，又称发布/订阅模式。  
+Node自身提供的events模块是发布/订阅模式的一个简单实现，Node中部分模块都继承自它，这个模块比前端浏览器中的大量DOM事件简单，不存在事件冒泡，也不存在preventDefault()、stopPropagation()和stopImmediatePropagation()等控制事件传递的方法。它具有addListener/on()、once()、removeListener()、removeAllListeners()和emit()等基本的事件监听模式的方法实现。事件发布/订阅模式的操作极其简单，示例代码如下：
+```js
+// 订阅
+emitter.on("event1", function(message){
+	console.log(message);
+})
+// 发布
+emmitter.emit("event1", "I am message!");
+```
+值得一提的是，Node对事件发布/订阅的机制做了一些额外的处理，这大多是基于健壮性而考虑的。下面为两个具体的细节点。
+- 如果对一个事件添加了超过10个监听器，将会得到一条警告。这一处设计与Node自身单线程运行有关，设计者认为监听器太多可能导致内存泄漏，所以存在这样一条警告。调用emmitter.setMaxListeners(0);可将这个限制去掉。另一方面，由于事件发布会引起一系列监听器执行，如果事件相关的监听器过多，可能存在过多占用CPU的情景。
+- 为了处理异常，EventEmmiter对象对error事件进行了特殊对待。如果运行期间的错误触发了error事件，EventEmmitter会检查是否有对error事件添加过监听器。如果添加了，这个错误将会交由监听器处理，否则这个错误将会作为异常抛出。如果外部没有捕获这个异常，将会引起线程退出。一个健壮的EventEmmitter实例应该对error事件做处理。
+
+
+
+
+
+
 
 
