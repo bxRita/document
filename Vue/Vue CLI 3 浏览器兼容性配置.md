@@ -14,7 +14,7 @@ Vue CLI 3初始化的项目，你会发现有 package.json 文件里的 browsers
 
 如果有依赖需要 polyfill，你有几种选择：
 - 1. 如果确切知道有兼容性问题的依赖包名，可以配置项目根目录下的vue.config.js，将依赖包名添加到transpileDependencies键中，这会为该依赖同时开启语法语法转换和根据使用情况检测 polyfill。例如：
-```
+```js
 module.exports = {
   transpileDependencies: ["sl-vue-tree"] // 需要编译的依赖包名
 }

@@ -18,8 +18,8 @@
 - 整体配置结构： 整体地描述各配置项的结构
 
 #### 2.1.2 Entry类型
-类型 | 例子 | 含义 
-- | :-: | :-: 
+类型 | 例子 | 含义 |
+- | :-: | :-: |
 string | './app/entry' | ccc 
 array | ['./app/entry1', './app/entry2']| hhh 
 object | {a: './app/entry', b: ['./app/entry-b1','./app/entry-b2']}| hhh 
@@ -27,9 +27,9 @@ object | {a: './app/entry', b: ['./app/entry-b1','./app/entry-b2']}| hhh
 如果是array 类型，则搭配output.library 配置项使用时，只有数组里的最后一个入口文件的模块会被导出。
 
 #### 2.1.3 Chunk 的名称
-Webpack 会为每个生成的Chunk 取一个名称， Chunk 的名称和En町的配置有关。
+Webpack 会为每个生成的Chunk 取一个名称， Chunk 的名称和Entry的配置有关。
 - 如果entry 是一个string 或array ，就只会生成一个Chunk ，这时Chunk 的名称是main
-- 如果e ntr y 是一个object ，就可能会出现多个Chunk ，这时Chunk 的名称是object 键值对中键的名称。
+- 如果entry 是一个object ，就可能会出现多个Chunk ，这时Chunk 的名称是object 键值对中键的名称。
 
 #### 2.1.4 配置动态Entry
 假如项目里有多个页面需要为每个页面的入口配置一个Entry，但这些页面的数量可能会不断增长，则这时Entry 的配置会受到其他因素的影响，导致不能写成静态的值。其解决方法是将Entry 设置成一个函数动态地返回上面所说的配置，代码如下：
@@ -55,7 +55,7 @@ entry: () = > {
 ### 2.2 Output
 output 配置如何输出最终想要的代码。output 是一个object ，里面包含一系列配置项，下面分别介绍它们。
 #### 2.2.1 filename
-output.fi lename 配置输出文件的名称，为string 类型。如果只有一个输出文件，则可以将它写成静态不变的：
+output.filename 配置输出文件的名称，为string 类型。如果只有一个输出文件，则可以将它写成静态不变的：
 
 ```
 filename: 'bundle.js '
@@ -63,9 +63,9 @@ filename: 'bundle.js '
 
 但是在有多个Chunk 要输出时，就需要借助模板和变量了。前面讲到， Webpack 会为每个Chunk 取一个名称，所以我们可以根据Chunk 的名称来区分输出的文件名：
 ```
-file name :'[name].js'
+filename :'[name].js'
 ```
-代码里的［ name ］代表用内置的name 变量去替换［ name ］，这时我们可以将它看作一个字符串模块函数，每个要输出的Chunk 都会通过这个函数去拼接出输出的文件名称。内置变量除了包括name ，还包括如表2-2 所示的变量。
+代码里的［name］代表用内置的name 变量去替换［name］，这时我们可以将它看作一个字符串模块函数，每个要输出的Chunk 都会通过这个函数去拼接出输出的文件名称。内置变量除了包括name ，还包括如表2-2 所示的变量。
 变量名 | 含义 | 
 - | :-: |
 id | Chunk 的唯一标识，从0开始 |
@@ -96,7 +96,7 @@ output.publicPath 配置发布到线上资源的URL 前缀，为string 类型。
 filename : '[name][chunkhash:8].js'
 publicPath :'https://cdn.example.com/assets/'
 ```
-这时发布到线上的H TML 在引入JavaScript 文件时就需要以下配置项：
+这时发布到线上的HTML 在引入JavaScript 文件时就需要以下配置项：
 ```
 <script src='https://cdn.example.com/assets/a_12345678.js'></script>
 ```
@@ -108,8 +108,8 @@ output.path 和output.publicPath 都支持字符串模板，内置变量只有�
 Webpack 输出的部分代码块可能需要异步加载，而异步加载是通过JSONP(https ://zh.wikipedia.org/wiki/JSONP)方式实现的。JSONP 的原理是动态地向HTML 中插入一个\<script src="url"\>\<\/script\> 标签去加载异步资源。output.crossOriginLoading 则是用于配置这个异步插入的标签的crossorigin 值。
 
 script 标签的crossorigin 属性可以取以下值：
-- anonymous （默认），在加载此脚本资源时不会带上用户的C ooki es 。
-- use-credentials ，在加载此脚本资源时会带上用户的Coo kies a
+- anonymous （默认），在加载此脚本资源时不会带上用户的Cookies 。
+- use-credentials ，在加载此脚本资源时会带上用户的Cookies。
 
 通常用设置crossorigin 来获取异步加载的脚本执行时的详细错误信息。
 
@@ -183,7 +183,7 @@ global['LibraryName'] = lib_code;
 global.LibraryName.doSomething();
 ```
 #### 2.2.7 libraryExport
-ou tput . libraryExpo rt 配置要导出的模块中哪些子模块需要被导出。它只有在output .libraryTarget 被设置成comrnonj S 或者comrnonjs2 时使用才有意义。
+output . libraryExport 配置要导出的模块中哪些子模块需要被导出。它只有在output .libraryTarget 被设置成comrnonjs 或者commonjs2 时使用才有意义。
 
 假如要导出的模块源代码是：
 ```
@@ -306,7 +306,7 @@ module: {
             system : false, // 禁用SystemJS
             harmony : false , // 禁用ES6 import/export
             requireinclude: false, // 禁用require.include
-            requireEnsure: false, // 禁用require.ensur e
+            requireEnsure: false, // 禁用require.ensure
             requireContext: false, // 禁用require.context
             browserify: false, // 禁用browserify
             requireJs : false, // 禁用requirejs
@@ -364,5 +364,112 @@ Webpack 会按照数组里的顺序在package.json 文件里寻找，只会使�
 mainFields : ['jsnext:main','browser','main']
 
 #### 2.4.3 extensions
-// 59
+在导入语句没带文件后缀时，Webpack会自动带上后缀后去尝试访问文件是否存在。resolve.extensions用于配置在尝试过程中用到的后缀列表，默认是：
+```
+extensions: ['.js','.json']
+```
+也就是说，当遇到require('./data')这样的导入语句时，Webpack会先寻找./data.js文件，如果该文件不存在，就去寻找./data.json文件，如果还是找不到，就报错。   
+假如我们想让Webpack优先使用目录下的TypeScript文件，则可以这样配置：
+```
+extensions: ['.ts','.js','.json']
+```
+
+### 2.5 Plugin
+Plugin的配置很简单，plugins配置项接受一个数组，数组里的每一项都是一个要使用的Plugin的实例，Plugin需要的参数通过构造函数传入。   
+```js
+const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+module.exports = {
+    plugins: [
+        // 所有页面都会用到的公共代码被提取到common代码块中
+        new CommonsChunkPlugin({
+            name: 'common',
+            chunks: ['a','b']
+        }),
+
+    ]
+}
+```
+
+### 2.9 多种配置类型
+#### 2.9.1 导出一个Function
+在大多数时候，我们需要从同一份源代码中构建出多份代码，例如一份用于开发，一份用于发布到线上。    
+如果采用导出一个Object来描述Webpack所需配置的方法，则需要写两个文件，一个用于开发环境，一个用于线上环境。再在启动时通过webpack --config webpack.config.js指定使用哪个配置文件。    
+采用导出一个Function 的方式，能通过JavaScript灵活地控制配置，做到只用写一个配置文件就能完成以上要求。   
+导出一个Function的使用方法如下：
+```js
+const path = require('path');
+const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
+module.exports = function(env = {}, argv) {
+    const plugins = [];
+    const isProduction = env['production'];
+    if(isProduction){
+        // 压缩输出的JavaScript代码
+        plugins.push(new UglifyJsPlugin())
+    }
+    return {
+        plugins: plugins,
+        devtool: isProduction?undefined: 'source-map'
+    };
+}
+```
+在运行Webpack时，会向这个函数传入两个参数，如下所述。
+- env: 当前运行时的Webpack专属环境变量，env是一个Object。读取时直接访问Object的属性，将它设置为需要在启动Webpcack时带上参数。例如启动命令是webpack --env.production --env.bao=foo，则env的值是{"production":"true", "bao":"foo"}
+- argv: 代表在启动Webpack时通过命令行传入所有参数，例如--config、--env、--devtool，可以通过webpack -h 列出所有webpack支持的命令行参数。
+
+就以上配置文件而言，在开发时执行命令webpack命令构建出方便调试的代码，在需要构建出发布到线上的代码时执行webpack --env.production 构建出压缩的代码。  
+
+#### 2.9.2 导出一个返回Promise的函数
+在某些情况下不能以同步的方式返回一个描述配置的Object，Webpack还支持导出一个Promise的函数，使用如下：
+```js
+module.exports = function(env = {}, argv){ 
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({
+                // 
+            })
+        }, 5000)
+    })
+}
+```
+#### 2.9.3 导出多份配置
+除了只导出一份配置，Webpack还支持导出一个数组，数组中可以包含每份配置，并且每份配置都会执行一遍构建。  
+> 注意，Webpack从3.1.0版本才开始支持该特性
+
+使用如下：
+```js
+module.exports = [
+    // 采用Object描述的一份配置
+    {
+        // ...
+    },
+    // 采用函数描述的一份配置
+    {
+        function(){
+            return {
+                // ...
+            }
+        },
+    },
+    // 采用异步函数描述的一份配置
+    function(){
+        return Promise();
+    }
+]
+```
+以上配置会导致Webpack针对这三份配置执行三次不同的构建。    
+
+### 2.10 总结
+通常我们可用如下经验去判断如何配置Webpack：
+- 若想让源文件加入构建流程中被Webpack控制，则配置entry;
+- 若想自定义输出文件的位置和名称，则配置output
+- 若想自定义寻找依赖模块时的策略，则配置resolve;
+- 若想自定义解析和转换文件的策略，则配置module，通常是配置module.rules里的Loader;
+- 若其它大部分需求可能通过Plugin去实现，则配置plugin。
+
+
+
+
+
+
+
 
