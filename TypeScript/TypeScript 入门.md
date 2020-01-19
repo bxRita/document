@@ -2,7 +2,7 @@
 TypeScript是一种由微软开发的自由和开源编程语言。它是JavaScript的一个超级，而且本质上向这个语言添加了可选的静态类型和基于类的面向对象编程。     
 
 ### 为什么选择TypeScript
-![TypeScript 官网](http://www.typescriptlang.org/)
+[TypeScript 官网](http://www.typescriptlang.org/)
 - TypeScript 增加了代码的可读性和可维护性
     + 类型系统实际上是最好的文档，大部分的函数看看类型的定义就知道如何使用了
     + 可以在编译阶段就发现大部分错误，这总比在运行时出错好
@@ -90,7 +90,7 @@ var user = [0, 1, 2];
 console.log(sayHello(user));
 ```
 **TypeScript编译的时候即使报错了，还是会生成编译结果**，我们仍然可以使用这个编译之后的文件。   
-如果要在报错的时候终止js文件的生成，可以在tsconfig.json中配置noEmitOnError即可。关于tsconfig.json，请参阅![官方手册](https://zhongsp.gitbooks.io/typescript-handbook/content/doc/handbook/tsconfig.json.html)
+如果要在报错的时候终止js文件的生成，可以在tsconfig.json中配置noEmitOnError即可。关于tsconfig.json，请参阅[官方手册](https://zhongsp.gitbooks.io/typescript-handbook/content/doc/handbook/tsconfig.json.html)
 
 ## 基础
 本部分介绍了TypeScript中常用类型和一些基本概念，旨在让大家对TypeScript有个初步的理解。具体内容包括：
@@ -168,7 +168,7 @@ var notANumber = NaN;
 var infinityNumber = Infinity;
 
 ```
-其中 0b1010 和 0o744 是 ![ES6 中的二进制和八进制表示法](http://es6.ruanyifeng.com/#docs/number#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%92%8C%E5%85%AB%E8%BF%9B%E5%88%B6%E8%A1%A8%E7%A4%BA%E6%B3%95)，它们会被编译为十进制数字。   
+其中 0b1010 和 0o744 是 [ES6 中的二进制和八进制表示法](http://es6.ruanyifeng.com/#docs/number#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%92%8C%E5%85%AB%E8%BF%9B%E5%88%B6%E8%A1%A8%E7%A4%BA%E6%B3%95)，它们会被编译为十进制数字。   
 
 #### 字符串
 使用 string 定义字符串类型(demo/test-1.ts)：
@@ -188,7 +188,7 @@ var myAge = 25;
 var sentence = "Hello, my name is " + myName + ".\nI'll be " + (myAge + 1) + " years old next month.";
 
 ```
-其中 ` 用来定义 ![ES6 中的模板字符串](http://es6.ruanyifeng.com/#docs/string#%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2)，${expr} 用来在模板字符串中嵌入表达式。    
+其中 ` 用来定义 [ES6 中的模板字符串](http://es6.ruanyifeng.com/#docs/string#%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2)，${expr} 用来在模板字符串中嵌入表达式。    
 
 #### 空值
 JavaScript 没有空值（Void）的概念，在 TypeScript 中，可以用 void 表示没有任何返回值的函数(demo/test-2.ts)：
@@ -585,4 +585,4 @@ function sum() {
 // Type 'IArguments' is missing the following properties from type 'number[]': pop, push, concat, join, and 24 more.
 ```
 
-![URL](https://ts.xcatliu.com/basics/type-of-array)
+[URL](https://ts.xcatliu.com/basics/type-of-array)
