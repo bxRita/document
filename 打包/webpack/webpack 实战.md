@@ -4,7 +4,7 @@ ECMAScript 6.0是2015年发布的下一代JavaScript语言标准，它引入了�
 - 为新的API注入polyfill，例如使用新的fetch API时在注入对应的polyfill 后才能让低端浏览器正常运行
 
 ### 3.1.1 认识Babel
-Babel可以方便地完成以上两件事。Babel时一个JavaScript编译器，能将ES6代码转为ES5代码，让我们使用最新的语言特性而不用担心兼容性问题，并且可以通过插件机制根据需求灵活的扩展。在Babel执行编译的过程中，会从项目根目录下的.babelrc文件中读取配置。.babelrc时一个JSON格式的文件，内容大致如下：
+Babel可以方便地完成以上两件事。Babel是一个JavaScript编译器，能将ES6代码转为ES5代码，让我们使用最新的语言特性而不用担心兼容性问题，并且可以通过插件机制根据需求灵活的扩展。在Babel执行编译的过程中，会从项目根目录下的.babelrc文件中读取配置。.babelrc时一个JSON格式的文件，内容大致如下：
 ```json
 {
     "plugins":[
@@ -34,7 +34,7 @@ plugins属性告诉Babel要使用哪些插件，这些插件可以控制如何�
 ```
 npm i -D babel-plugin-transform-runtime
 ```
-babel-plugin-transform-runtime 时Babel官方提供的一个插件，作用是减少冗余代码。Babel在将ES6代码转换成ES5代码时，通常需要一些由ES5编写的辅助函数来完成新语法的实现，例如在转换class extent语法时会在转换后的ES5代码里注入_extent辅助函数用于实现继承：
+babel-plugin-transform-runtime 是Babel官方提供的一个插件，作用是减少冗余代码。Babel在将ES6代码转换成ES5代码时，通常需要一些由ES5编写的辅助函数来完成新语法的实现，例如在转换class extent语法时会在转换后的ES5代码里注入_extent辅助函数用于实现继承：
 ```js
 function _extent(target) {
     for(var i =1; i < arguments.length; i++>) {
@@ -98,6 +98,178 @@ npm i -D babel-preset-env
 ### 3.2 使用TypeScript语言
 TypeScript 是JavaScript的一个超集，主要提供了类型检查系统和ES6语法支持，但不支持新的API。目前没有任何环境支持运行原生的TypeScript代码，必须通过构建将它转换成JavaScript代码后才能运行。    
 
-P84
+下面改造一下前面用过的例子,用TypeScript 重写JavaScript。
+```typescript
+// show.ts
+export function show(content: string) {
+    window.document.getElementById('app').innerText = `Hell0, ${content}`
+}
+//main.ts
+import {show} from './show.ts'
+
+// 执行show 函数
+show ('Webpack');
+```
+TypeScript官方提供了能将TypeScript转换成JavaScript的编译器。我们需要在当前项目的根目录下新建一个用于配置编译选项的tsconfig.json文件，编译器默认会读取和使用这个文件，配置文件的内容如下：
+```json
+{
+    "compilerOptions": {
+        "importHelpers": true,// 为了不让同样的辅助函数重复出现在多个文件中，可以开启Typescript编译器的importHelpers选项
+        "module": "commonjs", // 编译出的代码采用的模块规范
+        "target": "es5", // 编译出的代码采用ES的哪个版本
+        "sourceMap": true // 输出SourceMap 以方便调试 
+    },
+    "exclude": [// 不编译这些目录里的文件
+        "node_modules"
+    ]
+}
+```
+通过npm install -g typescript 安装编译器到全局后，可以通过tsc hello.ts命令编译出hello.js 和hello.js.map文件。
+
+#### 3.2.3 集成webpack
+要让Webpack支持TypeScript，需要解决以下两个问题。
+- 通过Loader将TypeScript转换成JavaScript
+- Webpack在寻找模块对应的文件时需要尝试ts后缀
+
+对于问题1，社区已经出现了几个可用的Loader，推荐速度更快的awesome-typescript-loader。对于问题2，我们需要修改默认的resolve.extensions配置项。   
+综上所述，相关的Webpack配置如下：
+```js
+const path = require('path');
+module.exports = {
+   //Javascript 执行的入口
+   entry: "./main",
+   mode: "development",
+   output: {
+    // 将所有依赖的模块合并输出到一个bundle.js 文件中
+     filename: "bundle.js",
+     path: path.resolve(__dirname, "./dist") // 将输出文件都放到dist 目录下
+   },
+    resolve: {
+        // 先尝试以ts为后缀的typeScript源码文件
+        extensions: ['.ts','.js']
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                loader: 'awesome-typescript-loader'
+            }
+        ]
+    },
+    devtool: 'source-map' // 输出sourcemap以方便在浏览器里调试typeScript代码
+}
+```
+在运行构建前需要安装上面用到的依赖：
+```
+npm i -D typescript awesome-typescript-loader
+```
+
+### 3.3 使用Flow检查器
+
+
+### 3.9 为单页应用生成HTML
+> hello,webpack这个例子是因为只输出了一个bundle.js文件，所以手写了一个index.html文件去引入这个bundle.js才能在浏览器中运行起来。问题：如何自动化地生成这个符合要求的index.html
+
+#### 3.9.3 解决方案
+这里推荐一个用于方便解决以上问题的webpack插件web-webpack-plugin。该插件已经被社区中的许多人使用和验证，解决了大家的痛点并获得很多好评。   
+修改webpack配置如下：
+```js
+const path = require('path');
+const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const DefinePlugin = require ('webpack/lib/DefinePlugin');
+const { WebPlugin } =require ('web-webpack-plugin') ；
+module.exports = {
+    entry: {
+        app: './main.js' // app的JavaScript执行入口文件
+    },
+    output: {
+        filename :'[name]_[chunkhash:8].js'， // 为输出的文件名称加上Hash 值
+        path: path.resolve (__dirname,'./dist'),
+    },
+    module: {
+        rules: [
+            {
+                test : /\.js$/ ,
+                use: ['babel-loader'] ,
+                //排除nodemodules 目录下的文件，
+                //该目录下的文件都采用了ESS 语法，没必要再通过Babel 转换
+                exclude : path.resolve( dirname , 'node_modules') ,
+            },
+            {
+                test: /\.css/, //增加对css 文件的支持
+                //提取出Chunk 中的css 代码到单独的文件中
+                use: ExtractTextPlugin.extract({
+                    use:［'css-loader?minimize'］ //压缩css 代码
+                })
+            }
+        ]
+    },
+    plugins: [
+        //使用本文的主角WebPlugin ， 一个WebPlugin 对应一个HTML 文件
+        new WebPlugin ({
+            template : './template.html', //HTML 模板文件所在的文件路径
+            filename : 'index.html' // 输出的HTML 的文件名称
+        }),
+        new ExtractTextPlugin({
+            filename: `[name]_[contenthash:8].css`, // 为输出css文件名称加上hash值
+        }),
+        new DefinePlugin({
+            // 定义NODE_ENV环境变量为production，以去除源码中只有开发时才需要的部分
+            'process.env': {
+                NODE_ENV: JSON.stringify('production')
+            }
+        }),
+        new UglifyJsPlugin({
+            // 最紧凑的输出
+            beautify: false,
+            //删除所有注释
+            comments: false,
+            compress: {
+                // 在UglifyJs删除没有用到的代码时不输出警告
+                warnings: false,
+                // 删除所有console语句，可以兼容IE浏览器
+                drop_console: true,
+                //内嵌已定义但是只用到了一次的变量
+                collapse_vars: true,
+                // 提取出出现多次但是没有定义变量去引用的静态值
+                reduce_vars: true
+            }
+        })
+    ]
+}
+```
+以上大多数配置都是按照前面讲过的内容增加的配置，例如：
+- 增加对css文件的支持，将Chunk中的CSS代码提取到单独的文件中，压缩CSS文件
+- 定义NODE_ENV环境变量为production，以去除源码中只有开发时才需要的部分
+- 为输出的文件名称加上Hash值
+- 压缩输出的JavaScript代码
+
+但核心部分在于plugins里的内容：
+```js
+new WebPlugin ({
+    template : './template.html', //HTML 模板文件所在的文件路径
+    filename : 'index.html' // 输出的HTML 的文件名称
+}),
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

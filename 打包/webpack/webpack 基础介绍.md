@@ -1,7 +1,7 @@
 ### 入门介绍
 #### 为什么选择webpack
 - 大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“ 模块
-化＋新语言＋新框架” ， Webpack 可以为这些新项目提供一站式的解决方案：
+化＋新语言＋新框架” ， Webpack 可以为这些新项目提供一站式的解决方案;
 - Webpack 有良好的生态链和维护团队，能提供良好的开发体验并保证质量；
 - Webpack 被全世界大量的Web 开发者使用和验证，能找到各个层面所需的教程和经验分享。
 
@@ -21,7 +21,7 @@ npm i -D webpack@<version>
 npm i -D webpack@beta
 
 安装完成后，我们可以通过以下途径运行安装到本项目的Webpack:
-- 在项目根目录下对应的命令行里通过node rnodules/.bin/webpack 运行Webpack 的可执行文件。
+- 在项目根目录下对应的命令行里通过node modules/.bin/webpack 运行Webpack 的可执行文件。
 -  在Npm Script 里定义的任务会优先使用本项目下的Webpack，代码如下：
 ```
 "scripts":{"build":"webpack --config webpack.config.js"}
