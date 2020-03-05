@@ -285,24 +285,330 @@ new WebPlugin ({
 - _ie: 只有在IE浏览器下才需要引入该资源，通过`[if IE]>resource<![endif]`注释实现。    
 这些属性之间可以搭配使用，互不冲突。例如app?_inline&_dist表示只在生产环境才引入该资源，并且需要内嵌到HTML里。     
 
-### 3.10 管理多个单页应用
+### 3.13 构建NPM模块
+#### 3.13.1 认识NPM
+Npm (https://www.npmjs.com ）是目前最大的JavaScript 模块仓库，里面有全世界的开发者上传的可复用模块。虽然在大多数情况下我们都是这些开放模块的使用者，但我们也许会成为贡献者，会开发一个模块上传到Npm 仓库。     
+发布到Npm 仓库的模块有以下几个特点。
++ 在每个模块根目录下都必须有一个描述该模块的package.json 文件。该文件描述了模块的入口文件是哪个，该模块又依赖哪些模块等。若想深入了解，则可以阅读package.json 文件（ http://javascript.ruanyifeng.com/nodejs/packagejson.html ） 。
+
++ 模块中的文件以JavaScript 文件为主，但不限于JavaScript 文件。例如一个UI组件可能同时需要JavaScript 、css 、图片文件等。
+
++ 模块中的代码大多采用模块化规范，因为我们的某个模块可能依赖其他模块，而别的模块又可能依赖我们的这个模块。目前支持比较广泛的是CommonJS 模块化规范，上传到Npm 仓库的代码最好遵守该规范。
+
+#### 3.13.2 抛出问题
+Webpack 不仅用于构建可运行的应用，也用于构建可上传到T句m 的模块。接下来讲解如何用Webpack 构建一个可上传到N pm 仓库的React 组件，具体要求如下。    
+* 源代码采用ES6 编写，但发布到Npm 仓库时需要转换成ES5 代码，并且遵守CommonJS 模块化规范。如果发布到Npm 上的ES5 代码是经过转换的，则请同时提供Source Map 以方便调试。
+* 该UI 组件依赖的其他资源文件如css 文件也需要包含在发布的模块里。
+* 尽量减少冗余代码，减少发布出去的组件的代码文件大小。
+* 在发布出去的组件的代码中不能含有其依赖的模块的代码，而是让用户可选择性地安装。例如不能内嵌React 库的代码，这样做的目的是，在其他组件也依赖React库时，防止React 库的代码被重复打包。
+
+在开始前先看看最终发布到N pm 仓库的模块的目录结构：
+```
+node_modules/hello-webpack
+|--lib
+|   |--index.css(组件所有依赖的CSS都在这个文件中)
+|   |--index.css.map
+|   |--index.js(组件所有依赖的CSS都在这个文件中)
+|   |--index.js.map
+|--src(ES6 源码)
+|   |--index.css
+|   |--index.js
+|--package.json(模块描述文件)
+```
+src/index.js 文件中，内容如下：
+```js
+import React , { Component } from "react";
+import "./index.css";
+// 导出该组件以供其他模块使用
+export default class HelloWebpack extends Component {
+    render () {
+        return <hl className="hello-component">Hello,Webpack</hl>
+    }
+}
+```
+使用该模块时只需要这样做
+```js
+// 通过ES6语法导入
+import HelloWebpack from './hello-webpack'
+import 'hello-webpack/lib/index.css';
+
+// 通过ES5语法导入
+var  HelloWebpack =require('./hello-webpack') 
+require('hello-webpack/lib/index.css');
+
+//  使用react-dom渲染
+render(<HelloWebpack />);
+```
+#### 3.13.2 使用Webpack 构建Npm模块
+接下来用Webpack一条一条地对应上面所抛出的4点要求：
+1) 对于要求1，可以这样
+- 使用babel-loader将ES6代码转换成ES5代码
+- 通过开启devtool: 'source-map'输出Source Map以发布调试。
+- 设置output.libraryTarget = 'commonjs2'，使输出的代码符合CommonJS2模块化规范，以供其它模块导入使用。
+
+相关的Webpack配置代码如下：
+```js
+module.exports = {
+    output: {
+        //输出的代码符合Common JS 模块化规范，以供其他模块导入使用。
+        libraryTarget:'commonjs2',
+    },
+    // 输出Source Map
+    devtool: 'source-map'
+}
+```
+
+2) 对于要求2，需要通过css-loader 和extract祀xt-webpack-plugin 实现，相关的Webpack配置代码如下：
+```js
+const ExtractTextPlugin = require ('extract-text-webpack-plugin');
+module.exports = {
+    module: {
+        rules: [
+            {
+                // 增加对CSS文件的支持
+                test: /\.css/,
+                use: ExtractTextPlugin.extract({
+                    use: ['css-loader']
+                })
+            }
+        ]
+    },
+    plugins: [
+        new ExtractTextPlugin({
+            // 输出的css文件名称
+            filename: 'index.css'
+        })
+    ]
+}
+```
+此步引入了3个依赖：
+# 安装Webpack 构建所需要的新依赖
+```
+npm i -D style-loader css-loader extract-text-webpack-plugin
+```
+3) 对于要求3 ，需要注意的是Babel 在将ES6 代码转换成ES5 代码时会注入一些辅助函数。    
+修改.babelrc文件，为其加入transform-runtime插件：   
+```json
+{
+    "plugins": [
+        [
+            "transform-runtime",
+            {
+                // transform-runtime 默认会自动为我们使用的ES6 API 注入polyfill
+                // 假如在源码中使用了Promise ，则输出的代码将会自动注入 require ('babel-runtimelcore- jslPromise') 语句
+                // polyfill 的注入应该交给模块使用者，因为使用者可能在其他地方注入了其他Promise polyfill 库
+                // 所以关闭该功能
+                "polyfill": false
+            }
+        ]
+    ]
+}
+```
+4)  对于要求4 ，需要通过在2.7 节介绍过的Externals 实现。
+Externals 用来告诉在Webpack 要构建的代码中使用了哪些不用被打包的模块，也就是说这些模板是外部环境提供的， Webpack 在打包时可以忽略它们。    
+相关的Webpack 配置代码如下：   
+```js
+module.exports = {
+    // 通过正则命中所有以react 或者babel-runtime 开头的模块
+    // 这些模块通过注册在运行环境中的全局变量访问，不用被重复打包进输出的代码里
+    externals: /^(react|babel-runtime)/,
+}
+```
+开启以上配置后，在输出的代码中会存在导入react 或者babel-runtime 模块的代码，但是它们的react 或者babel-runtime 的内容不会被包含进去    
+
+webpack 完整配置如下：
+```js
+const path = require("path");
+const ExtractTextPlugin = require ('extract-text-webpack-plugin');
+
+module.exports = {
+    //Javascript 执行的入口
+  entry: "./src/index.js",
+  mode: "development",
+  output: {
+    // 输出文件的名称
+    filename: "index.js",
+    // 输出文件存放目录
+    path: path.resolve(__dirname, "./lib"),
+    // 将输出文件都放到dist 目录下
+    libraryTarget: 'commonjs2'
+  },
+  // 通过正则命中所有以rea ct 或者babel- runtime 开头的模块，
+  // ／这些模块通过注册在运行环境中的全局变量访问，不能被打包进输出的代码里，防止它们出现多次。
+  externals: /^(react|babel-runtime)/,
+  module: {
+      rules: [
+          {
+              test: /\.js$/,
+              use: ['babel-loader'],
+              // 排除node_modules 目录下的文件，
+              // node_modules 目录下的文件都采用了ES5 语法，没必要再通过Babel 转换。
+              exclude: path.resolve(__dirname, 'node_modules')
+          },{
+            // 增加对css文件的支持
+            test: /\.css/,
+            // 提取Chunk 中的css 代码到单独的文件中
+            use: ExtractTextPlugin.extract({
+              use: ['css-loader']
+            })
+          }
+      ]
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      // 输出css文件名称
+      filename: 'index.css'
+    })
+  ],
+  // 输出sourceMap
+  devtool: 'source-map'
+};
+```
+
+### 3.15 搭配NPM script
+Npm script 使一个任务执行者。Npm 是在安装Node.js时附带的包管理器， Npm Script 则是Npm 内置的一个功能，允许在package.json 文件里使用scripts 宇段定义任务：
+```json
+"scripts": {
+    "dev":"node dev.js",
+    "pub":"node build.js"
+}
+```
+以上代码中的scripts 字段是一个对象，每个属性对应一段脚本，以上代码定义了两个任务dev 和pub 。Npm Script 的底层实现原理是通过调用Shell 去运行脚本命令， 例如执行`npm run pub `命令等同于执行`node build.js` 命令。    
+Npm Script 还有一个重要的功能，是能运行安装到项目目录的node_modules 里的可执行模块，例如在通过命令：
+```
+npm i -D webpack
+```
+将Webpack 安装到项目中后，是无法直接在项目根目录下通过命令webpack 去执行Webpack构建的，而是要通过如下命令去执行：   
+```
+./node_modules/.bin/webpack
+```
+Npm Script 能方便地解决这个问题，只需要在scripts 字段里定义一个任务，例如：
+```json
+{
+   "scripts": {
+        "build":"webpack"
+    } 
+}
+```
+Npm Script 会先去项目目录下的node_modules 中寻找有没有可执行的webpack 文件，如果有就使用本地的，如果没有就使用全局的。所以现在执行Webpack 构建时，只需要通过执行npm run build 实现。    
+
+#### 3.15.2 NPM 为什么需要Npm script
+Webpack 只是一个打包模块化代码的工具，并没有提供任何任务管理相关的功能。但在实际场景中通常不会是只通过执行webpack 就能完成所有任务的， 而是需要多个任务才能完成。
+举一个常见的例子，要求如下。
+-  在开发阶段为了提高开发体验，使用DevServer 做开发，并且需要输出Source Map以方便调试，同时需要开启自动刷新功能。
+-  为了减小发布到线上的代码尺寸，在构建出发布到线上的代码时， 需要压缩输出的代码。
+-  在构建完发布到线上的代码后，需要将构建出的代码提交给发布系统。
+
+可以看出要求1 和要求2 是相互冲突的， 其中要求3 又依赖要求2 。要满足以上三个要求，需要定义三个不同的任务。
+
+接下来通过Npm Script 定义上面的3 个要求：
+```json
+{
+   "scripts": {
+        "dev":"webpack-dev-server --open",
+        "dist":"NODE_ENV=production webpack --config webpack_dist.config.j s",
+        "pub":"npm run dist && rsync dist"
+    } 
+}
+```
+含义分别如下。
+- dev 代表用于开发时执行的任务， 通过DevServer 启动构建。所以在开发项目时只需执行npm run dev
+- dist 代表构建出用于发布到线上的代码，输出到dist 目录中。其中的NODE_ENV=production 用于在运行任务时注入环境变量。
+- pub 代表先构建出用于发布到线上的代码，再同步dist 目录中的文件到发布系统（如何同步文件，则需根据我们所使用的发布系统而定〉，所以在开发完成后需要发布时只需执行npm run pub 。
+
+> 使用Npm Script 的好处是将一连串复杂的流程简化成了一个简单的命令，在需要时只需执行对应的简短命令，而不用手动重复整个流程。这会大大提高我们的效率并降低出错率。
+
+### 3.16 代码检查
+#### 3.16.1 代码检查具体是做什么的
+检查代码和Code Review 很相似，都是审视提交的代码可能存在的问题。但Code Review一般由人执行，而检查代码是通过机器执行一些自动化的检查。自动化地检查代码的成本更低，实施代价更小。   
+
+检查代码时主要检查以下几项。
+- 代码风格：让项目成员强制遵守统一的代码风格，例如如何缩紧、如何写注释等，保障代码的可读性，不将时间浪费在争论如何使代码更好看上。
+
+- 潜在问题： 分析代码在运行过程中可能出现的潜在Bug 。
+
+目前己经有成熟的工具可以检验诸如JavaScript 、Type Script 、css 、scss 等常用语言。    
+
+#### 3.16.2 怎么做代码检查
+**1.检查JavaScript**
+目前最常用的JavaScript 检查工具是ESlint（https: //eslint.org ），它不仅内置了大量的常用检查规则，还可以通过插件机制做到灵活扩展。     
+ES lint 的使用很简单，在通过：
+```
+npm i -g eslint
+```
+安装到全局后，再在项目目录下执行：
+```
+eslint init
+```
+来新建一个ES lint 配置文件.eslintrc ，该文件的格式为JSON 。   
+如果想覆盖默认的检查规则，或者想加入新的检查规则，则需要修改该文件，例如使用以下配置：
+```json
+{
+  // 从eslint :recommended 中继承所有检查规则
+  "extends":"eslint:recommended",
+  // 再自定义一些规则
+  "rules": {
+      // 需要在每行结尾加；
+      "semi":["error","always"],
+      // 需要使用"" 包裹字符串
+      "quotes":["error", "double"]
+  }  
+}
+```
+写好配置文件后，再执行
+```
+eslint yourfile.js
+```
+
+去检查yourfile.js 文件，如果我们的文件没有通过检查，则ESlint 会输出出错的原因
+
+#### 3.16.3 结合webpack检查代码
+以上介绍的代码检查工具可以和Webpack 结合，在开发过程中通过Webpack 输出实时的检查结果。
+
+**1. 结合ESlint**
+eslint-loader ( https://github.com/MoOx/eslint-loader ）可以方便地将ESLint 整合到Webpack 中，使用方法如下：
+```js
+module.exports = {
+    module: {
+        rules: [
+            test: /\.js/,
+            // 不用检查node_modules 目录下的代码
+            include: /node modules/,
+            loader :'eslint-loader',
+            // 将eslint-loader 的执行顺序放在最前面，防止其他Loader 将处理后的代码交给eslint-loader 去检查
+            enforce : 'pre'
+        ]
+    }
+}
+```
+接入eslint-loader 后，就能在控制台中看到ESLint 输出的错误日志了。
+
+**4.一些建议**
+将代码检查功能整合到Webpack 中会导致以下问题：
+- 由于执行检查步骤的计算量大，所以整合到Webpack 中会导致构建变慢：
+- 在整合代码检查到Webpack 后，输出的错误信息是通过行号来定位错误的，没有编辑器集成显示错误直观。
+
+为了避免以上问题，还可以这样做：
+- 使用集成了代码检查功能的编辑器，让编辑器实时、直观地显示错误：
+- 将代码检查步骤放到代码提交时，也就是说在代码提交前调用以上检查工具去检查代码，只有在检查都通过时才提交代码，这样就能保证提交到仓库的代码都通过了检查。
+
+如果我们的项目是使用Git 管理的， 则Git 提供了Hook 功能做到在提交代码前触发执行脚本。
+
+husky ( https://github.com/typicode/husky ）可以方便、快速地为项目接入Git Hook ，执行npm i -D husky 安装husky 时， husky 会通过Npm Script Hook 自动配置好Git Hook,我们需要做的只是在package.json 文件中定义几个脚本，方法如下：
+
+```json
+{
+   "scripts": {
+       // 在执行git commit 前会执行的脚本
+        "precommit":"npm run lint",
+        // 在执行git push 前会执行的脚本
+        "prepush":"lint",
+        // 调用es lint 、stylelint 等工具检查代码
+        "lint":"eslint && stylelint"
+    }
+}
+```
+我们需要根据自己的情况选择设置precommit 和prepush 中的一个，无须对两个都设置。    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 3.17 通过Node.js API 启动webpack

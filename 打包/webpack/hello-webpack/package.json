@@ -1,0 +1,16 @@
+{
+  "name": "hello-webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "jsnext:main":"src/index.js", // 用于指出采用ES6编写的模块入口文件所在位置
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "react": "^16.13.0"
+  }
+}
