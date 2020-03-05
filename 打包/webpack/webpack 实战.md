@@ -252,7 +252,40 @@ new WebPlugin ({
     filename : 'index.html' // 输出的HTML 的文件名称
 }),
 ```
+其中template: `./template.html`所指的模板文件内容是：
+```html
+<html>
+<head >
+<meta charset="UTF-8">
+<!--注入Chunk app 中的css 代码-->
+<link rel="stylesheet" href="app?_inline">
+<!--二注入google_analytics 中的JavaScript 代码-->
+<script src="./google_analytics.js?_inline"></script>
+<!--异步加载Disqus 评论-->
+<script src ="https://dive-into-webpack.disqus.com/embed.js"async></script>
+</head>
+<body>
+<div id="app"></div>
+<!--导入Chunk app 中的JavaScript 代码-->
+<script src="app"></script>
+<!--Disqus 评论容器-->
+<div id="disqus thread"></div>
+</body>
+</html>
+```
+该文件描述了哪些资源需要被以哪种方式加入到输出的HTML文件中。    
+以`<link rel="stylesheet" href="app?_inline">`为例，按照正常引入css文件一样的语法来引入Webpack 生产的代码。href 属性中的app?_inline 可以分为两部分，前面的app 表示css 代码来自名叫app 的Chunk ，后面的_inline 表示这些代码需要被内嵌到这个标签所在的位置。     
 
+同样，`<script src="./google_analytics.js?_inline"></script>`表示JavaScript 代码来自相对于当前模板文件template.html 的本地文件./google_ analytics.js ，而且文件中的JavaScript 代码也需要被内嵌到这个标签所在的位置。
+
+也就是说，在资源链接URL 字符串里问号前面的部分表示资源内容来自哪里，后面的querystring 表示这些资源注入的方式。     
+该插件除了支持inline 属性，表示内嵌资源到HTML 中，还支持以下属性。
+- _dist: 只有在生产环境下才引入该资源
+- _dev: 只有在开发环境下才引入该资源
+- _ie: 只有在IE浏览器下才需要引入该资源，通过`[if IE]>resource<![endif]`注释实现。    
+这些属性之间可以搭配使用，互不冲突。例如app?_inline&_dist表示只在生产环境才引入该资源，并且需要内嵌到HTML里。     
+
+### 3.10 管理多个单页应用
 
 
 
