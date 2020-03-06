@@ -13,7 +13,7 @@ module.exports = {
     // 将输出文件都放到dist 目录下
     libraryTarget: 'commonjs2'
   },
-  // 通过正则命中所有以rea ct 或者babel- runtime 开头的模块，
+  // 通过正则命中所有以react 或者babel-runtime 开头的模块，
   // ／这些模块通过注册在运行环境中的全局变量访问，不能被打包进输出的代码里，防止它们出现多次。
   externals: /^(react|babel-runtime)/,
   module: {

@@ -156,7 +156,7 @@ module.exports = {
             }
         ]
     },
-    devtool: 'source-map' // 输出sourcemap以方便在浏览器里调试typeScript代码
+    devtool: 'source-map'// 输出sourcemap以方便在浏览器里调试typeScript代码
 }
 ```
 在运行构建前需要安装上面用到的依赖：
@@ -181,7 +181,7 @@ const DefinePlugin = require ('webpack/lib/DefinePlugin');
 const { WebPlugin } =require ('web-webpack-plugin') ；
 module.exports = {
     entry: {
-        app: './main.js' // app的JavaScript执行入口文件
+        app: './main.js'// app的JavaScript执行入口文件
     },
     output: {
         filename :'[name]_[chunkhash:8].js'， // 为输出的文件名称加上Hash 值
@@ -209,7 +209,7 @@ module.exports = {
         //使用本文的主角WebPlugin ， 一个WebPlugin 对应一个HTML 文件
         new WebPlugin ({
             template : './template.html', //HTML 模板文件所在的文件路径
-            filename : 'index.html' // 输出的HTML 的文件名称
+            filename : 'index.html'// 输出的HTML 的文件名称
         }),
         new ExtractTextPlugin({
             filename: `[name]_[contenthash:8].css`, // 为输出css文件名称加上hash值
@@ -249,7 +249,7 @@ module.exports = {
 ```js
 new WebPlugin ({
     template : './template.html', //HTML 模板文件所在的文件路径
-    filename : 'index.html' // 输出的HTML 的文件名称
+    filename : 'index.html'// 输出的HTML 的文件名称
 }),
 ```
 其中template: `./template.html`所指的模板文件内容是：
@@ -289,7 +289,7 @@ new WebPlugin ({
 #### 3.13.1 认识NPM
 Npm (https://www.npmjs.com ）是目前最大的JavaScript 模块仓库，里面有全世界的开发者上传的可复用模块。虽然在大多数情况下我们都是这些开放模块的使用者，但我们也许会成为贡献者，会开发一个模块上传到Npm 仓库。     
 发布到Npm 仓库的模块有以下几个特点。
-+ 在每个模块根目录下都必须有一个描述该模块的package.json 文件。该文件描述了模块的入口文件是哪个，该模块又依赖哪些模块等。若想深入了解，则可以阅读package.json 文件（ http://javascript.ruanyifeng.com/nodejs/packagejson.html ） 。
++ 在每个模块根目录下都必须有一个描述该模块的package.json 文件。该文件描述了模块的入口文件是哪个，该模块又依赖哪些模块等。若想深入了解，则可以阅读package.json 文件(http://javascript.ruanyifeng.com/nodejs/packagejson.html ） 。
 
 + 模块中的文件以JavaScript 文件为主，但不限于JavaScript 文件。例如一个UI组件可能同时需要JavaScript 、css 、图片文件等。
 
@@ -382,7 +382,7 @@ module.exports = {
 }
 ```
 此步引入了3个依赖：
-# 安装Webpack 构建所需要的新依赖
+**安装Webpack 构建所需要的新依赖**
 ```
 npm i -D style-loader css-loader extract-text-webpack-plugin
 ```
@@ -612,3 +612,179 @@ husky ( https://github.com/typicode/husky ）可以方便、快速地为项目�
 
 
 ### 3.17 通过Node.js API 启动webpack
+#### 3.17.1 安装和使用Webpack模块
+在调用Webpack API前，需要先安装它：
+```
+npm i -D webpack
+```
+安装成功后，可以采用以下代码导入webpack模块：
+```js
+const webpack = require('webpack');
+
+// ES6语法
+import webpack from 'webpack';
+// 导出的webpack 其实是一个函数，使用方法如下：
+webpack({
+    // webpack 配置，和webpack.config.js 文件一致
+}, (err, starts) => {
+    if(err || starts.hasErrors()){
+        // 构建过程出错
+    }
+    // 成功执行完构建
+})
+```
+如果我们将Webpack配置写在webpack.config.js文件中，则可以这样使用：
+```js
+// 读取webpack.config.js 文件中的配置
+const config = require('./webpack.config.js');
+webpack(config, callback);
+```
+
+#### 3.17.2 以监听模式运行
+以上使用Webpack API的方法只能执行一次构建，无法以监听模式启动Webpack，为了使用API时以监听模式启动，则需要获取Compile实例，方法如下：
+```js
+// 如果不传callback 回调函数作为第2 个参数，就会返回一个Compiler 实例，用于控制启动， 而不是像上面那样立即启动
+const compiler = webpack(config);
+// 调用compiler.watch并以监听模式启动，返回的watching用以关闭监听
+const watching = compiler.watch({
+    //watchOptions
+    aggregateTimeout: 300,
+}, (err, stats) => {
+    // 每次因文件发生变化而重新执行完构建后
+})
+
+watching.close(()=>{
+    //在监听关闭后
+})
+```
+
+
+### 3.18 使用web pack Dev Middleware
+前面介绍过DevServer 是一个方便开发的小型HTTP服务器，DevServer其实是基于webpack-dev-middleware和Expressjs实现的，而webpack-dev-middleware其实是Expressjs的一个中间件。     
+也就是说， 实现DevServer基本功能的代码大致如下：
+```js
+const express = require('express');
+const webpack = require('webpack');
+const webpackMiddleware = require('webpack-dev-middleware');
+
+// 从webpack.config.js 文件中读取webpack配置
+const config = require('./webpack.config.js');
+// 实例化一个Expressjs app
+const app = express()
+
+// 用读取到的webpack 配置实例化一个compiler
+const compiler = webpack(config);
+// 为app 注册一个webpackMiddleware中间件
+app.use(webpackMiddleware(compile));
+// 启动HTTP服务器，服务器监听在3000 端口
+app.listen(3000)
+```
+从以上代码可以看出，从webpack-dev-middleware 中导出的webpackMiddleware是一个函数，该函数需要接收一个Compiler 实例。在3.17 节中曾提到， Webpack API 导出的webpack 函数会返回一个Compiler 实例。
+
+webpackMiddleware 函数的返回结果是一个Expressjs 的中间件，该中间件有以下功能。
+- 接收来自Webpack Compiler 实例输出的文件，但不会将文件输出到硬盘中，而会保存在内存中。
+- 在Expresjs app 上注册路由，拦截HTTP 收到的请求，根据请求路径响应对应的文件内容。
+
+通过webpack-dev-middleware 能够将DevServer 集成到现有的HTTP 服务器中，让现有的HTTP 服务器能返回Webpack 构建出的内容，而不是在开发时启动多个HTTP 服务器。这特别适用于后端接口服务采用Node.js 编写的项目。
+
+#### 3.18.1 Webpack Dev Middleware 支持的配置项
+在Node.js 中调用webpack-dev-middleware 提供的API 时，还可以向它传入一些配置项，方法如下：
+```js
+// webpackMiddleware 函数的第2 个参数为配置项
+app.use(webpackMiddleware(compiler , {
+    // 在webpack-dev-middleware 支持的所有配置项中
+    // 只有publicPath 属性为必填项，其他都是选填项
+
+    // Webpack 输出资源绑定HTTP 服务器上的根目录，
+    // 和Webpack 配置中的publicPath 含义一致
+    publicPath :'/assets/',
+    // 不输出info 类型的日志到控制台，只输出warn 和error 类型的日志
+    noinfo: false,
+    // 不输出任何类型的日志到控制台
+    quiet: false ,
+    // 切换到懒惰模式，这意味着不监听文件的变化，只会在有请求时再编译对应的文件，
+    // 这适合页面非常多的项目。
+    lazy: true,
+    // watchOptions
+    // 只在非懒惰模式下才有效
+    watchOptions: {
+        aggregateTimeout : 300 ,
+        poll : true
+        // 默认的URL 路径，默认是'index.html '
+        index :'index.html ',
+        //  自定义HTTP 头
+        headers: {'X-Custom-Header ':'yes'},
+        // 为特定后缀的文件添加HTTP mimeTypes ，作为文件类型映射表
+        mimeTypes: {'text/html ':['phtml']},
+        // 统计信息输出样式
+        stats: {
+            colors: true
+        },
+        // 自定义输出日志的展示方法
+        reporter: null,
+        // 开启或关闭服务端渲染
+        serverSideRender: false,
+    }
+))
+```
+#### 3.18.2 Webpack Dev Middleware 与模块热替换
+Dev Server 提供了一个便捷的功能，可以做到在监听到文件发生变化时自动替换网页中的老模块，以做到实时预览。DevServer 虽然是基于webpack-dev-middleware 实现的，但webpack-dev-middleware 井没有实现模块热替换功能，而DevServer 自己实现了该功能。     
+为了在使用webpack-dev-middleware 时也能使用模块热替换功能去提升开发效率，需要额外接入webpack-hot-middleware (https://github.com/glenjamin/webpack-hot-middleware）。需要做以下修改才能实现模块热替换。      
+第1步，修改webpack.config.js 文件，加入HotModuleReplacementPlugin插件，修改如下：   
+```js
+const HotModuleReplacementPlugin =require('webpack/lib/HotModuleReplacementPlugin');
+module.exports = {
+    entry: [
+        // 为了支持模块热替换，注入代理客户端
+        'webpack-hot-middleware/client',
+        // JavaScript 执行入口文件
+        './src/main.js'
+    ],
+    output: {
+        // 将所有依赖的模块合并输出到一个bundle.js 文件中
+        filename: 'bundle.js'
+    },
+    plugins: [
+        // 为了支持模块热替换，生成.hot-update.json 文件
+        new HotModuleReplacementPlugin(),
+    ],
+    devtool: 'source-map'
+}
+```
+该修改相当于完成了webpack-dev-server --hot 的工作。
+
+第2步，修改HTTP 服务器代码的server.js 文件，接入webpack-hot-middleware中间件，修改如下：
+```js
+const express = require ('express');
+const webpack = require('webpack');
+const webpackMiddleware = require ('webpack-dev-middleware ');
+// 从webpack.config.j s 文件中读取Webpack 配置
+const config =require ('./webpack.config.js');
+// 实例化一个Expressjs app
+const app = express ();
+// 用读取到的Webpack 配置实例化一个Compiler
+const compiler= webpack(config);
+// 为app 注册webpackMiddleware 中间件
+app.use(webpackMiddleware(compiler));
+// 为了支持模块热替换，响应用于替换老模块的资源
+app.use(require('webpack-hot-middleware') (compiler));
+// 将项目根目录作为静态资源目录，用于服务HTML 文件
+app.use(express.static('.'));
+// 启动HTTP 服务器，服务器监听在3000 端口
+app.listen(3000, () => {
+    console.info ('成功监听在3000'）；
+}) ;
+```
+第3 步，修改执行入口文件main.js ，加入替换逻辑，在文件末尾加入以下代码：
+```js
+if(module.hot){
+    module.hot.accept();
+}
+```
+第4 步，安装新引入的依赖：
+```
+npm i -D webpack-dev-middleware webpack-hot-middleware express
+```
+安装成功后，通过node ./server.js 就能启动一个类似于DevServer 的支持模块热替换的自定义HTTP 服务了。      
+
+[下一篇： webpack优化](./webpack 优化.md)
