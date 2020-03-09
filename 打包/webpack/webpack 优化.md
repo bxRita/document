@@ -439,8 +439,50 @@ new CommonsChunkPlugin({
 
 ### 4.12 分割代码以按需加载
 
+### 4.14 开启Scope Hoisting
+开启Scope Hoisting优点：
+- 代码体积更小，因为函数申明语句会产生大量的代码：
+- 代码在运行时因为创建的函数作用域变少了，所以内存开销也变小了。
+
+Scope Hoisting 的实现原理其实很简单：分析模块之间的依赖关系，尽可能将被打散的模块合并到一个函数中，但前提是不能造成代码元余。因此只有那些被引用了一次的模块才能被合井。        
+由于Scope Hoisting 需要分析模块之间的依赖关系，因此源码必须采用ES6 模块化语句，不然它将无法生效
+
+#### 4.14.2 使用Scope Hoisting
+在Web pack 中使用Scope Hoi s ting 非常简单，因为这是Webpack 内置的功能，只需要配置一个插件，相关代码如下：
+```js
+const ModuleConcatenationPlugin = require('webpack/lib/optimizi/ModuleConcatenationPlugin');
+module.exports = {
+    plugins: [
+        // 开启Scope Hoidting
+        new ModuleConcatenationPlugin()
+    ]
+}
+```
+同时，考虑到Scope Hoisting 依赖源码时需采用ES6 模块化语法，还需要配置mainFields 。因为大部分Npm 中的第三方库采用了CommonJS 语法，但部分库会同时提供ES6 模块化的代码，所以为了充分发挥Scope Hoisting 的作用，需要增加以下配置：
+```js
+module.exports = {
+    resolve: {
+        // 针对Npm 中的第三方模块优先采用jsnext:main 中指向的ES6 模块化语法的文件
+        main Fields: ['jsnext:main','browser','main']
+    }
+}
+```
+开启Scope Hoisting 并发挥最大作用的配置如下：
+```js
+const ModuleConcatenationPlugin = require('webpack/lib/optimizi/ModuleConcatenationPlugin');
+module.exports = {
+    resolve: {
+        // 针对Npm 中的第三方模块优先采用jsnext:main 中指向的ES6 模块化语法的文件
+        main Fields: ['jsnext:main','browser','main']
+    },
+    plugins: [
+        // 开启Scope Hoidting
+        new ModuleConcatenationPlugin()
+    ]
+}
+```
 
 
-P226
+
 
 
