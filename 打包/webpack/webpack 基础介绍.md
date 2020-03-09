@@ -12,40 +12,40 @@
 新建一个目录如：webpack-demo，cd webpack-demo ，进入项目根目录后执行npm init 来初始化工程，执行完后会生成一个package.json文件
 
 ##### 1.3.2 安装webpack到本项目
-npm i -D 是npm install --save-dev 的简写，是指安装模块并保存到package.json的devDependencies
-＃安装最新的稳定版
-npm i -D webpack
-＃安装指定版本
-npm i -D webpack@<version>
-＃安装最新的体验版本
-npm i -D webpack@beta
+npm i -D 是npm install --save-dev 的简写，是指安装模块并保存到package.json的devDependencies   
+＃安装最新的稳定版   
+npm i -D webpack  
+＃安装指定版本    
+npm i -D webpack@<version>   
+＃安装最新的体验版本    
+npm i -D webpack@beta    
 
-安装完成后，我们可以通过以下途径运行安装到本项目的Webpack:
+安装完成后，我们可以通过以下途径运行安装到本项目的Webpack:   
 - 在项目根目录下对应的命令行里通过node modules/.bin/webpack 运行Webpack 的可执行文件。
 -  在Npm Script 里定义的任务会优先使用本项目下的Webpack，代码如下：
 ```
 "scripts":{"build":"webpack --config webpack.config.js"}
 ```
-##### 1.3.2 安装Webpack 到全局
-安装到全局后，我们可以在任何地方共用一个Webpack 可执行文件，而不用各个项目重复安装，安装方式如下：
-npm i -g webpack
+##### 1.3.2 安装Webpack 到全局   
+安装到全局后，我们可以在任何地方共用一个Webpack 可执行文件，而不用各个项目重复安装，安装方式如下：    
+npm i -g webpack      
 虽然介绍了以上两种安装方式，但是我们**推荐安装到本项目**，原因是可防止不同的项目因依赖不同版本的Webpack 而导致冲突。
 
 ##### 1.3.2 使用Webpack
 运行构建前，先将要完成该功能的最基础的JavaScript 文件和HTML 建立好，目录结构如下：
+```
+|-- webpack-demo
 
-|── webpack-demo
+   |-- index.html
 
-   |── index.html
+   |-- main.js
 
-   |── main.js
+   |-- show.js
 
-   |── show.js
-
-   |──  package.json
+   |--  package.json
    
-   |──  webpack.config.js
-
+   |--  webpack.config.js
+```
 页面入口文件index.html 如下：
 // index.html
 ```html

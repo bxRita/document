@@ -18,11 +18,11 @@
 - 整体配置结构： 整体地描述各配置项的结构
 
 #### 2.1.2 Entry类型
-类型 | 例子 | 含义 |
-- | :-: | :-: |
-string | './app/entry' | ccc 
-array | ['./app/entry1', './app/entry2']| hhh 
-object | {a: './app/entry', b: ['./app/entry-b1','./app/entry-b2']}| hhh 
+| 类型 | 例子 | 含义 |
+| :------ | :------ |:------|
+string | './app/entry' | 入口模块的文件路径，可以是相对路径|  
+array | ['./app/entry1', './app/entry2']| 入口模块的文件路径，可以是相对路径 |
+object | {a: './app/entry', b: ['./app/entry-b1','./app/entry-b2']}| 配置多个入口，每个入口生成一个Chunk | 
 
 如果是array 类型，则搭配output.library 配置项使用时，只有数组里的最后一个入口文件的模块会被导出。
 
@@ -66,8 +66,8 @@ filename: 'bundle.js '
 filename :'[name].js'
 ```
 代码里的［name］代表用内置的name 变量去替换［name］，这时我们可以将它看作一个字符串模块函数，每个要输出的Chunk 都会通过这个函数去拼接出输出的文件名称。内置变量除了包括name ，还包括如表2-2 所示的变量。
-变量名 | 含义 | 
-- | :-: |
+| 变量名 | 含义 | 
+| :------ | :------ |
 id | Chunk 的唯一标识，从0开始 |
 name | Chunk 的名称|
 hash | Chunk 的唯一标识的Hash值|
