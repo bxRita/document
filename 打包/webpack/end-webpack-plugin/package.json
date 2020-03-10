@@ -1,0 +1,8 @@
+{
+    "name": "end-webpack-plugin",
+    "version": "4.0.0",
+    "description": "end hook after all webpack job is done",
+    "main": "index.js",
+    "author": "test",
+    "license": "ISC"
+  }
