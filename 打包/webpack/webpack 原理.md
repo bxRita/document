@@ -222,15 +222,15 @@ module.exports = function(source) {
 如果还采取以上方法去使用本地开发的Loader ，将会很麻烦，因为我们需要确保编写的Loader 的源码在node_modules 目录下。为此需要先将编写的Loader 发布到Npm 仓库， 再安装到本地项目中使用。        
 解决以上问题的便捷方法有如下两种。    
 
-**1.Npm link**
+**1.Npm link**     
 Npm link 专门用于开发和调试本地的Npm模块，能做到在不发布模块的情况下， 将本地的一个正在开发的模块的源码链接到项目的node_modules 目录下，让项目可以直接使用本地的Npm 模块。由于是通过软链接的方式实现的，编辑了本地的Npm 模块的代码，所以在项目中也能使用到编辑后的代码。    
 完成Npm link 的步骤如下：    
 * 确保正在开发的本地Npm 模块(也就是正在开发的Loader)的package.json 己经正确配置好：
 * 在本地的Npm 模块根目录下执行npm link ，将本地模块注册到全局：
 * 在项目根目录下执行npm link loader-name ，将第2 步注册到全局的本地Npm模块链接到项目的node_moduels 下，其中的loader-name 是指在第1 步的package.json 文件中配置的模块名称。
 
-**2.ResolveLoader**
-ResolveLoader 用于配置Webpack 如何寻找Loader ，它在默认情况下只会去node_modules 目录下寻找。为了让Webpack 加载放在本地项目中的Loader,需要修改resolveLoader.modules 。      
+**2.ResolveLoader**      
+ResolveLoader 用于配置Webpack 如何寻找Loader ，它在默认情况下只会去node_modules 目录下寻找。为了让Webpack 加载放在本地项目中的Loader,需要修改resolveLoader.modules 。         
 假如本地项目中的Loader 在项目目录的./loaders/loader-name 下， 则需要如下配置:
 ```js
 module.exports = {
@@ -245,7 +245,7 @@ module.exports = {
 案例参考： `./comment-require-loader`
 
 ### 5.4 编写Plugin       
-Webpack 通过Plugin 机制让其更灵活，以适应各种应用场景。在Webpack 运行的生命周期中会广播许多事件， Plugin 可以监听这些事件，在合适的时机通过Webpack 提供的API改变输出结果。      
+Webpack 通过Plugin 机制让其更灵活，以适应各种应用场景。在Webpack 运行的生命周期中会广播许多事件， Plugin 可以监听这些事件，在合适的时机通过Webpack 提供的API改变输出结果。         
 一个最基础的Plugin 的代码是这样的：
 ```js
 class BasicPlugin {
@@ -311,7 +311,7 @@ compiler.plugin('emit', function(compilation, callback){
 **1. 读取输出资源、代码块、模块及真依赖**     
 **2. 监听文件的变化**    
 **3. 修改输出资源**    
-在某些场景下插件需要修改、增加、删除输出的资源，要做到这一点， 则需要监听emit事件，因为发生emit 事件时所有模块的转换和代码块对应的文件已经生成好，需要输出的资源即将输出，因此emit 事件是修改Webpack 输出资源的最后时机。
-**4.判断Webpack 使用了哪些插件**    
+在某些场景下插件需要修改、增加、删除输出的资源，要做到这一点， 则需要监听emit事件，因为发生emit 事件时所有模块的转换和代码块对应的文件已经生成好，需要输出的资源即将输出，因此emit 事件是修改Webpack 输出资源的最后时机。      
+**4.判断Webpack 使用了哪些插件**     
 
 案例详见[EndWebpackPlugin](./end-webpack-plugin]
