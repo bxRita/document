@@ -114,7 +114,7 @@ SelectFilter.prototype.getModel = function() {
     filterType: this.filterType,
     type: 'equals'
   }
-  return model
+  return this.filterText ? model : null
 }
 
 SelectFilter.prototype.setModel = function(model) {

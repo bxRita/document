@@ -1,0 +1,178 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "eslint.autoFixOnSave": true,
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.gitlab": true,
+    "**/.gitattributes": true,
+    "**/.eslintignore": true,
+    "**/.eslintrc.js": true,
+    "**/.prettierignore": true,
+    "**/.prettierrc": true,
+    "**/.graphqlconfig.yml": true,
+    "**/.gitignore": true,
+    "**/.browserslistrc": true,
+    "**/.editorconfig": true,
+    "**/.*": false,
+    "babel.config.js": true,
+    "jsconfig.json": true,
+    "postcss.config.js": true,
+    "yarn.lock": false,
+    "LICENSE": true
+  },
+
+  "html.format.endWithNewline": true,
+  "html.format.indentHandlebars": true,
+  "html.format.indentInnerHtml": true,
+  "html.format.wrapAttributes": "force-aligned",
+
+  "less.lint.duplicateProperties": "warning",
+  "less.lint.idSelector": "warning",
+  "less.lint.zeroUnits": "warning",
+
+  "psi-header.variables": [
+    /* 以下注释掉的配置请放到vscode的用户设置里 */
+    /* ["author", "guo gang"],
+    ["initials", "guog"],
+    ["authoremail", "guog@live.cn"], */
+    ["projectname", "HolliEBR"]
+  ],
+  "psi-header.config": {
+    "forceToTop": true,
+    "blankLinesAfter": 1,
+    "license": "MIT"
+  },
+  "psi-header.changes-tracking": {
+    "isActive": true,
+    "autoHeader": "autoSave",
+    "include": ["vue", "js", "javascript", "less", "scss", "yml", "yaml"],
+    "exclude": ["markdown", "md", "gql", "graphql"],
+    "excludeGlob": ["dist/**"]
+  },
+  "psi-header.lang-config": [
+    {
+      "language": "html",
+      "begin": "<!--",
+      "end": "-->",
+      "prefix": "  "
+    },
+    {
+      "language": "javascript",
+      "begin": "/*",
+      "end": " */",
+      "prefix": " * "
+    },
+    {
+      "language": "yaml",
+      "begin": "#",
+      "end": "#",
+      "prefix": "# "
+    },
+    {
+      "language": "js",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "vue",
+      "mapTo": "html"
+    },
+    {
+      "language": "scss",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "less",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "ts",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "typescript",
+      "mapTo": "javascript"
+    },
+    {
+      "language": "yml",
+      "mapTo": "yaml"
+    },
+    {
+      "language": "dotenv",
+      "mapTo": "yaml"
+    }
+  ],
+  "psi-header.templates": [
+    {
+      "language": "*",
+      "template": [
+        "FilePath: <<filerelativepath>>",
+        "Project: <<projectname>>",
+        "CreatedAt: <<filecreated('YYYY-MM-DD HH:mm:ss')>>",
+        "CreatedBy: <<initials>> (<<<authorEmail>>>)",
+        "Copyright: (c) <<year>>",
+        "Task: #1",
+        "Write a description of the code here."
+      ]
+    }
+  ],
+
+  "vetur.validation.template": false,
+  "vetur.format.defaultFormatter.html": "prettyhtml",
+  "vetur.format.defaultFormatter.css": "prettier",
+  "vetur.format.defaultFormatter.postcss": "prettier",
+  "vetur.format.defaultFormatter.scss": "prettier",
+  "vetur.format.defaultFormatter.less": "prettier",
+  "vetur.format.defaultFormatter.stylus": "stylus-supremacy",
+  "vetur.format.defaultFormatter.js": "prettier",
+  "vetur.format.defaultFormatter.ts": "prettier",
+  "vetur.format.options.tabSize": 2,
+  "vetur.format.options.useTabs": false,
+  "vetur.format.defaultFormatterOptions": {
+    "js-beautify-html": {
+      "wrap_attributes": "force-aligned"
+    },
+    "prettyhtml": {
+      "printWidth": 80,
+      "singleQuote": false,
+      "wrapAttributes": true,
+      "sortAttributes": true,
+      "tabWidth": 2,
+      "useTabs": false
+    }
+  },
+
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
+  ],
+  "eslint.packageManager": "yarn",
+
+  "todohighlight.include": [
+    "**/*.js",
+    "**/*.html",
+    "**/*.css",
+    "**/*.vue",
+    "**/*.less",
+    "**/*.markdown",
+    "**/*.md",
+    "**/*.graphql",
+    "**/*.gql"
+  ],
+  "npm.packageManager": "yarn",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
