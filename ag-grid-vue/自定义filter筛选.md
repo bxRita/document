@@ -156,7 +156,7 @@ var columnDefs = [
 - 3.ag-grid针对自定义过滤器处理逻辑      
 ag-grid 相关处理逻辑代码参考：`./component/full-page-ag-grid.js`      
 
-![agGrid 过滤处理相关逻辑](./imgs/2.png)
+![agGrid 过滤处理相关逻辑](https://github.com/bxRita/document/blob/master/ag-grid-vue/imgs/2.png)
 
 - 4.效果如下：
-![自定义筛选](./imgs/1.png)
+![自定义筛选](https://github.com/bxRita/document/blob/master/ag-grid-vue/imgs/1.png)

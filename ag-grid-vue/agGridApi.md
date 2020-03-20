@@ -15,7 +15,7 @@
 gridOptions.columnApi.getAllDisplayedColumns()
 ```
 如下图所示：ag-grid只勾选 前2列，则getAllDisplayedColumns方法 返回的就是当前显示的2列数据        
-![4](./imgs/4.png)
+![4](https://github.com/bxRita/document/blob/master/ag-grid-vue/imgs/4.png)
 
 使用案例：
 ```js
@@ -46,7 +46,7 @@ let sortModel = gridApi.getSortModel()
 在header头列定义中使用`valueFormatter` 处理列数据     
 
 如下图所示，将数量保留到第六位小数点          
-![5](./imgs/5.png)
+![5](https://github.com/bxRita/document/blob/master/ag-grid-vue/imgs/5.png)
 
 代码处理如下：    
 ```js
