@@ -28,19 +28,19 @@ module.exports = {
           // }
 
           // --------test plugin-------
-          // {
-          //   test: /\.css/,
-          //   loaders: ExtractTextPlugin.extract({
-          //     //转换.css 文件需要使用的Loader
-          //     use: ['css-loader']
-          //   })
-          // }
+          {
+            test: /\.css/,
+            loaders: ExtractTextPlugin.extract({
+              //转换.css 文件需要使用的Loader
+              use: ['css-loader']
+            })
+          }
       ]
   },
   plugins: [
-    // new ExtractTextPlugin({
-    //   // filename: `[name]_[hash:8].css` // 从.js 文件中提取出来的.css 文件的名称
-    //   filename: `[name]_style.css` // 暂时为了方便在html文件中引入css 采用固定格式文件名
-    // })
+    new ExtractTextPlugin({
+      // filename: `[name]_[hash:8].css` // 从.js 文件中提取出来的.css 文件的名称
+      filename: `[name]_style.css` // 暂时为了方便在html文件中引入css 采用固定格式文件名
+    })
   ]
 };
