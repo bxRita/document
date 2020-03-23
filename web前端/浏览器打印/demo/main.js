@@ -12,6 +12,7 @@ window.onload=function(){//当整个HTML文档加载好之后就会触发onload�
  */
 function printDocument(id) {
     new Print({
+        popTitle:"打印测试的标题",
         ids: `#${id}`, // * 局部打印必传入id
         tab: 0,
         standard: '', // 文档类型，默认是html5，可选 html5，loose，strict
