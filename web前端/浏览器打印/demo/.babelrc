@@ -1,0 +1,22 @@
+{
+        "plugins":[ // plugins属性告诉Babel要使用哪些插件，这些插件可以控制如何转换代码。
+    
+            [
+                "transform-runtime", //作用是减少冗余代码
+                {
+                    "polyfill": false
+                }
+            ]
+        ],
+        "presets": [ // presets属性告诉Babel要转换的源码使用了哪些新的语法特性，一个Presets对一组新语法的特性提供了支持
+    
+            [
+                "es2015", //包含2015年加入的新特性
+                {
+                    "modules": false
+                }
+            ],
+            "stage-2" //被社区提出来的但还未被写入ECMAScript标准里的特性  ( stage2 该特性规范已经被起草，将会被纳入标准里)
+        ]
+    }
+    

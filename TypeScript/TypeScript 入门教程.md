@@ -3119,7 +3119,7 @@ console.log(`My name is ${myName.toStrng()}`);
 // tsc 报错信息：
 // Property 'toStrng' does not exist on type 'string'. Did you mean 'toString'?
 ```
-![问题](https://github.com/bxRita/document/blob/master/TypeScript/imgs/1.png)
+![问题](./imgs/1.png)
 
 上例中，我们使用了 var 来定义一个变量，但其实 ES6 中有更先进的语法 let 和 const，此时就可以通过 eslint 检查出来，提示我们应该使用 let 或 const 而不是 var。
 
@@ -3260,7 +3260,7 @@ VSCode 中的 ESLint 插件默认是不会检查 .ts 后缀的，需要在「文
 }
 ```
 这时再打开一个 .ts 文件，将鼠标移到红色提示处，即可看到这样的报错信息了：
-![vscode-eslint-error](https://github.com/bxRita/document/blob/master/TypeScript/imgs/vscode-eslint-error.png)
+![vscode-eslint-error](./imgs/vscode-eslint-error.png)
 
 我们还可以开启保存时自动修复的功能，通过配置：
 ```json
@@ -3461,7 +3461,7 @@ __使用 AlloyTeam ESLint 规则中的 TypeScript React 版本__
 4. 检查文件是不是在 .eslintignore 中
 
 如果以上步骤都不奏效，则可以在「文件 => 首选项 => 设置」中配置 "eslint.trace.server": "messages"，按 Ctrl+Shift+U 打开输出面板，然后选择 ESLint 输出，查看具体错误。
-![vscode-output-eslint](https://github.com/bxRita/document/blob/master/TypeScript/imgs/vscode-output-eslint.png)
+![vscode-output-eslint](./imgs/vscode-output-eslint.png)
 
 **为什么有些定义了的变量（比如使用 enum 定义的变量）未使用，ESLint 却没有报错？**   
 
