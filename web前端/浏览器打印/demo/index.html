@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style type="text/css" media="print">
+    /**去掉默认样式*/
     @media print {
         @page {
             margin: 0;
@@ -14,7 +15,7 @@
             margin: 2cm;
         }
     }
-
+    /**样式分页*/
     .page1, .page2,.page3,.page4 {
         break-after: page;
         page-break-after: always;
@@ -22,6 +23,7 @@
     .page2,.page3,.page4 {
         margin-top: 20px;
     }
+    /**自定义页眉 页脚*/
     header {
         position: fixed;
         top: 0;
@@ -34,10 +36,10 @@
     </style>
 </head>
 <body>
+    <input type="button" id= "test2" value="打印测试">
     <div id="app">
         <header>header</header>
         <footer>--footer--</footer>
-        <input type="button" id= "test2" value="打印测试">
         <p>
             <div class="page1">
                 <div>我是第一页1</div>
@@ -59,8 +61,7 @@
                 <div>我是第四页2</div>
                 <div>我是第四页3</div>
             </div>
-        </p>
-        
+        </p>        
     </div>
     <script src="bundle.js"></script>
 </body>
