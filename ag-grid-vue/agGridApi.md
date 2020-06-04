@@ -70,5 +70,19 @@ function countFormat({data, value}) {
     return value && value.toFixed(6)
 }
 ```
+4. 刷新ag-grid 中某一行的数据   
+接口： **refreshCells**   
+使用场景: 选中ag-grid 中一行， 修改这一行的数据后  能够在表格中 看见修改后的效果
+```js
+let params = {
+        force: true
+      }
+let ir = this.interfaceGridApi.getSelectedRows()
+ir.length && (ir[0].eqpInterface = EqpInterfaceType.OPC.code)
+
+// 刷新接口表格数据
+this.interfaceGridApi.refreshCells(params)
+```
+
 
 持续更新中......
