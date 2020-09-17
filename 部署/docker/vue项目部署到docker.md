@@ -108,7 +108,6 @@ default.conf 配置文件内容如下：
 server {
     listen       80;
     server_name   localhost;
-    # server_name   49.235.160.132; # 修改为docker服务宿主机的ip
 
     # uding gzip
     gzip on;
@@ -145,20 +144,21 @@ server {
 ```
 server {
     listen       80;
-    server_name   49.235.160.132; # 修改为docker服务宿主机的ip
+    server_name   localhost;
+    # server_name   49.235.160.132; # 修改为docker服务宿主机的ip
 
     location / {
         root   /usr/share/nginx/html;
         index  index.html index.htm;
         try_files $uri $uri/ /index.html =404;
     }
-    location /api{ # pro-api是vue项目里.env.production里的地址
+    location /api{ # api是vue项目里.env.production里的地址
         proxy_pass 1.1.1.1;  # 这里写的是你后端接口的地址
     }
 
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
-        root   html;
+        root   /usr/share/nginx/html;
     }
 }
 ```
@@ -172,10 +172,12 @@ LINUX 中部署目录结构如下：
 打包镜像
 
 ```
-docker build -t vuetest:v1 .
+docker build -t app:v1 .
 ```
 
-意思是当前目录的 Dockerfile 创建了一个镜像，创建镜像的仓库是 vuetest, 标签是 v1。
+![tu](./img/21.png)
+
+意思是当前目录的 Dockerfile 创建了一个镜像，创建镜像的仓库是 app, 标签是 v1。
 
 查看镜像
 
@@ -183,13 +185,17 @@ docker build -t vuetest:v1 .
 docker images
 ```
 
+![tu](./img/22.png)
+
 复制代码命令执行后，可以查看镜像信息。
 
 运行容器
 
 ```
-docker run -P -d vuetest:v1
+docker run -P -d app:v1
 ```
+
+![tu](./img/23.png)
 
 复制代码查看端口信息
 
@@ -199,9 +205,12 @@ docker ps
 
 ![tu](./img/13.png)
 
-访问 localhost:32773，其中 32773 是通过上面查看端口命令中查到的
+访问 localhost:32775，其中 32775 是通过上面查看端口命令中查到的
 
-展示效果如下图：  
+Linux 本机访问展示效果如下图：  
+![tu](./img/24.png)
+
+也可通过本地 ip 访问展示效果如下图：
 ![tu](./img/14.png)
 
 部署完成！
