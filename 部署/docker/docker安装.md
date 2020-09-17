@@ -32,7 +32,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo apt-key fingerprint 0EBFCD88
 ```
 
-GPG Key 信息如下：
+GPG Key 信息如下：  
 ![tu](./img/1.png)
 
 添加源信息：
