@@ -14,14 +14,14 @@
     "formulahendry.auto-rename-tag",
     "joelday.docthis",
     "knisterpeter.vscode-commitizen",
-    "mariusschulz.yarn-lock-syntax",
     "mikestead.dotenv",
     "octref.vetur",
     "prisma.vscode-graphql",
     "psioniq.psi-header",
     "redhat.vscode-yaml",
     "tyriar.sort-lines",
-    "wayou.vscode-todo-highlight"
-  ],
-  "unwantedRecommendations": ["esbenp.prettier-vscode"]
+    "wayou.vscode-todo-highlight",
+    "coenraads.bracket-pair-colorizer",
+    "oderwat.indent-rainbow"
+  ]
 }

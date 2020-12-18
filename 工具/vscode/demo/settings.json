@@ -1,7 +1,7 @@
 {
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true,
+  "workbench.editor.enablePreview": false, //打开文件不覆盖
   "files.encoding": "utf8",
   "files.eol": "\n",
   "files.exclude": {
@@ -44,7 +44,10 @@
     /* ["author", "guo gang"],
     ["initials", "guog"],
     ["authoremail", "guog@live.cn"], */
-    ["projectname", "HolliEBR"]
+    [
+      "projectname",
+      "client-app"
+    ]
   ],
   "psi-header.config": {
     "forceToTop": true,
@@ -58,8 +61,7 @@
     "exclude": ["markdown", "md", "gql", "graphql"],
     "excludeGlob": ["dist/**"]
   },
-  "psi-header.lang-config": [
-    {
+  "psi-header.lang-config": [{
       "language": "html",
       "begin": "<!--",
       "end": "-->",
@@ -110,20 +112,18 @@
       "mapTo": "yaml"
     }
   ],
-  "psi-header.templates": [
-    {
-      "language": "*",
-      "template": [
-        "FilePath: <<filerelativepath>>",
-        "Project: <<projectname>>",
-        "CreatedAt: <<filecreated('YYYY-MM-DD HH:mm:ss')>>",
-        "CreatedBy: <<initials>> (<<<authorEmail>>>)",
-        "Copyright: (c) <<year>>",
-        "Task: #1",
-        "Write a description of the code here."
-      ]
-    }
-  ],
+  "psi-header.templates": [{
+    "language": "*",
+    "template": [
+      "FilePath: <<filerelativepath>>",
+      "Project: <<projectname>>",
+      "CreatedAt: <<filecreated('YYYY-MM-DD HH:mm:ss')>>",
+      "CreatedBy: <<initials>> (<<<authorEmail>>>)",
+      "Copyright: (c) <<year>>",
+      "Task: #1",
+      "Write a description of the code here."
+    ]
+  }],
 
   "vetur.validation.template": false,
   "vetur.format.defaultFormatter.html": "prettyhtml",
@@ -151,12 +151,7 @@
   },
 
   "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    {
-      "language": "vue",
-      "autoFix": true
-    }
+    "javascript"
   ],
   "eslint.packageManager": "yarn",
 
@@ -174,5 +169,17 @@
   "npm.packageManager": "yarn",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
