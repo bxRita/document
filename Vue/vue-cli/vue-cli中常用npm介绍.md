@@ -149,7 +149,7 @@ Metalsmith(__dirname)
   });
 ```
 
-![inquire](./imgs/2.png)
+![inquire](./imgs/3.png)
 
 这段代码就是通过使用 metalsmith-markdown 和 metalsmith-layouts 插件 将 markdown 文件以 handlebars 的模板形式来生成 html 文件
 
