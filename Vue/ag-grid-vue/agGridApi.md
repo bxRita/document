@@ -15,7 +15,7 @@
 - pagination 分页参数
 - sideBar 工具栏配置
 - localeTextFunc 本地国际化
-- rowModelType 数据渲染模式（serverSide）
+- rowModelType 数据渲染模式（'clientSide', 'infinite', 'viewport', 'serverSide'）
 - defaultColDef 列默认属性
 - columnTypes 列类型
 
