@@ -1,5 +1,5 @@
 /*
- * FilePath: \src\views\product\equipment-manager\attribute-list\status-info\checkboxRenderer.js
+ * FilePath: src\components\ag-grid\checkbox-render\checkboxRenderer.js
  * Project: HolliEBR
  * CreatedAt: 2020-03-03 09:48:51
  * CreatedBy: bx (<bx@hollysys.net>)
@@ -19,9 +19,9 @@ export default Vue.extend({
       checked: false
     }
   },
-  beforeMount() {},
   mounted() {
-    this.checked = this.params.value
-  },
-  methods: {}
+    let val = this.params.value
+    this.checked =
+      typeof val === 'string' ? (val === 'false' ? false : true) : val
+  }
 })

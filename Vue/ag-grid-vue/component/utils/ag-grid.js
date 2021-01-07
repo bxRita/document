@@ -1,5 +1,6 @@
+import { rounding } from "@/utils/tools";
 
-import { rounding } from '@/utils/tools'
+import moment from "moment";
 
 /**
  * 根据ag-grid的过滤模型(filterModel)对象生成GraphQL可识别的where条件对象。
@@ -14,56 +15,119 @@ import { rounding } from '@/utils/tools'
 
 export function agGenerateWhereFromFiltersModel(
   filterModel,
-  fieldNamePrefix = 'node.'
+  fieldNamePrefix = "node."
 ) {
-  const result = {}
+  const result = {};
   if (!filterModel) {
-    return result
+    return result;
   }
 
-  let keys = Object.keys(filterModel)
+  let keys = Object.keys(filterModel);
 
   if (keys.length < 1) {
-    return result
+    return result;
   }
 
-  const filters = []
+  const filters = [];
   for (let key of keys) {
     // 逐个遍历ag-grid设置的筛选条件,每个字段
-    const model = filterModel[key]
-    const fieldName = key.replace(fieldNamePrefix, '') // 去掉前缀
-    const operator = model.operator
-
-    if (operator && typeof operator === 'string' && operator.length > 0) {
+    const model = filterModel[key];
+    const fieldName = key.replace(fieldNamePrefix, ""); // 去掉前缀
+    const operator = model.operator;
+    if (operator && typeof operator === "string" && operator.length > 0) {
       // 多个条件,AND 或者 OR
-      if (fieldName.indexOf('.') === -1) {
-        const filter1 = $agGenerateConditionFilter(model.condition1, fieldName)
-        const filter2 = $agGenerateConditionFilter(model.condition2, fieldName)
-        let filter = {}
-        filter[operator] = [filter1, filter2]
-        filters.push(filter)
+      if (fieldName.indexOf(".") === -1) {
+        const filter1 = $agGenerateConditionFilter(model.condition1, fieldName);
+        const filter2 = $agGenerateConditionFilter(model.condition2, fieldName);
+        let filter = {};
+        filter[operator] = [filter1, filter2];
+        filters.push(filter);
       } else {
-        let filter1 = genFiledFilter(model.condition1, fieldName)
-        let filter2 = genFiledFilter(model.condition2, fieldName)
+        let filter1 = genFiledFilter(model.condition1, fieldName);
+        let filter2 = genFiledFilter(model.condition2, fieldName);
 
-        let filter = {}
-        filter[operator] = [filter1, filter2]
-        filters.push(filter)
+        let filter = {};
+        filter[operator] = [filter1, filter2];
+        filters.push(filter);
       }
     } else {
       //liqi添加 层级且套筛选开始
-      let filter = {}
-      if (fieldName.indexOf('.') == -1) {
-        filter = $agGenerateConditionFilter(model, fieldName)
+      let filter = {};
+      if (fieldName.indexOf(".") == -1) {
+        filter = $agGenerateConditionFilter(model, fieldName);
       } else {
-        filter = genFiledFilter(model, fieldName)
+        filter = genFiledFilter(model, fieldName);
+        // filter = mergeFilter(filterArr)
       }
-      filters.push(filter)
+      filters.push(filter);
       //liqi添加 层级且套筛选结束
     }
   }
-  result['AND'] = filters
-  return result
+
+  let arr = mergeFilter(filters);
+
+  result["AND"] = arr;
+  return result;
+}
+/**
+ * @description filter格式重新组合过滤条件
+ * @param { Array}filterArr 组合筛选条件
+ */
+function mergeFilter(arr) {
+  let brr = [];
+  if (arr.length) {
+    for (let i = 0; i < arr.length; i++) {
+      let item = arr[i];
+      if (brr.length) {
+        for (let j = 0; j < brr.length; j++) {
+          let n = brr[j];
+          let k = MergeRecursive(n, item);
+          brr.push = k;
+        }
+      } else {
+        brr.push(MergeRecursive({}, item));
+      }
+    }
+  }
+  return brr;
+}
+/**
+ * @description 对象递归
+ * @param {Object} obj1
+ * @param {Object} obj2
+ */
+function MergeRecursive(obj1, obj2) {
+  let arr = Object.keys(obj2);
+  let index = -1;
+  while (++index < arr.length) {
+    let p = arr[index];
+    try {
+      if (obj2[p].constructor == Object) {
+        //对象方式
+        obj1[p] = MergeRecursive(obj1[p], obj2[p]);
+      } else {
+        if (p == "AND") {
+          //AND并且方式
+          obj1[p] = [...obj1[p], ...obj2[p]];
+        } else if (p == "OR") {
+          //OR 方式
+          if (obj1.hasOwnProperty(p)) {
+            let m = {};
+            m[p] = [].concat(obj1[p]);
+            delete obj1[p];
+            obj1["AND"] = obj1["AND"] ? [...obj1["AND"], obj2, m] : [obj2, m];
+          } else {
+            obj1[p] = obj2[p];
+          }
+        } else {
+          obj1[p] = obj2[p];
+        }
+      }
+    } catch (e) {
+      obj1[p] = obj2[p];
+    }
+  }
+  return obj1;
 }
 /**
  * @description 根据field属性 获取过滤属性值
@@ -71,23 +135,23 @@ export function agGenerateWhereFromFiltersModel(
  * @param {String} fieldName 属性名称
  */
 function genFiledFilter(model, fieldName) {
-  let dataNodes = fieldName.split('.')
-  let child = dataNodes[dataNodes.length - 1]
-  let childFilter = $agGenerateConditionFilter(model, child)
+  let dataNodes = fieldName.split(".");
+  let child = dataNodes[dataNodes.length - 1];
+  let childFilter = $agGenerateConditionFilter(model, child);
   let res = {},
     temp,
-    len = dataNodes.length
+    len = dataNodes.length;
   for (var i = len - 2; i >= 0; i--) {
-    temp = dataNodes[i]
+    temp = dataNodes[i];
     if (i == dataNodes.length - 2) {
-      res[temp] = childFilter
+      res[temp] = childFilter;
     } else {
-      let obj = {}
-      obj[temp] = Object.assign({}, res)
-      res = obj
+      let obj = {};
+      obj[temp] = Object.assign({}, res);
+      res = obj;
     }
   }
-  return res
+  return res;
 }
 
 /**
@@ -103,32 +167,32 @@ function genFiledFilter(model, fieldName) {
  */
 export function agGenerateOrderByFromSortModel(
   sortModel,
-  fieldNamePrefix = 'node.'
+  fieldNamePrefix = "node."
 ) {
-  let result = null
-  if (!sortModel || typeof sortModel !== 'object' || sortModel.length < 1) {
-    return result
+  let result = null;
+  if (!sortModel || typeof sortModel !== "object" || sortModel.length < 1) {
+    return result;
   }
-  const order = sortModel[0]
+  const order = sortModel[0];
   if (
     !order ||
     !order.colId ||
     !order.sort ||
-    typeof order.colId !== 'string' ||
-    typeof order.sort !== 'string'
+    typeof order.colId !== "string" ||
+    typeof order.sort !== "string"
   ) {
-    return result
+    return result;
   }
   // 去掉前缀
-  const fieldName = order.colId.replace(fieldNamePrefix, '')
+  const fieldName = order.colId.replace(fieldNamePrefix, "");
   // 顺序关键字转大写 asc => ASC,desc => DESC
-  const sort = order.sort.toUpperCase()
+  const sort = order.sort.toUpperCase();
 
   if (fieldName && sort) {
-    result = `${fieldName}_${sort}`
+    result = `${fieldName}_${sort}`;
   }
 
-  return result
+  return result;
 }
 /**
  * 针对每个过滤条件生成对应的GraphQL过滤条件
@@ -138,180 +202,189 @@ export function agGenerateOrderByFromSortModel(
  * @returns {object} GraphQL过滤条件
  */
 function $agGenerateConditionFilter(condition, fieldName) {
-  const result = {}
+  const result = {};
   if (
     !condition ||
-    typeof condition !== 'object' ||
+    typeof condition !== "object" ||
     !fieldName ||
-    typeof fieldName !== 'string'
+    typeof fieldName !== "string"
   ) {
     // 检查参数合法
-    return result
+    return result;
   }
-  let conditionVale = condition.filter
-  let dateFrom, dateTo // date类型使用
-  let propertyName = ''
-  const gteCon = {}
-  const lteCon = {}
+  let conditionVale = condition.filter;
+  let dateFrom, dateTo; // date类型使用
+  let propertyName = "";
+  const gteCon = {};
+  const lteCon = {};
+  const startTime = " 00:00:00"; //某一天开始时间
+  const endTime = " 23:59:59.999 "; //某一天结束时间
+  let basicDate = "";
   switch (condition.filterType) {
-    case 'boolean':
-      propertyName = `${fieldName}`
-      break
-    case 'text':
+    case "boolean":
+      propertyName = `${fieldName}`;
+      break;
+    case "text":
       // 文字
       switch (condition.type) {
-        case 'equals':
-          propertyName = `${fieldName}`
-          break
-        case 'notEqual':
-          propertyName = `${fieldName}_not`
-          break
-        case 'startsWith':
-          propertyName = `${fieldName}_starts_with`
-          break
-        case 'endsWith':
-          propertyName = `${fieldName}_ends_with`
-          break
-        case 'contains':
-          propertyName = `${fieldName}_contains`
-          break
-        case 'notContains':
-          propertyName = `${fieldName}_not_contains`
-          break
+        case "equals":
+          propertyName = `${fieldName}`;
+          break;
+        case "notEqual":
+          propertyName = `${fieldName}_not`;
+          break;
+        case "startsWith":
+          propertyName = `${fieldName}_starts_with`;
+          break;
+        case "endsWith":
+          propertyName = `${fieldName}_ends_with`;
+          break;
+        case "contains":
+          propertyName = `${fieldName}_contains`;
+          break;
+        case "notContains":
+          propertyName = `${fieldName}_not_contains`;
+          break;
         default:
-          propertyName = `${fieldName}`
-          break
+          propertyName = `${fieldName}`;
+          break;
       }
-      break
-    case 'date':
+      break;
+    case "date":
       // 日期类型
       // 所有的日期类型处理为一个时间范围
-      dateFrom = new Date(condition.dateFrom + ' 00:00:00:000')
-      dateTo = new Date(condition.dateFrom + ' 23:59:59:999')
-      if (!dateFrom || !dateTo) {
-        return result
-      }
-      conditionVale = []
-      propertyName = `AND`
+      basicDate = condition.dateFrom.split(" ")[0];
+      conditionVale = [];
+      propertyName = `AND`;
       switch (condition.type) {
-        case 'equals':
-          gteCon[`${fieldName}_gte`] = dateFrom.toISOString()
-          lteCon[`${fieldName}_lte`] = dateTo.toISOString()
-          conditionVale.push(gteCon)
-          conditionVale.push(lteCon)
-          break
-        case 'notEqual':
-          propertyName = `OR`
-          gteCon[`${fieldName}_gte`] = dateTo.toISOString()
-          lteCon[`${fieldName}_lte`] = dateFrom.toISOString()
-          conditionVale.push(gteCon)
-          conditionVale.push(lteCon)
-          break
-        case 'lessThan':
-          propertyName = `${fieldName}_lte`
-          conditionVale = dateTo.toISOString()
-          break
-        case 'greaterThan':
-          propertyName = `${fieldName}_gte`
-          conditionVale = dateFrom.toISOString()
-          break
-        case 'inRange':
+        case "equals":
+          dateFrom = new Date(basicDate + startTime);
+          dateTo = new Date(basicDate + endTime);
+          gteCon[`${fieldName}_gte`] = dateFrom.toISOString();
+          lteCon[`${fieldName}_lte`] = dateTo.toISOString();
+          conditionVale.push(gteCon);
+          conditionVale.push(lteCon);
+          break;
+        case "notEqual":
+          dateFrom = new Date(basicDate + startTime);
+          dateTo = new Date(basicDate + endTime);
+          propertyName = `OR`;
+          gteCon[`${fieldName}_gt`] = dateTo.toISOString();
+          lteCon[`${fieldName}_lt`] = dateFrom.toISOString();
+          conditionVale.push(gteCon);
+          conditionVale.push(lteCon);
+          break;
+        case "lessThan":
+          dateTo = new Date(basicDate + startTime);
+          propertyName = `${fieldName}_lt`;
+          conditionVale = dateTo.toISOString();
+          break;
+        case "greaterThan":
+          dateFrom = new Date(basicDate + endTime);
+          propertyName = `${fieldName}_gt`;
+          conditionVale = dateFrom.toISOString();
+          break;
+        case "inRange":
           // 范围区间值,特殊处理
           // 处理结果为: x>=起始值 AND x<=截止值
-          propertyName = 'AND'
-          conditionVale = []
+          propertyName = "AND";
+          conditionVale = [];
 
           if (condition.dateFrom && condition.dateTo) {
             // 两者较小的
             const gteValue =
               condition.dateFrom <= condition.dateTo
                 ? condition.dateFrom
-                : condition.dateTo
+                : condition.dateTo;
             // 两者较大的
             const lteValue =
               condition.dateFrom >= condition.dateTo
                 ? condition.dateFrom
-                : condition.dateTo
-            dateFrom = new Date(gteValue + ' 00:00:00:000')
-            dateTo = new Date(lteValue + ' 23:59:59:999')
-            gteCon[`${fieldName}_gte`] = dateFrom.toISOString()
-            lteCon[`${fieldName}_lte`] = dateTo.toISOString()
-            conditionVale.push(gteCon)
-            conditionVale.push(lteCon)
+                : condition.dateTo;
+            let startDate = gteValue.split(" ")[0];
+            let endDate = lteValue.split(" ")[0];
+
+            dateFrom = new Date(startDate + startTime);
+            dateTo = new Date(endDate + endTime);
+            gteCon[`${fieldName}_gte`] = dateFrom.toISOString();
+            lteCon[`${fieldName}_lte`] = dateTo.toISOString();
+            conditionVale.push(gteCon);
+            conditionVale.push(lteCon);
           }
-          break
+          break;
         default:
-          propertyName = `${fieldName}`
-          break
+          propertyName = `${fieldName}`;
+          break;
       }
-      break
-    case 'number':
+      break;
+    case "number":
       // 数字类型
       switch (condition.type) {
-        case 'equals':
-          propertyName = `${fieldName}`
-          break
-        case 'notEqual':
-          propertyName = `${fieldName}_not`
-          break
-        case 'lessThan':
-          propertyName = `${fieldName}_lt`
-          break
-        case 'greaterThan':
-          propertyName = `${fieldName}_gt`
-          break
-        case 'lessThanOrEqual':
-          propertyName = `${fieldName}_lte`
-          break
-        case 'greaterThanOrEqual':
-          propertyName = `${fieldName}_gte`
-          break
-        case 'inRange':
+        case "equals":
+          propertyName = `${fieldName}`;
+          break;
+        case "notEqual":
+          propertyName = `${fieldName}_not`;
+          break;
+        case "lessThan":
+          propertyName = `${fieldName}_lt`;
+          break;
+        case "greaterThan":
+          propertyName = `${fieldName}_gt`;
+          break;
+        case "lessThanOrEqual":
+          propertyName = `${fieldName}_lte`;
+          break;
+        case "greaterThanOrEqual":
+          propertyName = `${fieldName}_gte`;
+          break;
+        case "inRange":
           // 范围区间值,特殊处理
           // 处理结果为: x>=起始值 AND x<=截止值
-          propertyName = 'AND'
-          conditionVale = []
+          propertyName = "AND";
+          conditionVale = [];
 
           if (
-            typeof condition.filter === 'number' &&
-            typeof condition.filterTo === 'number'
+            typeof condition.filter === "number" &&
+            typeof condition.filterTo === "number"
           ) {
             // 两者较小的
             const gteValue =
               condition.filter <= condition.filterTo
                 ? condition.filter
-                : condition.filterTo
+                : condition.filterTo;
             // 两者较大的
             const lteValue =
               condition.filter >= condition.filterTo
                 ? condition.filter
-                : condition.filterTo
+                : condition.filterTo;
 
-            gteCon[`${fieldName}_gte`] = gteValue
-            lteCon[`${fieldName}_lte`] = lteValue
-            conditionVale.push(gteCon)
-            conditionVale.push(lteCon)
+            gteCon[`${fieldName}_gte`] = gteValue;
+            lteCon[`${fieldName}_lte`] = lteValue;
+            conditionVale.push(gteCon);
+            conditionVale.push(lteCon);
           }
-          break
+          break;
         default:
-          propertyName = `${fieldName}`
-          break
+          propertyName = `${fieldName}`;
+          break;
       }
-      break
-    case 'set':
-      propertyName = `${fieldName}_in`
-      conditionVale = condition.values
-      break
+      break;
+    case "set":
+      propertyName = `${fieldName}_in`;
+      conditionVale = condition.values;
+      break;
     default:
-      break
+      break;
   }
 
-  conditionVale &&
-    (result[propertyName] =
-      condition.filterType === 'boolean'
+  if (conditionVale || typeof conditionVale == "number") {
+    result[propertyName] =
+      condition.filterType === "boolean"
         ? JSON.parse(conditionVale)
-        : conditionVale)
-  return result
+        : conditionVale;
+  }
+  return result;
 }
 
 /**
@@ -321,26 +394,26 @@ function $agGenerateConditionFilter(condition, fieldName) {
  * @returns 返回关联属性值
  */
 function getMultiFieldVal(obj, field) {
-  let curVal = obj
-  let dataNodes = field.split('.'),
-    len = dataNodes.length
+  let curVal = obj;
+  let dataNodes = field.split("."),
+    len = dataNodes.length;
   let findVal = (item, fieldName) => {
-    return item[fieldName]
-  }
+    return item[fieldName];
+  };
 
   for (let i = 0; i < len; i++) {
-    let fn = dataNodes[i]
-    let temp = findVal(curVal, fn)
-    if (temp) {
-      curVal = temp
-      continue
+    let fn = dataNodes[i];
+    let temp = findVal(curVal, fn);
+    if (temp || temp == "") {
+      curVal = temp;
+      continue;
     }
-    if (i < len - 1 && !temp) {
-      curVal = ``
-      break
+    if (i <= len - 1 && !temp) {
+      curVal = ``;
+      break;
     }
   }
-  return curVal
+  return curVal;
 }
 
 /**
@@ -351,22 +424,40 @@ function getMultiFieldVal(obj, field) {
  */
 function handleSpecialField(header, temp, field) {
   // 枚举类型
-  header.valueFormatter &&
-    (temp[field] = header.valueFormatter({
+  if (header.valueFormatter) {
+    temp[field] = header.valueFormatter({
       value: temp[field],
-      data: temp
-    }))
+      data: temp,
+    });
+    return temp;
+  }
   // 数值类型
-  if (header.filter === 'agNumberColumnFilter') {
-    temp[field] = rounding(temp[field], 6)
+  if (header.filter === "agNumberColumnFilter") {
+    temp[field] = rounding(temp[field], 6);
+    return temp;
   }
-  // 日期类型
-  if (header.filter === 'agDateColumnFilter') {
-    temp[field] = temp[field] && temp[field].substring(0, 10)
-  }
-  return temp
-}
 
+  // 日期类型
+  if (header.filter === "agDateColumnFilter") {
+    if (header.type && header.type === "datetime") {
+      temp[field] = temp[field] && dateFormate(temp[field]);
+    } else {
+      temp[field] = temp[field] && temp[field].substring(0, 10);
+    }
+
+    return temp;
+  }
+
+  return temp;
+}
+/**
+ * 日期转换
+ */
+export function dateFormate(params) {
+  if (params) {
+    return moment(params).format("YYYY-MM-DD HH:mm:ss");
+  }
+}
 /**
  * @description 处理服务返回的数据
  * @param {Array} arrs 服务返回的数据
@@ -375,22 +466,23 @@ function handleSpecialField(header, temp, field) {
 export function handleServerData(arrs, headers) {
   let len = arrs.length,
     hLen = headers.length,
-    index = 1
+    index = 1;
   for (let i = 0; i < len; i++) {
-    let temp = arrs[i]
-    temp.index = index
+    let temp = arrs[i];
+    temp.index = index;
     for (let j = 0; j < hLen; j++) {
       let h = headers[j],
         field = h.field,
-        isMulField = field && field.indexOf('.') > -1
+        isMulField = field && field.indexOf(".") > -1;
       if (!isMulField) {
-        temp = handleSpecialField(h, temp, field)
-        continue
+        temp = handleSpecialField(h, temp, field);
+        continue;
       }
-      temp[field] = getMultiFieldVal(temp, field)
-      temp = handleSpecialField(h, temp, field)
+
+      temp[field] = getMultiFieldVal(temp, field);
+      temp = handleSpecialField(h, temp, field);
     }
-    index++
+    index++;
   }
-  return arrs
+  return arrs;
 }

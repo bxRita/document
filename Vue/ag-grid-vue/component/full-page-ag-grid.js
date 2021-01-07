@@ -1,97 +1,106 @@
-
-import assign from 'lodash/assign'
-import { system } from '@/settings'
-import { AllModules } from '@ag-grid-enterprise/all-modules'
+import assign from "lodash/assign";
+import { system } from "@/settings";
+import { AllModules } from "@ag-grid-enterprise/all-modules";
 import {
   agGenerateOrderByFromSortModel,
-  agGenerateWhereFromFiltersModel
-} from 'utils/ag-grid'
+  agGenerateWhereFromFiltersModel,
+} from "@/utils/ag-grid";
+import { handleTryCatchError } from "@utils/message";
+import i18n from "@/i18n";
 
+const DEFAULT_NO_DATA_MSG = `<span style="color: red;font-weight: bold;">${i18n.t(
+  "common.messages.serverErr"
+)}</span>`;
 export default {
-  name: 'full-page-ag-grid',
+  name: "full-page-ag-grid",
   props: {
+    // 数据为空时 提示信息
+    overlayNoRowsTemplate: {
+      type: String,
+      default: DEFAULT_NO_DATA_MSG,
+    },
     //控制表格占满问题
     sizeColumnsToFit: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isAllowDefaultSelected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     colDefs: {
       type: Array,
-      default: function() {
-        return []
-      }
+      default: function () {
+        return [];
+      },
     },
     api: {
       type: Function,
-      default: function() {}
+      default: function () {},
     },
     pagination: {
       type: Boolean,
-      default: true
+      default: true,
     },
     sideBar: {
       type: [Object, Boolean],
-      default: function() {
+      default: function () {
         return {
           toolPanels: [
             {
-              id: 'columns',
-              labelDefault: 'Columns',
-              labelKey: 'columns',
-              iconKey: 'columns',
-              toolPanel: 'agColumnsToolPanel',
+              id: "columns",
+              labelDefault: "Columns",
+              labelKey: "columns",
+              iconKey: "columns",
+              toolPanel: "agColumnsToolPanel",
               toolPanelParams: {
                 suppressRowGroups: true,
                 suppressValues: true,
                 suppressPivots: true,
-                suppressPivotMode: true
-              }
+                suppressPivotMode: true,
+              },
             },
             {
-              id: 'filters',
-              labelDefault: 'Filters',
-              labelKey: 'filters',
-              iconKey: 'filter',
-              toolPanel: 'agFiltersToolPanel'
-            }
-          ]
-        }
-      }
+              id: "filters",
+              labelDefault: "Filters",
+              labelKey: "filters",
+              iconKey: "filter",
+              toolPanel: "agFiltersToolPanel",
+            },
+          ],
+        };
+      },
     },
     pageSize: {
       type: Number,
-      default: system.agGridPaginationSize
+      default: system.agGridPaginationSize,
     },
     rowSelection: {
       type: String,
-      default: 'single'
+      default: "single",
     },
     rowMultiSelectWithClick: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isSelectAll: {
       type: Boolean,
-      default: false
+      default: false,
     },
     suppressContextMenu: {
       type: Boolean,
-      default: true
+      default: true,
     },
     suppressRowClickSelection: {
       type: Boolean,
-      default: false
+      default: false,
     },
     rowClassRules: {
       type: Function,
       default: () => {
-        return {}
-      }
-    }
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -105,24 +114,35 @@ export default {
         pagination: this.pagination,
         sideBar: this.sideBar,
         rowSelection: this.rowSelection,
+        // enableCellTextSelection: true, //启用浏览器自带的鼠标按下拖动可以选择内容进行复制功能
         suppressRowClickSelection: this.suppressRowClickSelection, //如果true，单击时不会选择行。例如，当您想要选中复选框时，请使用，并且不想在单击行时选择。
         // enableRangeSelection: true
         // rowMultiSelectWithClick: this.rowMultiSelectWithClick //单击多行将选择多行而无需点击control 或shift键
         getRowStyle: this.rowClassRules, //给行添加样式
         onRowDoubleClicked: this.rowDoubleClicked.bind(this),
-        onColumnVisible: this.columnVisiblechange.bind(this)
+        onColumnVisible: this.columnVisiblechange.bind(this),
+        onToolPanelVisibleChanged: this.toolPanelVisiblechange.bind(this),
+        enableRangeSelection: true,
+        enableRangeHandle: true,
+        overlayNoRowsTemplate: this.overlayNoRowsTemplate,
       }),
       gridApi: null,
-      columnApi: null
-    }
+      columnApi: null,
+    };
   },
   methods: {
+    toolPanelVisiblechange(params) {
+      let { source } = params;
+      if (!source && this.sizeColumnsToFit) {
+        this.gridApi.sizeColumnsToFit();
+      }
+    },
     /**
      *
      * @param {object} params
      */
     columnVisiblechange(params) {
-      this.$emit('columnVisiblechange', params.columns)
+      this.$emit("columnVisiblechange", params.columns);
     },
     /**
      * Grid就绪事件
@@ -130,165 +150,183 @@ export default {
      * @param {object} params
      */
     gridReady(params) {
-      this.gridApi = params.api
-      this.columnApi = params.columnApi
-      params.api.setServerSideDatasource(this.serverSideDatasource()) //为远端分页提供数据源
+      this.gridApi = params.api;
+      this.columnApi = params.columnApi;
+      params.api.setServerSideDatasource(this.serverSideDatasource()); //为远端分页提供数据源
       if (this.sizeColumnsToFit) {
-        this.gridApi.sizeColumnsToFit()
+        this.gridApi.sizeColumnsToFit();
       }
-      this.$emit('gridReady', this.gridApi)
+      this.$emit("gridReady", this.gridApi);
     },
     /**
      * grid行选择改变
      * @param {object} params
      */
     selectionChanged(params) {
-      const selectedRows = params.api.getSelectedRows()
-      this.$emit('selectionChanged', selectedRows)
+      const selectedRows = params.api.getSelectedRows();
+      this.$emit("selectionChanged", selectedRows);
     },
     rowDoubleClicked(params) {
-      const selectedRows = params.api.getSelectedRows()
-      this.$emit('rowDoubleClicked', selectedRows)
+      const selectedRows = params.api.getSelectedRows();
+      this.$emit("rowDoubleClicked", selectedRows);
     },
     /**
      * grid 过滤器改变
      *
      */
     onFilterChanged() {
-      this.$emit('onFilterChanged', true)
+      this.$emit("onFilterChanged", true);
     },
     /**
      * 取消表格所有选中行
      */
     deselectAll() {
       if (this.gridApi) {
-        const selectedNodes = this.gridApi.getSelectedNodes()
+        const selectedNodes = this.gridApi.getSelectedNodes();
         if (selectedNodes.length > 0) {
-          this.gridApi.deselectAll()
+          this.gridApi.deselectAll();
         }
       }
     },
     selectAll() {
-      this.gridApi.forEachNode(node => {
-        node.setSelected(true)
-      })
+      this.gridApi.forEachNode((node) => {
+        node.setSelected(true);
+      });
     },
     /**
      * 反选
      */
     invertSelection() {
-      this.gridApi.forEachNode(node => {
-        node.setSelected(!node.selected)
-      })
+      this.gridApi.forEachNode((node) => {
+        node.setSelected(!node.selected);
+      });
     },
     // 没有选中的数据
     noSelect() {
-      let datas = []
-      this.gridApi.forEachNode(node => {
+      let datas = [];
+      this.gridApi.forEachNode((node) => {
         if (!node.selected) {
-          datas.push(node.data)
+          datas.push(node.data);
         }
-      })
-      return datas
+      });
+      return datas;
     },
     /**
      * 页面数据刷新
      */
     refresh() {
       if (this.gridApi) {
-        this.deselectAll()
-        this.gridApi.purgeServerSideCache()
+        this.deselectAll();
+        this.gridApi.purgeServerSideCache();
       }
     },
     /**
      * 获取选择的行集合中第一条数据
      */
     getSelectedNode() {
-      const selectedNodes = this.gridApi.getSelectedNodes()
+      const selectedNodes = this.gridApi.getSelectedNodes();
       if (
         selectedNodes &&
         selectedNodes.length > 0 &&
         selectedNodes[0] &&
         selectedNodes[0].id
       ) {
-        return selectedNodes[0]
+        return selectedNodes[0];
       } else {
-        return null
+        return null;
       }
     },
     /**
      * 获取选择的行集合
      */
     getSelectedNodes() {
-      const selectedNodes = this.gridApi.getSelectedNodes()
-      return selectedNodes
+      const selectedNodes = this.gridApi.getSelectedNodes();
+      return selectedNodes;
     },
     /**
      * 设置排序模型，用于页面打开时的排序和编辑新增后的排序不一样的情况
      * @param {Object} params 排序参数对象
      */
     setSortModel(params) {
-      this.gridApi.setSortModel(params)
+      this.gridApi.setSortModel(params);
     },
     /**
      * 获取服务端数据
      */
     serverSideDatasource() {
-      const _this = this
-      _this.refresh()
+      const _this = this;
+      _this.refresh();
       return {
-        getRows: async params => {
-          const request = params.request
-          const skip = request.startRow
-          const first = request.endRow - request.startRow
+        getRows: async (params) => {
+          const request = params.request;
+          const skip = request.startRow;
+          const first = request.endRow - request.startRow;
           const where = agGenerateWhereFromFiltersModel(
             params.request.filterModel
-          )
-          const orderBy = agGenerateOrderByFromSortModel(request.sortModel)
-
-          const res = await _this.api(
-            where,
-            orderBy ? orderBy : undefined, // 如果排序值为null，则设置undefined 使用接口默认排序
-            first,
-            skip
-          )
-          const selectedNodes = this.gridApi.getSelectedNodes()
+          );
+          const orderBy = agGenerateOrderByFromSortModel(request.sortModel);
+          let res;
+          try {
+            res = await _this.api(
+              where,
+              orderBy ? orderBy : undefined, // 如果排序值为null，则设置undefined 使用接口默认排序
+              first,
+              skip
+            );
+          } catch (e) {
+            res = {
+              list: [],
+              total: {
+                aggregate: {
+                  count: 0,
+                },
+                pageInfo: {
+                  hasNextPage: false,
+                },
+              },
+            };
+            this.gridApi.showNoRowsOverlay();
+            handleTryCatchError(e);
+          }
+          const selectedNodes = this.gridApi.getSelectedNodes();
           if (res && res.list && res.list.length > 0) {
-            params.successCallback(res.list, res.total.aggregate.count)
+            params.successCallback(res.list, res.total.aggregate.count);
             //是否全部选中行
             if (this.isSelectAll) {
               for (let i = 0; i < res.list.length; i++) {
-                this.gridApi.forEachNode(node => {
+                this.gridApi.forEachNode((node) => {
                   if (res.list[i].id && node.id == res.list[i].id) {
-                    node.setSelected(true)
+                    node.setSelected(true);
                   }
-                })
+                });
               }
-
               // this.selectAll()
             } else {
               //是否有默认选中行
               if (this.isAllowDefaultSelected) {
-                if (selectedNodes.length > 0) {
-                  for (let i = 0; i < res.list.length; i++) {
-                    if (res.list[i].id != selectedNodes[0].id) {
-                      this.gridApi.getRenderedNodes()[0].setSelected(true)
-                    }
-                  }
+                let allNodes = [];
+                this.gridApi.forEachNode((node) => {
+                  allNodes.push(node);
+                });
+                let allLen = allNodes.length;
+                // 每次请求 默认选中当前页的第一行
+                if (allLen > skip) {
+                  allNodes.length && allNodes[skip].setSelected(true);
                 } else {
-                  this.gridApi.getRenderedNodes()[0].setSelected(true)
+                  this.gridApi.getRenderedNodes()[0].setSelected(true);
                 }
               } else {
                 if (selectedNodes.length > 0) {
-                  this.deselectAll()
+                  this.deselectAll();
                 }
               }
             }
           } else {
-            params.successCallback([], 0)
+            this.deselectAll();
+            params.successCallback([], 0);
           }
-        }
-      }
+        },
+      };
     },
     /**
      * @description 数据字典 code 字典 单元格渲染方法
@@ -296,7 +334,7 @@ export default {
      * @returns 返回code
      */
     sysdicCodeCellRenderer(params) {
-      return (params.value && params.value.code) || ''
+      return (params.value && params.value.code) || "";
     },
     /**
      * @description 数据字典 name 字典 单元格渲染方法
@@ -304,7 +342,7 @@ export default {
      * @returns 返回name
      */
     sysdicNameCellRenderer(params) {
-      return (params.value && params.value.name) || ''
+      return (params.value && params.value.name) || "";
     },
     /**
      * 获取ag-grid默认选项
@@ -314,89 +352,86 @@ export default {
     $agGetDefaultGridOptions() {
       return {
         context: {
-          componentParent: this // 传递给子组件
+          componentParent: this, // 传递给子组件
         },
-        editType: 'fullRow', // 行编辑模式
-        rowSelection: 'single', // single单行选择,multiple多行选择
+        editType: "fullRow", // 行编辑模式
+        rowSelection: "single", // single单行选择,multiple多行选择
         rowDeselection: true, // 可取消选择,
         suppressContextMenu: this.suppressContextMenu, // 禁止右键
         suppressMultiSort: true, // 禁止多列排序,必须有
-        sortingOrder: ['asc', 'desc'], // 单击列头排序切换顺序
+        sortingOrder: ["asc", "desc"], // 单击列头排序切换顺序
         cacheBlockSize: system.agGridPaginationSize, // 每次从服务端请求30条数据
-        rowModelType: 'serverSide', // 服务端模式
-        getRowNodeId: rowdata => rowdata.id, // 行Id
+        rowModelType: "serverSide", // 服务端模式
+        getRowNodeId: (rowdata) => rowdata.id, // 行Id
         localeTextFunc: this.$agLocaleTextFunc.bind(this), // 本地化方法
         components: {
           sysdicCellRenderer: this.sysdicCodeCellRenderer, // 用于展示数据字典code 字典的过滤筛选
-          sysdicNameCellRenderer: this.sysdicNameCellRenderer // 用于展示数据字典name 字典的过滤筛选
+          sysdicNameCellRenderer: this.sysdicNameCellRenderer, // 用于展示数据字典name 字典的过滤筛选
         },
         // 列定义
         columnDefs: [
           {
             // 行号列
-            type: ['rowNumberColumn']
-          }
+            type: ["rowNumberColumn"],
+          },
         ],
         // 列默认属性
         defaultColDef: {
           sortable: true, //启用排序
           resizable: true, //可手动改变列的宽度
-          filter: 'agTextColumnFilter', // 默认为文字过滤
+          filter: "agTextColumnFilter", // 默认为文字过滤
           filterParams: {
-            newRowsAction: 'keep', // 按照过滤条件刷新数据后，保持过滤条件。
+            newRowsAction: "keep", // 按照过滤条件刷新数据后，保持过滤条件。
             applyButton: false, // 应用过滤按钮
-            clearButton: false // 清除过滤按钮
+            clearButton: false, // 清除过滤按钮
           },
           enableValue: false,
           enableRowGroup: false,
           enablePivot: false,
           width: 150, //默认每列宽度150像素
-          minWidth: 50
+          minWidth: 50,
         },
         columnTypes: {
           rowNumberColumn: {
             // 行号列
-            headerName: this.$t('common.labels.rowIndex'), // 列头文字
-            headerClass: 'col-row-index',
-            cellClass: 'col-row-index',
+            headerName: this.$t("common.labels.rowIndex"), // 列头文字
+            headerClass: "col-row-index",
+            cellClass: "col-row-index",
             width: 50,
-            valueGetter: params => params.node.rowIndex + 1, // 行号计算
+            valueGetter: (params) => params.node.rowIndex + 1, // 行号计算
             suppressColumnsToolPanel: true, // ”显示列“不出现在toolpanel中
             suppressFiltersToolPanel: true, // ”筛选“不出现在toolpanel中
             suppressMenu: true, // 不要菜单
             sortable: false, // 不要排序
             filter: false, // 不要筛选
-            lockPosition: true, // 位置不可改变
-            pinned: 'left', // 固定在左侧
-            suppressMovable: true // 禁止移动此列
-          }
+          },
         },
         // sideBar配置
         sideBar: {
           toolPanels: [
             {
-              id: 'columns',
-              labelDefault: 'Columns',
-              labelKey: 'columns',
-              iconKey: 'columns',
-              toolPanel: 'agColumnsToolPanel',
+              id: "columns",
+              labelDefault: "Columns",
+              labelKey: "columns",
+              iconKey: "columns",
+              toolPanel: "agColumnsToolPanel",
               toolPanelParams: {
                 suppressRowGroups: true,
                 suppressValues: true,
                 suppressPivots: true,
-                suppressPivotMode: true
-              }
+                suppressPivotMode: true,
+              },
             },
             {
-              id: 'filters',
-              labelDefault: 'Filters',
-              labelKey: 'filters',
-              iconKey: 'filter',
-              toolPanel: 'agFiltersToolPanel'
-            }
-          ]
-        }
-      }
+              id: "filters",
+              labelDefault: "Filters",
+              labelKey: "filters",
+              iconKey: "filter",
+              toolPanel: "agFiltersToolPanel",
+            },
+          ],
+        },
+      };
     },
     /**
      * ag-grid国际化回调函数
@@ -407,14 +442,14 @@ export default {
      * @returns i18N结果
      */
     $agLocaleTextFunc(key, defaultValue) {
-      const prefix = 'agGrid.'
-      const path = prefix + key
-      const i18n = this.$t(path)
-      let result = defaultValue
-      if (this.$te(path) === true && typeof i18n !== 'object') {
-        result = i18n
+      const prefix = "agGrid.";
+      const path = prefix + key;
+      const i18n = this.$t(path);
+      let result = defaultValue;
+      if (this.$te(path) === true && typeof i18n !== "object") {
+        result = i18n;
       }
-      return result
-    }
-  }
-}
+      return result;
+    },
+  },
+};

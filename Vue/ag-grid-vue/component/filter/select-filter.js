@@ -1,8 +1,8 @@
 /*
  * FilePath: \src\components\ag-grid\filter\SelectFilter.js
- * Project: ebr
+ * Project: HolliEBR
  * CreatedAt: 2020-02-26 08:46:45
- * CreatedBy: bx 
+ * CreatedBy: bx (<bx@hollysys.net>)
  * Copyright: (c) 2020
  * Task: #1
  * Write a description of the code here.

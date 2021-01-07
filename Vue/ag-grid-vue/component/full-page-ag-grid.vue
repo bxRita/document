@@ -1,4 +1,3 @@
-
 <template>
   <div class="full-page-ag-grid">
     <ag-grid
@@ -10,8 +9,7 @@
   </div>
 </template>
 
-<script src="./full-page-ag-grid.js">
-</script>
+<script src="./full-page-ag-grid.js"></script>
 
 <style lang="scss" scoped>
 .full-page-ag-grid {
