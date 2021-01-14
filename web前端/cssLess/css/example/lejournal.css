@@ -1,0 +1,529 @@
+/*  
+=========================
+Le Journal (Responsive)
+=========================
+*/
+
+/* normalize.css v2.1.2 | MIT License | git.io/normalize
+    (truncated for example in book)
+---------------------------------------------------------------- */
+
+/* ::: HTML5 display definitions ::: */
+/**
+ * Correct `block` display not defined in IE 8/9.
+ */
+article,
+aside,
+figcaption,
+figure,
+footer,
+header,
+main,
+nav,
+section {
+  display: block;
+}
+
+/* ::: Base ::: */
+/**
+  * Prevent iOS text size adjust after orientation change, without disabling
+  *    user zoom.
+  */
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/**
+  * Remove default margin.
+  */
+body {
+  margin: 0;
+}
+
+/* ::: Links ::: */
+/**
+  * Address `outline` inconsistency between Chrome and other browsers.
+  */
+a:focus {
+  outline: thin dotted;
+}
+
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* ::: Typography ::: */
+/**
+  * Address inconsistent and variable font size in all browsers.
+  */
+small {
+  font-size: 80%;
+}
+
+/* ::: Embedded content ::: */
+/**
+  * Remove border when inside `a` element in IE 8/9.
+  */
+img {
+  border: 0;
+}
+/* -- end of abridged normalize -- */
+
+/* WEB ICON FONT
+   (the social icons that appear
+   in the upper-right corner)
+ ------------------------------------------ */
+@font-face {
+  font-family: "Social Icons";
+  src: url("font/socialico-webfont.eot");
+  src: url("font/socialico-webfont.eot?#iefix") format("embedded-opentype"),
+    url("font/socialico-webfont.woff") format("woff"),
+    url("font/socialico-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* GENERAL (APPLIED DIRECTLY TO ELEMENTS MOSTLY)
+ ------------------------------------------------ */
+body {
+  font: 100%/1.2 Georgia, "Times New Roman", serif;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+* {
+  -webkit-box-sizing: border-box; /* Android <= 2.3, iOS <= 4 */
+  -moz-box-sizing: border-box; /* Firefox 1+ */
+  box-sizing: border-box; /* Chrome, IE 8+, Opera, Safari 5.1 */
+}
+
+h1 {
+  color: #212121;
+  font-family: "Lato", sans-serif;
+  font-size: 2.25em;
+  font-weight: 300;
+  letter-spacing: -2px;
+  line-height: 0.975;
+  margin-bottom: 0.4125em;
+}
+
+.about h2,
+.mod h2,
+.nav-main a {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.about h2,
+.mod h2 {
+  font-size: 0.875em; /* 15px/16px */
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: #1162a4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.more:after {
+  content: " 禄";
+}
+
+img {
+  border: 0;
+}
+
+.page {
+  /* these declarations combine to center entire page in browser */
+  margin: 0 auto;
+  max-width: 960px;
+}
+
+.post-photo,
+.post-photo-full,
+.about img,
+.map {
+  max-width: 100%;
+}
+
+/* MASTHEAD
+ ------------------------------------------ */
+.masthead {
+  padding-top: 12px;
+}
+
+.logo {
+  font-size: 10px;
+  line-height: 1;
+  margin-bottom: -8px;
+  margin-top: 0;
+}
+
+.logo,
+.social-sites,
+.nav-main li {
+  text-align: center;
+}
+
+/* ::: Main Navigation ::: */
+.nav-main {
+  border-bottom: 1px solid #c7c7c8;
+  border-top: 5px solid #019443;
+  margin-top: 0;
+  padding: 0.45em 0 0.5em;
+}
+
+.nav-main a {
+  color: #292929;
+  font-size: 1.125em; /* 18px/16px */
+}
+
+.nav-main a:hover {
+  color: #029443;
+  text-decoration: none;
+}
+
+.nav-main .current-page,
+.nav-main .current-page:hover {
+  color: #747474;
+  cursor: default;
+}
+
+/* ::: Social Sites Icons ::: */
+.social-sites {
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.social-sites li {
+  display: inline;
+}
+
+.social-sites a {
+  color: #019443;
+  font-family: "Social Icons", sans-serif;
+  font-size: 46px;
+  line-height: 0.8;
+  vertical-align: middle;
+}
+
+.social-sites a:hover {
+  color: #1162a4;
+  text-decoration: none;
+}
+
+/* MAIN CONTENT
+ ------------------------------------------ */
+main > .post:first-child > h1 {
+  margin-top: 0.769em;
+}
+
+.post-blurb p {
+  color: #363636;
+  font-size: 1.125em;
+  line-height: 1.575;
+}
+
+/* ::: Blog Post Footer ::: */
+.post-footer {
+  border-bottom: 1px solid #dbdbdb;
+  border-top: 1px solid #dbdbdb;
+  padding-bottom: 0.9em;
+  padding-top: 0.9em;
+}
+
+.post-footer a {
+  font-weight: bold;
+}
+
+.post-footer time {
+  display: block;
+  margin-top: 0.25em;
+}
+
+.footer p {
+  color: #3a3a3a;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 0.688em;
+}
+
+.footer p small {
+  font-size: inherit;
+}
+
+/* ::: Pagination Links Below Blog Posts ::: */
+.pagination {
+  margin: 30px 0 0;
+  padding: 0;
+}
+
+.pagination li {
+  display: inline-block;
+  font: 0.875em arial, helvetica, sans-serif;
+  margin-right: 0.25em;
+}
+
+/* SIDEBAR
+ ------------------------------------------ */
+.sidebar {
+  margin-top: 60px;
+}
+
+.mod h2 {
+  border-bottom: 1px solid #dbdbdb;
+  margin-top: 2.571em;
+  padding-bottom: 0.75em;
+}
+
+/* ::: About Me ::: */
+.about {
+  background: #2b2b2b;
+  padding: 0.313em 0.625em 0.625em;
+}
+
+.about h2,
+.about p {
+  color: #dadada;
+}
+
+.about p {
+  font-size: 0.875em;
+  line-height: 1.5;
+}
+
+.about img {
+  border: 5px solid #bebebe;
+  display: block;
+  margin: 0 auto;
+}
+
+.map {
+  margin: 1.438em 0 0.813em;
+}
+
+/* ::: Previous and Shared Posts ::: */
+.links {
+  margin: 1.5em 0 4.125em;
+  padding-left: 0;
+}
+
+.links li {
+  margin-bottom: 1.1em;
+}
+
+.links a {
+  font-size: 1.1em;
+  line-height: 1.195;
+}
+
+/* FOOTER
+ --------------------------------- */
+footer[role="contentinfo"] {
+  border-top: 1px solid #cacbcb;
+}
+
+/* ===================== MEDIA QUERIES ===================== */
+
+/* 320+ 
+ ------------------------------------------ */
+@media only screen and (min-width: 20em) {
+  /* Masthead */
+  .nav-main li {
+    border-left: 1px solid #c8c8c8;
+    display: inline-block;
+    text-align: left;
+  }
+
+  .nav-main li:first-child {
+    border-left: none;
+  }
+
+  .nav-main li:last-child a {
+    padding-right: 0;
+  }
+
+  .nav-main a {
+    display: inline-block;
+    font-size: 1em;
+    padding: 0.5em 0.9em 0.5em 1.15em;
+  }
+
+  /* Sidebar */
+  .links {
+    width: 90%;
+  }
+}
+
+/* 480+ 
+ ------------------------------------------ */
+@media only screen and (min-width: 30em) {
+  /* Masthead */
+  .masthead {
+    position: relative;
+  }
+
+  .logo {
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .nav-main a {
+    font-size: 1.125em; /* 18px/16px */
+    padding-left: 1.4em;
+    padding-right: 1.15em;
+  }
+
+  .social-sites {
+    margin: 0;
+    position: absolute;
+    right: -3px;
+    top: 41px;
+  }
+
+  .social-sites li {
+    margin-left: -1px;
+  }
+
+  /* Main Content */
+  .post-photo {
+    float: left;
+    margin-bottom: 2px;
+    margin-right: 3.67%;
+    max-width: 61.667%;
+  }
+
+  .post-footer time {
+    display: inline;
+    margin-top: 0;
+  }
+
+  .post-footer time:before {
+    content: "鈥�  ";
+  }
+
+  /* Sidebar */
+  .links a {
+    font-size: 1.125em;
+  }
+}
+
+/* 480-767-only 
+ ------------------------------------------ */
+@media only screen and (min-width: 30em) and (max-width: 47.9375em) {
+  /* Sidebar */
+  .about {
+    overflow: hidden;
+  }
+
+  .about img {
+    float: left;
+    margin-right: 15px;
+  }
+}
+
+/* 600-767-only 
+ ------------------------------------------ */
+@media only screen and (min-width: 37.5em) and (max-width: 47.9375em) {
+  /* Sidebar */
+  .about {
+    padding-bottom: 1.4em;
+  }
+}
+
+/* 768+ 
+ ------------------------------------------- */
+@media only screen and (min-width: 48em) {
+  h1 {
+    font-size: 3.25em;
+  }
+
+  /* Masthead */
+  .masthead {
+    padding-top: 10px;
+  }
+
+  .nav-main {
+    margin-bottom: 0;
+  }
+
+  /* Main Content */
+  .container {
+    background: url(../img/bg.png) repeat-y 65.938% 0;
+    padding-bottom: 1.9375em;
+  }
+
+  main {
+    float: left;
+    width: 62.5%;
+  }
+
+  main > .post:first-child > h1 {
+    margin-top: 0.904em;
+  }
+
+  .post-blurb p {
+    font-size: 1em;
+    line-height: 1.4;
+  }
+
+  .post-footer {
+    padding-bottom: 0.7em;
+    padding-top: 0.7em;
+  }
+
+  .footer p {
+    font-size: 0.688em;
+  }
+
+  .pagination {
+    margin-top: 45px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    float: right;
+    margin-top: 1.875em;
+    width: 31.25%;
+  }
+
+  .about p {
+    font-size: 0.813em;
+  }
+
+  /* Page Footer */
+  footer[role="contentinfo"] {
+    border-top: 1px solid #cacbcb;
+  }
+}
+/* --- end media queries ---- */
+
+/* html5boilerplate.com Clearfix
+ --------------------------------- */
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+/*
+  * For IE 6/7 only
+  * Include this rule to trigger hasLayout and contain floats.
+  */
+.clearfix {
+  *zoom: 1;
+}
