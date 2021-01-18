@@ -449,4 +449,66 @@ visibility 属性的主要目的是控制元素是否可见。与 diaplay 不同
 
 > z-index 属性仅对定位过的元素（即设为绝对定位、相对定位或固定定位的元素）有效。上例中仅包含绝对定位的元素，但实际上可以对绝对定位、相对定位和固定定位的元素混合使用 z-index，z-index 会将它们作为整体进行安排，而不是分别安排。
 
-构建响应式页面，参考[CSS 响应式页面](./CSS 响应式页面.md)
+### 设置字体大小
+
+案例：
+
+```css
+body {
+  font-family: Geneva, Tahoma, Verdana, sans-serif;
+  font-size: 100%; /* 16px */
+}
+h1,
+h2 {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+  font-weight: normal;
+}
+h1 {
+  font-size: 2.1875em; /* 35px/16px */
+}
+h2 {
+  font-size: 1.75em; /* 28px/16px */
+}
+em,
+a:link,
+.intro .subhead {
+  font-weight: bold;
+}
+.intro .subhead {
+  font-size: 1.125em; /* 18px/16px */
+}
+.intro p {
+  font-size: 1.0625em; /* 17px/16px */
+}
+.project p {
+  font-size: 0.9375em; /* 15px/16px */
+}
+```
+
+body 里的 font-size: 100% 声明为 em 字体大小设置了参考的基准。这里的 100% 将被翻译为默认字体大小（大多数系统下为 16px）。每个 font-size 属性值后面的注释解释了该值的计算方法，同时显示了等价的像素值
+
+1em 总是等于默认的字号大小，这是 em 的工作原理。在这里，1em 就等于 16px，因为我们将其创建为元素的默认字号。据此可以通过一点点除法确定 em 值（或百分比）
+
+```
+要指定的字体大小／父元素的字体大小＝值
+
+但需要记住的是，em该值应该是相对于这些元素的父元素的
+```
+
+```
+使用rem 设置字体大小
+
+CSS3 引入了一些新的单位，其中很有意思的一个便是rem（root em 的简称）。它同em 很像，不过它总是以根元素为参照系设置其他元素的字体大小，而不是父元素。根元素是html 元素（因为它包含body，也就包含了所有内容）
+
+
+这样做简化了字体大小的设置，因为html 的字体大小通常不会变，不像父元素的大小是不确定的，就像在段落中设置链接字体大小的例子那样因此，我们的公式（在前面公式的基础上调整而来）为：
+
+要指定的字体大小／根元素字体大小＝值
+
+实际上就是
+
+要指定的字体大小／ 16 ＝值
+
+虽然现代浏览器对它的支持程度很高，但Internet Explorer 直到IE9 才开始支持它，这也
+是很多代码编写人员尚未使用rem 的原因
+```

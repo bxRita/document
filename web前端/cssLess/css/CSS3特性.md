@@ -156,7 +156,13 @@ polyfill 通常使用 javascript 实现，它可以为较弱的浏览器提供�
 **为元素添加阴影**
 
 1. 输入 text-shadow:
-2. 分别输入表示 x-offset（水平偏移量）、y-offset（垂直偏移量）、blur-radius（模糊半径）和 color 的值（前三个值带长度单位，四个值之间不用逗号分隔），例如-2px 3px 7px #999（关于允许输入的值，参见提示）。
+2. 分别输入表示 x-offset（水平阴影的位置）、y-offset（垂直阴影的位置）、blur-radius（模糊半径）和 color （阴影的颜色）的值（前三个值带长度单位，四个值之间不用逗号分隔），例如-2px 3px 7px #999（关于允许输入的值，参见提示）。
+
+语法：
+
+```
+text-shadow: x-offset y-offset blur-radius color;
+```
 
 **为元素文本添加多重阴影**
 
@@ -180,7 +186,21 @@ x-offset 和y-offset 值可以是正整数，也可以是负整数，也就是�
 
 box-shadow 属性与 text-shadow 属性的另一个区别是，如果你希望兼容旧版 Android、Mobile Safari 和 Safari 浏览器， 那么 boxshadow 需要加上-webkit- 厂商前缀。
 
-box-shadow 属性接受六个值：带长度单位的 x-offset 和 y-offset、可选的带长度单位的 blur-radius、可选的 inset 关键字、可选的带长度单位的 spread 值及 color 值。如果不指定 blur-radius 和 spread 的值，则设为 0。
+box-shadow 属性接受六个值：
+
+- 带长度单位的 x-offset（水平阴影的位置）
+- 和 y-offset（垂直阴影的位置）、
+- 可选的带长度单位的 blur-radius（模糊距离）、
+- 可选的带长度单位的 spread（阴影大小） 值、
+- color 值（阴影颜色）、
+- 可选的 inset 关键字（从外层的阴影开始时改变阴影内侧的阴影）。
+- 如果不指定 blur-radius 和 spread 的值，则设为 0。
+
+语法:
+
+```
+box-shadow: x-offset y-offset blur spread color inset;
+```
 
 案例：
 
@@ -256,6 +276,11 @@ box-shadow 属性接受六个值：带长度单位的 x-offset 和 y-offset、�
 ![1](../imgs/16.png)
 
 > Inset Shadow spread 中负的 spread 值会让阴影在元素内进行收缩。为 0 的 x-offset 值意味着阴影不会向左或向右偏离该元素
+
+关于投影的注意事项：
+
+- 投影的行为跟边框不完全一致，因为它不会影响布局，而且也不会受到 box-sizing 属性的影响。不过，你还是可以通过内边距或外边距（这取决于投影是内嵌和还是外扩的）来额外模拟出边框所需要占据的空间
+- 上述方法所创建出的假“边框”出现在元素的外圈。它们并不会响应鼠标事件，比如悬停或点击。如果这一点非常重要，你可以给 box-shadow 属性加上 inset 关键字，来使投影绘制在元素的内圈。请注意，此时你需要增加额外的内边距来腾出足够的空隙。
 
 ### 应用多重背景
 
@@ -336,7 +361,17 @@ background-repeat: r ，这里的r 是repeat-x、repeat-y 或no-repeat 值，用
 
 1. 线性渐变
 
-案例：
+语法：
+
+```
+background-image: linear-gradient(direction, color-stop1, color-stop2, ...);
+
+direction : 用角度值指定渐变的方向（或角度），默认线性渐变是从上往下渐变的，因此在属性值中不需要指定to bottom。
+
+color-stop1, color-stop2,... : 用于指定渐变的起止颜色。
+```
+
+使用案例：
 
 ```html
 <!DOCTYPE html>
@@ -435,6 +470,26 @@ to bottom left/right，to top left/right 指定渐变方向角度的方式。使
 ```
 
 2. 径向渐变
+
+语法：
+
+```
+background-image: radial-gradient(shape size at position, start-color, ..., last-color);
+```
+
+- shape: 确定圆的类型:
+  - ellipse (默认): 指定椭圆形的径向渐变。
+  - circle ：指定圆形的径向渐变
+- size 定义渐变的大小，可能值：
+  - farthest-corner (默认) : 指定径向渐变的半径长度为从圆心到离圆心最远的角
+  - closest-side ：指定径向渐变的半径长度为从圆心到离圆心最近的边
+  - closest-corner ： 指定径向渐变的半径长度为从圆心到离圆心最近的角
+  - farthest-side ：指定径向渐变的半径长度为从圆心到离圆心最远的边
+- position 定义渐变的位置。可能值：
+  - center（默认）：设置中间为径向渐变圆心的纵坐标值。
+  - top：设置顶部为径向渐变圆心的纵坐标值。
+  - bottom：设置底部为径向渐变圆心的纵坐标值。
+- start-color, ..., last-color 用于指定渐变的起止颜色。
 
 案例：
 
