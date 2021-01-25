@@ -1,0 +1,33 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.less';
+import { Provider } from 'react-redux';
+import configureStore, { history } from './store';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const store = configureStore()
+
+const render = () => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <App history={history}/>
+    </Provider>,
+    document.getElementById('root')
+  );
+}
+
+render();
+
+// Hot reloading
+if (module.hot) {
+  // Reload components
+  module.hot.accept('./App', () => {
+    render()
+  })
+}
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
