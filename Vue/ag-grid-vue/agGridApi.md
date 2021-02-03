@@ -114,3 +114,167 @@ ir.length && (ir[0].eqpInterface = EqpInterfaceType.OPC.code);
 // 刷新接口表格数据
 this.interfaceGridApi.refreshCells(params);
 ```
+
+5. 单元格右键菜单
+
+ag-grid[官网详情](https://www.ag-grid.com/documentation/vue/context-menu/)     
+
+使用说明：
+
+1. 增加右键相关配置
+```js
+<template>
+  <ag-grid-vue
+    style="width: 100%; height: 100%;"
+    class="ag-theme-alpine"
+    id="myGrid"
+    :gridOptions="gridOptions"
+    @grid-ready="onGridReady"
+    :columnDefs="columnDefs"
+    :defaultColDef="defaultColDef"
+    :enableRangeSelection="true"
+    :allowContextMenuWithControlKey="true" // 允许使用ctrl按住选择
+    :getContextMenuItems="getContextMenuItems" // 获取右键菜单弹出配置项
+    :suppressContextMenu="false" // 如果设置为true ，则会完全关闭右键菜单
+    :modules="modules"
+    :rowData="rowData">
+  </ag-grid-vue>
+</template>
+export default {
+  // ....省略其它项
+  methods: {
+    /**
+     * @description 获取右键菜单选项 https://www.ag-grid.com/documentation/vue/context-menu/
+     */
+    getContextMenuItems(params) {
+      var result = [
+        {
+          name: 'Alert ' + params.value,
+          action: function () {
+            window.alert('Alerting about ' + params.value);
+          },
+          cssClasses: ['redFont', 'bold'],
+        },
+        {
+          name: 'Always Disabled',
+          disabled: true,
+          tooltip:
+            'Very long tooltip, did I mention that I am very long, well I am! Long!  Very Long!',
+        },        
+        {
+          name: 'Person',
+          subMenu: [
+            {
+              name: 'Niall',
+              action: function () {
+                console.log('Niall was pressed');
+              },
+            },
+            {
+              name: 'Sean',
+              action: function () {
+                console.log('Sean was pressed');
+              },
+            },
+            {
+              name: 'John',
+              action: function () {
+                console.log('John was pressed');
+              },
+            },
+            {
+              name: 'Alberto',
+              action: function () {
+                console.log('Alberto was pressed');
+              },
+            },
+            {
+              name: 'Tony',
+              action: function () {
+                console.log('Tony was pressed');
+              },
+            },
+            {
+              name: 'Andrew',
+              action: function () {
+                console.log('Andrew was pressed');
+              },
+            },
+            {
+              name: 'Kev',
+              action: function () {
+                console.log('Kev was pressed');
+              },
+            },
+            {
+              name: 'Will',
+              action: function () {
+                console.log('Will was pressed');
+              },
+            },
+            {
+              name: 'Armaan',
+              action: function () {
+                console.log('Armaan was pressed');
+              },
+            },
+          ],
+        },
+        'separator',
+        {
+          name: 'Windows',
+          shortcut: 'Alt + W',
+          action: function () {
+            console.log('Windows Item Selected');
+          },
+          icon:
+            '<img src="https://www.ag-grid.com/example-assets/skills/windows.png" />',
+        },
+        {
+          name: 'Mac',
+          shortcut: 'Alt + M',
+          action: function () {
+            console.log('Mac Item Selected');
+          },
+          icon:
+            '<img src="https://www.ag-grid.com/example-assets/skills/mac.png"/>',
+        },
+        'separator',
+        {
+          name: 'Checked',
+          checked: true,
+          action: function () {
+            console.log('Checked Selected');
+          },
+          icon:
+            '<img src="https://www.ag-grid.com/example-assets/skills/mac.png"/>',
+        },
+        'copy',
+        'separator',
+        'chartRange',
+      ];
+      return result
+    }
+  }
+}
+```
+运行效果：
+![1](./imgs/7.png)
+```
+如果suppressContextMenu设置为true，将会屏蔽右键菜单功能
+```
+
+以下是所有默认内置菜单项的列表，其中包含有关它们何时显示的规则      
+
+- autoSizeAll: Auto-size all columns. Not shown by default.
+- expandAll: When set, it's only shown if grouping by at least one column. Not shown by default.
+- contractAll: Collapse all groups. When set, it's only shown if grouping by at least one column. Not shown by default.
+- copy: Copy selected value to clipboard. Shown by default.
+- copyWithHeaders: Copy selected value to clipboard with headers. Shown by default.
+- paste: Always disabled (see note in clipboard section). Always disabled. Shown by default.
+- resetColumns: Reset all columns. Not shown by default.
+- export: Export sub menu (containing csvExport and excelExport). Shown by default.
+- csvExport: Export to CSV using all default export values. Shown by default.
+- excelExport: Export to Excel (.xlsx) using all default export values. Shown by default.
+- excelXmlExport: Export to Excel (.xml) using all default export values. Shown by default.
+- chartRange: Chart a range of selected cells. Only shown if charting is enabled.
