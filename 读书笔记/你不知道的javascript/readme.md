@@ -280,6 +280,39 @@ var a = null;
 - Date
 - RegExp
 - Error
+- Symbol - ES6 新增
+
+### 内部属性[[Class]]   
+
+所有 typeof 返回值为 "object" 的对象（如数组）都包含一个内部属性 [[Class]]（我们可以把它看作一个内部的分类，而非传统的面向对象意义上的类）。这个属性无法直接访问，一般通过 Object.prototype.toString(..) 来查看。例如：    
+```js
+Object.prototype.toString.call([1,2,3]);
+// "[object Array]"
+Object.prototype.toString.call(/regex-literal/i);
+// "[object RegExp]"
+```
+上例中，数组的内部 [[Class]] 属性值是 "Array"，正则表达式的值是 "RegExp"。多数情况下，对象的内部 [[Class]] 属性和创建该对象的内建原生构造函数相对应（如下），但并非总是如此。    
+
+那么基本类型值呢？下面先来看看 null 和 undefined：    
+```js
+Object.prototype.toString.call( null );
+// "[object Null]"
+Object.prototype.toString.call( undefined );
+// "[object Undefined]"
+```
+虽然 Null() 和 Undefined() 这样的原生构造函数并不存在，但是内部 [[Class]] 属性值仍然是 "Null" 和 "Undefined"    
+
+其他基本类型值（如字符串、数字和布尔）的情况有所不同，通常称为“包装”  
+```js
+Object.prototype.toString.call( "abc" );
+// "[object String]"
+Object.prototype.toString.call( 42 );
+// "[object Number]"
+Object.prototype.toString.call( true );
+// "[object Boolean]"
+
+```
+
 
 ### 对象-属性描述符
 
@@ -686,3 +719,51 @@ var b = -1 / 0; // -Infinity  如果除法运算中的一个操作数为负数�
 
 - Number.isInteger 要检测一个值是否是整数
 - Number.isNaN(..)  来判断一个值是否是 NaN
+- Object.is(...) 来判断两个值是否绝对相等
+  ```js
+  var a = 2 / "foo";
+  var b = -3 * 0;
+  Object.is( a, NaN ); // true
+  Object.is( b, -0 ); // true
+  Object.is( b, 0 ); // false
+  ```
+
+**值和引用**
+
+简单值（即标量基本类型值，scalar primitive）总是通过值复制的方式来赋值 / 传递，包括null、undefined、字符串、数字、布尔和 ES6 中的 symbol
+
+复合值（compound value）——对象（包括数组和封装对象，参见第 3 章）和函数，则总是通过引用复制的方式来赋值 / 传递。
+
+```js
+var a = 2;
+var b = a; // b是a的值的一个副本
+b++;
+a; // 2
+b; // 3
+var c = [1,2,3];
+var d = c; // d是[1,2,3]的一个引用
+d.push( 4 );
+c; // [1,2,3,4]
+d; // [1,2,3,4]
+```
+
+由于引用指向的是值本身而非变量，所以一个引用无法更改另一个引用的指向
+```js
+function foo(x) {
+  x.push( 4 );
+  //x;  [1,2,3,4]
+  // 然后
+  x = [4,5,6];
+  x.push( 7 );
+  //x;  [4,5,6,7]
+}
+var a = [1,2,3];
+foo( a );
+//a; 是[1,2,3,4]，不是[4,5,6,7]
+```
+我们向函数传递 a 的时候，实际是将引用 a 的一个复本赋值给 x，而 a 仍然指向 [1,2,3]。
+在函数中我们可以通过引用 x 来更改数组的值（push(4) 之后变为 [1,2,3,4]）。但 x = [4,5,6] 并不影响 a 的指向，所以 a 仍然指向 [1,2,3,4];    
+我们不能通过引用 x 来更改引用 a 的指向，只能更改 a 和 x 共同指向的值.
+
+**请记住：我们无法自行决定使用值复制还是引用复制，一切由值的类型来决定。**  
+
