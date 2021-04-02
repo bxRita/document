@@ -48,7 +48,6 @@ export default {
   mounted() {
     const { store } = this.getNode()
     this.id = store.data.id
-    console.log('class', store.data)
   },
   methods: {}
 }
@@ -60,6 +59,7 @@ div.enum {
     width: 99%;
     margin: 1px auto 0px;
     font-size: 10px;
+    background: transparent;
     .ant-card-head {
       background: rgb(95, 149, 255);
       min-height: 8px;

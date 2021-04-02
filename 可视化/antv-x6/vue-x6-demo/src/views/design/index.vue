@@ -4,7 +4,9 @@
       <div class="sider" id="erStencil">sider</div>
       <div class="panel">
         <!--画板顶部工具栏-->
-        <div class="toolbar">toolbar</div>
+        <div class="toolbar">
+          <tool-bar v-if="isReady" />
+        </div>
         <!--中间画板区-->
         <div class="x6-graph" id="erContainer">design</div>
       </div>
@@ -21,16 +23,17 @@ import { Shape, FunctionExt } from '@antv/x6'
 import store from '@/store'
 import BaseGraph from '@/utils/graph'
 import './index.less'
-import { ComponentType } from '@/config'
+import { ComponentType, color } from '@/config'
 import ConfigPanel from '@/components/config-panel/index.vue'
 const { Rect, Circle } = Shape
 import { setCurrentGraph } from '@/utils/graphUtil'
-
+import ToolBar from '@/components/Toolbar.vue'
 export default {
   name: 'Design',
   inheritAttrs: false,
   components: {
-    ConfigPanel
+    ConfigPanel,
+    ToolBar
   },
   data() {
     return {
@@ -131,7 +134,6 @@ export default {
       })
 
       graph.on('cell:added', ({ cell, index, options }) => {
-        console.log('cell: added ---', cell, index, options)
         store.dispatch('design/addCell', cell.store.data)
       })
       // 删除节点快捷键绑定
@@ -206,34 +208,22 @@ export default {
         document.getElementById('erStencil')
       )
       // const { graph } = this.baseGraph
-      const r = new Rect({
+      const r1 = new Rect({
         width: 70,
         height: 40,
         attrs: {
-          rect: { fill: '#31D0C6', stroke: '#4B4A67', strokeWidth: 2 },
-          text: { text: '类', fill: 'white' }
+          rect: { fill: color.blue, stroke: '#4B4A67', strokeWidth: 2 },
+          text: { text: '类/接口', fill: 'white' }
         },
         data: {
           type: ComponentType.C
         }
       })
-      let r2 = new Rect({
+      const r2 = new Rect({
         width: 70,
         height: 40,
         attrs: {
-          rect: { fill: '#31D0C6', stroke: '#4B4A67', strokeWidth: 2 },
-          text: { text: '接口', fill: 'white' }
-        },
-        data: {
-          type: ComponentType.I
-        }
-      })
-
-      const c = new Circle({
-        width: 60,
-        height: 60,
-        attrs: {
-          circle: { fill: '#FE854F', strokeWidth: 2, stroke: '#4B4A67' },
+          rect: { fill: '#FE854F', stroke: '#4B4A67', strokeWidth: 2 },
           text: { text: '枚举', fill: 'white' }
         },
         data: {
@@ -241,7 +231,19 @@ export default {
         }
       })
 
-      this.stencil.load([r, r2], 'basic')
+      const c = new Circle({
+        width: 60,
+        height: 60,
+        attrs: {
+          circle: { fill: '#31D0C6', strokeWidth: 2, stroke: '#4B4A67' },
+          text: { text: '标量', fill: 'white' }
+        },
+        data: {
+          type: ComponentType.S
+        }
+      })
+
+      this.stencil.load([r1, r2], 'basic')
       this.stencil.load([c], 'combination')
     },
     /**
@@ -249,7 +251,7 @@ export default {
      */
     getContainerSize() {
       return {
-        width: document.body.offsetWidth - 580,
+        width: document.body.offsetWidth - 610,
         height: document.body.offsetHeight - 50
       }
     },
@@ -264,6 +266,9 @@ export default {
       window.addEventListener('resize', this.resizeFn)
     }
   },
+  /**
+   * @description 组件销毁时
+   */
   destroyed() {
     window.removeEventListener('resize', this.resizeFn)
   }

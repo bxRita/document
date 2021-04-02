@@ -50,7 +50,6 @@ export default class X6Stencil {
         const { store } = draggingNode,
           nodeData = store.data,
           busData = nodeData.data
-        console.log(busData.type)
         switch (busData.type) {
           case ComponentType.C:
           case ComponentType.I:
@@ -58,7 +57,7 @@ export default class X6Stencil {
           case ComponentType.E:
             return getEnumNode(this.graph)
           default:
-            return draggingNode
+            return draggingNode.clone()
         }
       }
     })
@@ -71,7 +70,6 @@ export default class X6Stencil {
    * @param {*} groupName
    */
   load(nodes, groupName) {
-    console.log(nodes, groupName)
     this.stencil.load(nodes, groupName)
   }
 }

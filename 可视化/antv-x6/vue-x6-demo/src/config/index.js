@@ -9,9 +9,10 @@
  */
 
 export const ComponentType = {
-  E: 'enum',
-  C: 'class',
-  I: 'interface'
+  E: 'enum', // 枚举
+  C: 'class', // 类
+  I: 'interface', // 接口
+  S: 'Scalar' // 标量
 }
 
 // 颜色定义

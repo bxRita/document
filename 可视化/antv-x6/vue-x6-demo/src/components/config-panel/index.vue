@@ -1,33 +1,6 @@
 <template>
   <div class="config">
-    <config-grid
-      v-show="type === 'grid'"
-      :globalGridAttr="globalGridAttr"
-      :id="id"
-      :cellData="cellData"
-      :graph="graph"
-    />
-    <config-enum
-      v-show="type === 'node' && subType === 'Enum'"
-      :globalGridAttr="globalGridAttr"
-      :id="id"
-      :cellData="cellData"
-      :graph="graph"
-    />
-    <config-class
-      v-show="type === 'node' && subType !== 'Enum'"
-      :globalGridAttr="globalGridAttr"
-      :id="id"
-      :cellData="cellData"
-      :graph="graph"
-    />
-    <config-edge
-      v-show="type === 'edge'"
-      :globalGridAttr="globalGridAttr"
-      :id="id"
-      :cellData="cellData"
-      :graph="graph"
-    />
+    <component :is="curComp" v-bind="op" v-if="curComp" />
   </div>
 </template>
 
@@ -39,7 +12,13 @@ import ConfigEdge from './ConfigEdge/index.vue'
 import './index.less'
 import { globalGridAttr } from './global'
 import { getCurrentGraph } from '@/utils/graphUtil'
+import { ComponentType } from '@/config'
 
+const PanelType = {
+  G: 'grid',
+  N: 'node',
+  E: 'edge'
+}
 export default {
   name: 'Index',
   components: {
@@ -51,27 +30,53 @@ export default {
 
   data() {
     return {
-      type: 'grid',
-      id: '',
-      globalGridAttr: globalGridAttr,
-      cellData: null,
-      subType: 'enum',
-      graph: getCurrentGraph()
+      curComp: ConfigGrid,
+      type: PanelType.G,
+      op: {
+        id: '',
+        cellData: null,
+        graph: getCurrentGraph(),
+        globalGridAttr
+      }
     }
   },
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.boundEvent()
+    }, 200)
+  },
   methods: {
     boundEvent() {
-      this.graph.on('blank:click', () => {
-        this.type = 'grid'
+      this.op.graph.on('blank:click', () => {
+        this.type = PanelType.G
+        this.showAttrPanel(this.type)
       })
-      this.graph.on('cell:click', ({ cell, view }) => {
-        this.type = cell.isNode() ? 'node' : 'edge'
-        this.id = cell.id
-        this.cellData = (cell && cell.store && cell.store.data) || null
-        this.subType = this.cellData.bxDatas.type
-        console.log('-----cellData: ', this.subType, this.cellData)
+      this.op.graph.on('cell:click', ({ cell, view }) => {
+        this.type = cell.isNode() ? PanelType.N : PanelType.E
+        this.op.id = cell.id
+        this.op.cellData = (cell && cell.store && cell.store.data) || null
+        this.showAttrPanel(this.type, this.op.cellData.cellType)
       })
+    },
+    showAttrPanel(type, subType) {
+      switch (type) {
+        case PanelType.G:
+          this.curComp = ConfigGrid
+          break
+        case PanelType.N:
+          if (subType == ComponentType.E) {
+            this.curComp = ConfigEnum
+          } else {
+            this.curComp = ConfigClass
+          }
+          break
+        case PanelType.E:
+          this.curComp = ConfigEdge
+          break
+        default:
+          this.curComp = ConfigGrid
+          break
+      }
     }
   }
 }
