@@ -10,7 +10,7 @@
 export const WidgetType = {
   basis: 'basis',
   layout: 'layout',
-  custom: 'custom'
+  chart: 'chart'
 }
 
 // 保存页面设计数据到JSON中 本地KEY

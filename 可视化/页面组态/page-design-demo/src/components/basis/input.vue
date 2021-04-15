@@ -32,14 +32,14 @@ export default {
     /**
      * @description 按下回车的回调
      */
-    pressEnterEvent() {
-      this.eventFunctionHandler('pressEnter', arguments)
+    pressEnterEvent(...args) {
+      this.eventFunctionHandler('pressEnter', ...args)
     },
     /**
      * @description 输入框内容变化时的回调
      */
-    changeEvent() {
-      this.eventFunctionHandler('change', arguments)
+    changeEvent(...args) {
+      this.eventFunctionHandler('change', ...args)
     }
   }
 }

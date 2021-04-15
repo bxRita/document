@@ -29,8 +29,8 @@ export default {
   inheritAttrs: false,
   mixins: [basisMixins],
   methods: {
-    clickEvent() {
-      this.eventFunctionHandler('click')
+    clickEvent(...args) {
+      this.eventFunctionHandler('click', ...args)
     }
   }
 }

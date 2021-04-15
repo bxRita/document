@@ -52,8 +52,8 @@ export default {
           title: '布局控件',
           list: []
         },
-        [WidgetType.custom]: {
-          title: '业务控件',
+        [WidgetType.chart]: {
+          title: '图表控件',
           list: []
         }
       }
@@ -83,7 +83,7 @@ export default {
       let componentConfig = new Configuration().getDefaultConfig()
       let basisMap = [],
         layoutMap = [],
-        customMap = []
+        chartsMap = []
       componentConfig.map(item => {
         switch (item.type) {
           case WidgetType.basis:
@@ -92,8 +92,8 @@ export default {
           case WidgetType.layout:
             layoutMap.push(item)
             break
-          case WidgetType.custom:
-            customMap.push(item)
+          case WidgetType.chart:
+            chartsMap.push(item)
             break
           default:
             break
@@ -101,7 +101,7 @@ export default {
       })
       this.componentMap.basis.list = basisMap
       this.componentMap.layout.list = layoutMap
-      this.componentMap.custom.list = customMap
+      this.componentMap.chart.list = chartsMap
     },
     /**
      * @description 往设计面板中双击添加组件元素
@@ -143,5 +143,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

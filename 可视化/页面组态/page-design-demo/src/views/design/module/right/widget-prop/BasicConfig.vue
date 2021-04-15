@@ -69,31 +69,40 @@ export default {
       return handlerType[`${type}Data`](id)
     },
     createFormItem(h) {
-      if (Object.keys(this.currentWidget).length) {
-        return this.currentWidget.options.map(item => {
-          try {
-            if (
-              item.hidden &&
-              typeof item.hidden === 'function' &&
-              item.hidden()
-            ) {
+      const curWidget = this.currentWidget,
+        curWidgetOptions = curWidget.options
+      if (Object.keys(curWidget).length) {
+        return (
+          curWidgetOptions &&
+          curWidgetOptions.map(item => {
+            try {
+              if (
+                item.hidden &&
+                typeof item.hidden === 'function' &&
+                item.hidden()
+              ) {
+                return ''
+              }
+              if (item.hidden) {
+                return ''
+              }
+              if (
+                item.type === 'title' ||
+                item.type === 'tips' ||
+                !item.label
+              ) {
+                return createItem(h, item, this)
+              }
+              return (
+                <a-form-model-item label={item.label}>
+                  {createItem(h, item, this)}
+                </a-form-model-item>
+              )
+            } catch (error) {
               return ''
             }
-            if (item.hidden) {
-              return ''
-            }
-            if (item.type === 'title' || item.type === 'tips' || !item.label) {
-              return createItem(h, item, this)
-            }
-            return (
-              <a-form-model-item label={item.label}>
-                {createItem(h, item, this)}
-              </a-form-model-item>
-            )
-          } catch (error) {
-            return ''
-          }
-        })
+          })
+        )
       }
     }
   },

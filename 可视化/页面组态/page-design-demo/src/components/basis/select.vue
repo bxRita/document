@@ -82,8 +82,8 @@ export default {
         this.optionList = this.options.options
       }
     },
-    changeEvent() {
-      this.eventFunctionHandler('change', arguments)
+    changeEvent(...args) {
+      this.eventFunctionHandler('change', ...args)
     }
   }
 }

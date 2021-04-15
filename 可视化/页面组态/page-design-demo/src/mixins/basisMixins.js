@@ -10,6 +10,7 @@
 // 组件公用代码块
 export default {
   props: {
+    widgetItem: Object,
     options: Object,
     custom: {
       type: Object,

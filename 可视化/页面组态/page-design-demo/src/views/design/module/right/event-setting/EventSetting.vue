@@ -42,12 +42,14 @@
       <a-table
         :data-source="eventData"
         :columns="eventColumns"
+        :pagination="false"
         rowKey="eventName"
       >
         <template slot="name" slot-scope="text, record">
           <div class="event-setting-dropdown-item">
             <span>{{ text }}</span>
             <span class="event-setting-des">{{
+              componentsEventsObj[record.eventName] &&
               componentsEventsObj[record.eventName].eventDes
             }}</span>
           </div>
@@ -73,13 +75,14 @@
       <a-table
         :data-source="linkageEventData"
         :columns="eventLinkColumns"
+        :pagination="false"
         rowKey="eventName"
-        border
       >
         <template slot="name" slot-scope="text, record">
           <div class="event-setting-dropdown-item">
             <span>{{ text }}</span>
             <span class="event-setting-des">{{
+              componentsEventsObj[record.eventName] &&
               componentsEventsObj[record.eventName].eventDes
             }}</span>
           </div>
@@ -182,7 +185,7 @@ export default {
         {
           title: '已有事件',
           dataIndex: 'eventName',
-          width: '70%',
+          width: '60%',
           scopedSlots: { customRender: 'name' }
         },
         {
@@ -195,7 +198,7 @@ export default {
         {
           title: '联动事件',
           dataIndex: 'eventName',
-          width: '70%',
+          width: '60%',
           scopedSlots: { customRender: 'name' }
         },
         {
@@ -228,6 +231,8 @@ export default {
   methods: {
     ...mapActions('design', ['updateWidgetEvent']),
     init() {
+      if (eventSettingIns) eventSettingIns.resetEventSetting()
+
       this.componentsEvents = []
       this.eventData = []
       this.currentEvent = {}

@@ -1,5 +1,5 @@
 <!--
-  FilePath: \src\components\custom\dialog.vue
+  FilePath: \src\components\layout\dialog.vue
   Project: page-design-demo
   CreatedAt: 2021-04-13 18:00:52
   CreatedBy: ABC (<you@you.you>)

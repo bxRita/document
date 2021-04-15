@@ -16,6 +16,12 @@ export default class EventSetting {
     // 联动事件层级链
     this.linkageEventLevel = []
   }
+  resetEventSetting() {
+    // 事件监听列表
+    this.eventListener = {}
+    // 联动事件层级链
+    this.linkageEventLevel = []
+  }
   /**
    * 创建组件事件监听
    * $$标示为联动使事件

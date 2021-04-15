@@ -94,6 +94,15 @@ export function createItem(h, item, vm) {
         />
       )
       break
+    case 'chartStyleSetting':
+      renderDom = (
+        <div class="style-setting">
+          <a-button size="small" type="primary">
+            图表样式设置
+          </a-button>
+        </div>
+      )
+      break
     case 'padding':
       renderDom = <span style="font-size:12px">--</span>
       break

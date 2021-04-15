@@ -1,5 +1,5 @@
 /*
- * FilePath: \src\configuration\component\custom\dialog.js
+ * FilePath: \src\configuration\component\layout\dialog.js
  * Project: page-design-demo
  * CreatedAt: 2021-04-13 18:01:22
  * CreatedBy: ABC (<you@you.you>)

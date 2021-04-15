@@ -20,10 +20,20 @@ import xaTable from './layout/table.vue'
 import xaTabs from './layout/tabs.vue'
 import xaDialog from './layout/dialog.vue'
 
-// 业务组件
+// 图表组件
+import xaEchartsLine from './chart/charts-line.vue'
+import xaEchartsLineD from './chart/charts-line-3d.vue'
+import xaEchartsBar from './chart/charts-bar.vue'
+import xaEchartsBarD from './chart/charts-bar-3d.vue'
+import xaEchartsMap from './chart/charts-map.vue'
+import xaEchartsMapD from './chart/charts-map-3d.vue'
+import xaEchartsPie from './chart/charts-pie.vue'
+import xaEchartsRadar from './chart/charts-radar.vue'
+import xaEchartsGauge from './chart/charts-gauge.vue'
 
 // 编辑器
 import CodeEditor from './code-editor/CodeEditor.vue'
+
 const plugins = {
   // 基础组件
   xaInput,
@@ -34,8 +44,17 @@ const plugins = {
   xaGrid,
   xaTable,
   xaTabs,
-  // 业务组件
   xaDialog,
+  // 图表组件
+  xaEchartsLine,
+  xaEchartsLineD,
+  xaEchartsBar,
+  xaEchartsBarD,
+  xaEchartsMap,
+  xaEchartsMapD,
+  xaEchartsPie,
+  xaEchartsRadar,
+  xaEchartsGauge,
   // 编辑器
   CodeEditor
 }

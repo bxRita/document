@@ -18,6 +18,7 @@
         :is="record.key"
         :options="record.props"
         :custom="record.custom"
+        :widgetItem="record"
         :ref="record.id"
         :key="record.id"
       />
