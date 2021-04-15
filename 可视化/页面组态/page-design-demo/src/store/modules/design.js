@@ -19,6 +19,7 @@ import {
 import { updateWidgetPropById } from '@/utils/store2design'
 import { extend } from '@/utils/tools'
 import widgetCfg from './widget' // 设计面板右侧 grid相关属性配置修改更新
+import eventCfg from './event' // 设计面板右侧 事件相关属性配置修改更新
 
 const design = {
   namespaced: true,
@@ -88,6 +89,7 @@ const design = {
   },
   mutations: {
     ...widgetCfg.mutations,
+    ...eventCfg.mutations,
     // 设计面板添加组件
     [ADD_DESIGN_CELL]: (state, payload) => {
       state.pageData.list.push(payload)
@@ -182,6 +184,7 @@ const design = {
   },
   actions: {
     ...widgetCfg.actions,
+    ...eventCfg.actions,
     /**
      * 更新组件属性值
      * @param {*} param0

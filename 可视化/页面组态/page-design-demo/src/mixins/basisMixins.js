@@ -57,15 +57,15 @@ export default {
         levels.shift()
 
         let componentId = levels[0]
-        let componentEventCallbackName = levels[1]
+        let componentEventhandlerName = levels[1]
 
         // 根据配置调用对应组件函数
         if (
           refs[componentId] &&
-          typeof refs[componentId][componentEventCallbackName] === 'function'
+          typeof refs[componentId][componentEventhandlerName] === 'function'
         ) {
           let result = await this.custom.eventListener[item](this)
-          let backValue = refs[componentId][componentEventCallbackName](result)
+          let backValue = refs[componentId][componentEventhandlerName](result)
 
           if (typeof backValue !== undefined) {
             // 执行联动事件后如果有返回值,存储当前返回值，

@@ -29,6 +29,7 @@ import { WidgetType } from '@/constants'
 import FormNode from './FormNode'
 import CompUpdateMixins from '@/views/design/module/mixins/updateWidget'
 export default {
+  inheritAttrs: false,
   name: 'layoutItem',
   props: {
     record: {

@@ -40,3 +40,7 @@ export const UPDATE_TAB_COL = 'UPDATE_TAB_COL'
 export const ADD_TABLE_COL = 'ADD_TABLE_COL'
 export const ADD_TABLE_ROW = 'ADD_TABLE_ROW'
 // ---------------widget table end
+
+// 事件 begin
+export const UPDATE_WIDGET_EVENT = 'UPDATE_WIDGET_EVENT'
+// 事件 end

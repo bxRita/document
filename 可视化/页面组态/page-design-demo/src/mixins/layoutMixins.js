@@ -16,6 +16,10 @@ export default {
     layoutItem
   },
   props: {
+    isRuntime: {
+      type: Boolean,
+      default: false
+    },
     record: {
       type: Object,
       required: true

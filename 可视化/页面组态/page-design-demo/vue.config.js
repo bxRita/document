@@ -6,6 +6,10 @@ const resolve = dir => {
 module.exports = {
   chainWebpack: config => {
     config.resolve.alias.set('@', resolve('src'))
+    // 增加在线编辑器插件
+    config
+      .plugin('MonacoWebpackPlugin')
+      .use(require('monaco-editor-webpack-plugin'))
   },
   outputDir: 'dist',
   css: {

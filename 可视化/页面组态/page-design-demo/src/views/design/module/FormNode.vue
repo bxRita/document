@@ -22,27 +22,30 @@
         :key="record.id"
       />
     </div>
-
-    <div
-      class="copy"
-      :class="record.id === curSelId ? 'active' : 'unactivated'"
-      @click.stop="$emit('handleCopy')"
-    >
-      <a-icon type="copy" />
-    </div>
-    <div
-      class="delete"
-      :class="record.id === curSelId ? 'active' : 'unactivated'"
-      @click.stop="$emit('handleDelete')"
-    >
-      <a-icon type="delete" />
-    </div>
+    <template v-if="!isRuntime">
+      <div
+        class="copy"
+        :class="record.id === curSelId ? 'active' : 'unactivated'"
+        @click.stop="$emit('handleCopy')"
+      >
+        <a-icon type="copy" />
+      </div>
+      <div
+        class="delete"
+        :class="record.id === curSelId ? 'active' : 'unactivated'"
+        @click.stop="$emit('handleDelete')"
+      >
+        <a-icon type="delete" />
+      </div>
+    </template>
   </div>
 </template>
 <script>
 import CompUpdateMixins from '@/views/design/module/mixins/updateWidget'
 export default {
+  inheritAttrs: false,
   props: {
+    isRuntime: Boolean, // 是否是运行时
     record: {
       type: Object,
       required: true

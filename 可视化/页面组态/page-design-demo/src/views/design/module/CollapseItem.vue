@@ -36,6 +36,7 @@ import draggable from 'vuedraggable'
 export default {
   name: 'CollapseItem',
   props: ['list'],
+  inheritAttrs: false,
   components: {
     draggable
   },

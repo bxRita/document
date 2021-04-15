@@ -33,13 +33,13 @@ export default {
      * @description 按下回车的回调
      */
     pressEnterEvent() {
-      this.eventFunctionHandler('pressEnter')
+      this.eventFunctionHandler('pressEnter', arguments)
     },
     /**
      * @description 输入框内容变化时的回调
      */
     changeEvent() {
-      this.eventFunctionHandler('change')
+      this.eventFunctionHandler('change', arguments)
     }
   }
 }

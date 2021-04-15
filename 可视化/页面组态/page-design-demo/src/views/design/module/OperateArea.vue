@@ -26,16 +26,6 @@
         </a>
       </a-tooltip>
 
-      <a-tooltip title="导入">
-        <a
-          v-if="toolbars.includes('importJson')"
-          @click="$emit('handleOpenImportJsonModal')"
-        >
-          <a-icon type="upload" />
-          <span v-if="showToolbarsText">导入</span>
-        </a>
-      </a-tooltip>
-
       <a-tooltip title="生成JSON">
         <a
           v-if="toolbars.includes('exportJson')"
@@ -88,13 +78,13 @@
 </template>
 <script>
 export default {
+  inheritAttrs: false,
   props: {
     toolbars: {
       type: Array,
       default: () => [
         'save',
         'preview',
-        'importJson',
         'exportJson',
         'exportCode',
         'reset',

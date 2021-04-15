@@ -83,7 +83,7 @@ export default {
       }
     },
     changeEvent() {
-      this.eventFunctionHandler('change')
+      this.eventFunctionHandler('change', arguments)
     }
   }
 }

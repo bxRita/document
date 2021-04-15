@@ -32,9 +32,34 @@ export const gridConfig = {
     visible: true
   },
   style: Object.assign({}, layoutConfig.style),
-  custom: {
-    name: '弹框'
-  },
+  custom: Object.assign({}, layoutConfig.custom, {
+    name: '弹框',
+    linkageEventConfig: [].concat(
+      [
+        {
+          id: 'setDisplay',
+          label: '获取组件显示隐藏'
+        }
+      ],
+      ...layoutConfig.custom.linkageEventConfig
+    ),
+    eventConfig: [].concat(
+      [
+        {
+          eventType: '1', // 组件事件
+          eventName: 'ok',
+          eventDes: '点击确定'
+        },
+        {
+          eventType: '1', // 组件事件
+          eventName: 'cancel',
+          eventDes: '点击取消'
+        }
+      ],
+      ...layoutConfig.custom.eventConfig
+    ),
+    eventListener: {}
+  }),
   options: [].concat(layoutConfig.options, [
     {
       label: '属性配置',

@@ -31,6 +31,7 @@
           <draggable
             tag="div"
             class="draggable-box"
+            :disabled="isRuntime"
             v-bind="{
               group: 'form-draggable',
               ghostClass: 'moving',
@@ -39,7 +40,6 @@
             }"
             v-model="tabItem.list"
             @start="$emit('dragStart', $event, tabItem.list)"
-            @add="$emit('handleColAdd', $event, tabItem.list)"
           >
             <transition-group tag="div" name="list" class="list-main">
               <layoutItem
@@ -49,10 +49,10 @@
                 :selectItem.sync="selectItem"
                 :insertAllowedType="insertAllowedType"
                 :record="item"
+                :isRuntime="isRuntime"
                 :hideModel="hideModel"
                 :config="config"
                 @handleSelectItem="handleSelectItem"
-                @handleColAdd="handleColAdd"
                 @handleCopy="$emit('handleCopy')"
                 @handleDelete="$emit('handleDelete')"
               />
@@ -61,21 +61,22 @@
         </div>
       </a-tab-pane>
     </a-tabs>
-
-    <div
-      class="copy"
-      :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
-      @click.stop="$emit('handleCopy')"
-    >
-      <a-icon type="copy" />
-    </div>
-    <div
-      class="delete"
-      :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
-      @click.stop="$emit('handleDelete')"
-    >
-      <a-icon type="delete" />
-    </div>
+    <template v-if="!isRuntime">
+      <div
+        class="copy"
+        :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
+        @click.stop="$emit('handleCopy')"
+      >
+        <a-icon type="copy" />
+      </div>
+      <div
+        class="delete"
+        :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
+        @click.stop="$emit('handleDelete')"
+      >
+        <a-icon type="delete" />
+      </div>
+    </template>
   </div>
 </template>
 

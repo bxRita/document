@@ -30,7 +30,6 @@ const flatPageList = (list, resultArr) => {
 export const getWidgetPropById = (pageList, id) => {
   let result = []
   flatPageList(pageList, result)
-  console.log('flatt page widget list: ', result)
   return result.find(item => item.id === id)
 }
 

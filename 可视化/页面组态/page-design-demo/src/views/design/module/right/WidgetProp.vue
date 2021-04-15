@@ -15,13 +15,12 @@
     <a-tab-pane key="2" tab="事件配置" force-render>
       <event-setting v-bind="$attrs"></event-setting>
     </a-tab-pane>
-    <a-tab-pane key="3" tab="数据配置"> Content of Tab Pane 3 </a-tab-pane>
   </a-tabs>
 </template>
 
 <script>
-import BasicConfig from './BasicConfig.vue'
-import EventSetting from './EventSetting.vue'
+import BasicConfig from './widget-prop/BasicConfig.vue'
+import EventSetting from './event-setting/EventSetting.vue'
 export default {
   name: 'WidgetProp',
   inheritAttrs: false,

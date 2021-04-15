@@ -47,7 +47,7 @@ import LeftComponent from './module/LeftComponent.vue'
 import DesignPanel from './module/DesignPanel.vue'
 import RightPropArea from './module/RightPropArea.vue'
 import { extend } from '@/utils/tools'
-
+import { LocalPageDataKey } from '@/constants'
 export default {
   name: 'Design',
   inheritAttrs: false,
@@ -67,7 +67,6 @@ export default {
       default: () => [
         'save',
         'preview',
-        'importJson',
         'exportJson',
         'exportCode',
         'reset',
@@ -113,10 +112,35 @@ export default {
 
       this.contentStyle.height = `${contentH}px`
     },
-    handleSave() {
-      this.$emit('save', JSON.stringify(this.pageData))
+    saveDataToLocal() {
+      let cloneData = extend(true, {}, this.pageData)
+      // 保存的数据中 删除右侧属性栏options的配置项
+      const handleOption = list => {
+        list.forEach(l => {
+          if (l.subProp) {
+            handleOption(l[l.subProp])
+          }
+          if (l.list) {
+            handleOption(l.list)
+          }
+          if (l.options) delete l.options
+        })
+      }
+
+      handleOption(cloneData.list)
+      console.log(cloneData)
+      // 将处理后的数据 保存到localstorage中
+      localStorage.setItem(LocalPageDataKey, JSON.stringify(cloneData))
     },
-    handlePreview() {},
+    handleSave() {
+      this.saveDataToLocal()
+      this.$message.success('保存成功')
+    },
+    handlePreview() {
+      this.saveDataToLocal()
+      // 打开预览界面
+      window.open('/preview')
+    },
     handleOpenImportJsonModal() {},
     handleOpenCodeModal() {},
     handleOpenJsonModal() {},

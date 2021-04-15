@@ -38,6 +38,7 @@
         <draggable
           tag="div"
           class="draggable-box"
+          :disabled="isRuntime"
           v-bind="{
             group: 'form-draggable',
             ghostClass: 'moving',
@@ -46,7 +47,6 @@
           }"
           v-model="record.list"
           @start="$emit('dragStart', $event, record.list)"
-          @add="$emit('handleColAdd', $event, record.list)"
         >
           <transition-group tag="div" name="list" class="list-main">
             <layoutItem
@@ -56,10 +56,10 @@
               :selectItem.sync="selectItem"
               :insertAllowedType="insertAllowedType"
               :record="item"
+              :isRuntime="isRuntime"
               :hideModel="hideModel"
               :config="config"
               @handleSelectItem="handleSelectItem"
-              @handleColAdd="handleColAdd"
               @handleCopy="$emit('handleCopy')"
               @handleDelete="$emit('handleDelete')"
             />
@@ -67,21 +67,22 @@
         </draggable>
       </div>
     </component>
-
-    <div
-      class="copy"
-      :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
-      @click.stop="$emit('handleCopy')"
-    >
-      <a-icon type="copy" />
-    </div>
-    <div
-      class="delete"
-      :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
-      @click.stop="$emit('handleDelete')"
-    >
-      <a-icon type="delete" />
-    </div>
+    <template v-if="!isRuntime">
+      <div
+        class="copy"
+        :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
+        @click.stop="$emit('handleCopy')"
+      >
+        <a-icon type="copy" />
+      </div>
+      <div
+        class="delete"
+        :class="record.id === currentWidgetId ? 'active' : 'unactivated'"
+        @click.stop="$emit('handleDelete')"
+      >
+        <a-icon type="delete" />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -106,7 +107,7 @@ export default {
     }
   },
   mounted() {
-    this.currentComp = this.record.props.isDesign ? Card : Modal
+    this.currentComp = this.isRuntime ? Modal : Card
   }
 }
 </script>

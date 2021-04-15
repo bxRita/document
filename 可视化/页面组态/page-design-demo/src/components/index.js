@@ -22,6 +22,8 @@ import xaDialog from './layout/dialog.vue'
 
 // 业务组件
 
+// 编辑器
+import CodeEditor from './code-editor/CodeEditor.vue'
 const plugins = {
   // 基础组件
   xaInput,
@@ -33,7 +35,9 @@ const plugins = {
   xaTable,
   xaTabs,
   // 业务组件
-  xaDialog
+  xaDialog,
+  // 编辑器
+  CodeEditor
 }
 
 const installComponents = function () {

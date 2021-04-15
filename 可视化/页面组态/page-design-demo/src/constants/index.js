@@ -12,3 +12,6 @@ export const WidgetType = {
   layout: 'layout',
   custom: 'custom'
 }
+
+// 保存页面设计数据到JSON中 本地KEY
+export const LocalPageDataKey = 'DESIGN_DATA'

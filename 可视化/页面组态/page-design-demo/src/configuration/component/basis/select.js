@@ -52,7 +52,7 @@ export const buttonConfig = {
       [
         {
           eventType: '1', // 组件事件
-          eventName: 'click',
+          eventName: 'change',
           eventDes: '点击触发'
         }
       ],
