@@ -8,31 +8,35 @@
  * Write a description of the code here.
  */
 // 基本控件
-import ButtonConfig from '@/configuration/component/basis/button'
-import InputConfig from '@/configuration/component/basis/input'
-import SelectConfig from '@/configuration/component/basis/select'
+import ButtonConfig from '@/configuration/widget/basis/button'
+import InputConfig from '@/configuration/widget/basis/input'
+import SelectConfig from '@/configuration/widget/basis/select'
+import DropdownConfig from '@/configuration/widget/basis/dropdown'
+import CheckboxConfig from '@/configuration/widget/basis/checkbox'
 //布局控件
-import GridConfig from '@/configuration/component/layout/grid'
-import CardConfig from '@/configuration/component/layout/card'
-import TabsConfig from '@/configuration/component/layout/tabs'
-import TableConfig from '@/configuration/component/layout/table'
-import DialogConfig from '@/configuration/component/layout/dialog'
+import GridConfig from '@/configuration/widget/layout/grid'
+import CardConfig from '@/configuration/widget/layout/card'
+import TabsConfig from '@/configuration/widget/layout/tabs'
+import TableConfig from '@/configuration/widget/layout/table'
+import DialogConfig from '@/configuration/widget/layout/dialog'
 // 图表控件
-import ChartsLineConfig from '@/configuration/component/chart/charts-line'
-import ChartsLine3DConfig from '@/configuration/component/chart/charts-line-3d'
-import ChartsBarConfig from '@/configuration/component/chart/charts-bar'
-import ChartsBar3DConfig from '@/configuration/component/chart/charts-bar-3d'
-import ChartsMapConfig from '@/configuration/component/chart/charts-map'
-import ChartsMap3DConfig from '@/configuration/component/chart/charts-map-3d'
-import ChartsPieConfig from '@/configuration/component/chart/charts-pie'
-import ChartsRadarConfig from '@/configuration/component/chart/charts-radar'
-import ChartsGaugeConfig from '@/configuration/component/chart/charts-gauge'
+import ChartsLineConfig from '@/configuration/widget/chart/charts-line'
+import ChartsLine3DConfig from '@/configuration/widget/chart/charts-line-3d'
+import ChartsBarConfig from '@/configuration/widget/chart/charts-bar'
+import ChartsBar3DConfig from '@/configuration/widget/chart/charts-bar-3d'
+import ChartsMapConfig from '@/configuration/widget/chart/charts-map'
+import ChartsMap3DConfig from '@/configuration/widget/chart/charts-map-3d'
+import ChartsPieConfig from '@/configuration/widget/chart/charts-pie'
+import ChartsRadarConfig from '@/configuration/widget/chart/charts-radar'
+import ChartsGaugeConfig from '@/configuration/widget/chart/charts-gauge'
 
 export default [
   // 基本控件
   ButtonConfig,
   InputConfig,
   SelectConfig,
+  DropdownConfig,
+  CheckboxConfig,
   // 布局控件
   GridConfig,
   CardConfig,

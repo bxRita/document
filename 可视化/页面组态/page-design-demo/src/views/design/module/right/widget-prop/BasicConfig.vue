@@ -9,7 +9,7 @@
   Write a description of the code here.
 -->
 <script>
-import { createItem } from './generate-props'
+import { createItem } from '@/components/widget-prop/generate-props'
 import { mapActions } from 'vuex'
 import { debounce } from '@/utils/tools'
 export default {

@@ -1,3 +1,5 @@
+import { options } from 'less'
+
 /*
  * 根据属性类型 生成属性栏
  * FilePath: \src\views\design\module\right\generate-props.js
@@ -16,7 +18,7 @@ export function createItem(h, item, vm) {
         <a-input
           value={vm.handlerData(item.id, 'get')}
           size="small"
-          placeholder="请输入"
+          placeholder={item.placeholder || '请输入'}
           disabled={
             item.options && item.options.disabled !== undefined
               ? item.options.disabled
@@ -102,6 +104,32 @@ export function createItem(h, item, vm) {
           </a-button>
         </div>
       )
+      break
+    case 'selectOption': // select 下拉框 静态数据添加
+      renderDom = (
+        <StaticDataOption
+          options={vm.currentWidget.props.options}
+          propId={item.id}
+          widgetId={vm.currentWidget.id}
+        ></StaticDataOption>
+      )
+
+      break
+    case 'dynamicUrl': // 动态数据源
+      renderDom = (
+        <DynamicUrl
+          defaultVal={vm.handlerData(item.id, 'get')}
+          disabled={
+            item.options && item.options.disabled !== undefined
+              ? item.options.disabled
+              : false
+          }
+          on-change={value => {
+            vm.handlerData({ id: item.id, value }, 'set')
+          }}
+        ></DynamicUrl>
+      )
+
       break
     case 'padding':
       renderDom = <span style="font-size:12px">--</span>

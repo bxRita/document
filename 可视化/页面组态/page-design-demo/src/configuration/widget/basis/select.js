@@ -24,9 +24,13 @@ export const buttonConfig = {
     customStyle: '',
     showArrow: true,
     size: 'default',
-    dynamicUrl: '/api/pass/appResource/systemNameText',
-    isDynamic: true,
+    isDynamic: false, // 是否加载服务url数据
+    chooseFields: '',
+    valueField: '',
+    labelField: '',
+    dynamicUrl: '/api/pass/appResource/systemNameText', // 服务url接口地址
     options: [
+      // 静态数据
       {
         value: '1',
         label: '选项1'
@@ -146,50 +150,32 @@ export const buttonConfig = {
       inactiveText: '是'
     },
     {
-      id: 'props.dynamicUrl',
-      label: 'url地址',
-      type: 'input'
-    },
-    {
       id: 'props.options',
       label: '静态数据',
-      type: 'custom',
-      render: (h, vm) => {
-        let curWidget = vm.currentWidget,
-          options = curWidget.props.options
-        let dom = (
-          <div>
-            {options.map((opt, idx) => {
-              return (
-                <a-row>
-                  <a-col span={10}>
-                    <a-input
-                      value={opt.value}
-                      placeholder="请输入"
-                      style="width:95%"
-                    />
-                  </a-col>
-                  <a-col span={10}>
-                    <a-input
-                      value={opt.label}
-                      placeholder="请输入"
-                      style="width:95%"
-                    />
-                  </a-col>
-                  <a-col span={4}>
-                    <a-icon type="delete" />
-                  </a-col>
-                </a-row>
-              )
-            })}
-            <a>添加项</a>
-            <div>本地测试API:</div>
-            <div>/api/pass/appResource/systemNameText</div>
-            <div>/api/pass/workStations</div>
-          </div>
-        )
-        return dom
-      }
+      type: 'selectOption'
+    },
+    {
+      id: 'props.dynamicUrl',
+      label: 'url地址',
+      type: 'dynamicUrl'
+    },
+    {
+      id: 'props.chooseFields',
+      label: '筛选字段',
+      type: 'input',
+      placeholder: '字段属性用.隔开'
+    },
+    {
+      id: 'props.valueField',
+      label: '值属性',
+      type: 'input',
+      placeholder: '请输入选项值属性'
+    },
+    {
+      id: 'props.labelField',
+      label: '文本属性',
+      type: 'input',
+      placeholder: '请输入文本属性'
     }
   ])
 }

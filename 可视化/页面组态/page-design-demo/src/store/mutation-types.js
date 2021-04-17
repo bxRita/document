@@ -41,6 +41,12 @@ export const ADD_TABLE_COL = 'ADD_TABLE_COL'
 export const ADD_TABLE_ROW = 'ADD_TABLE_ROW'
 // ---------------widget table end
 
+// ---------------widget select begin
+export const ADD_WIDGET_DATA_ITEM = 'ADD_WIDGET_DATA_ITEM'
+export const DELETE_WIDGET_DATA_ITEM = 'DELETE_WIDGET_DATA_ITEM'
+export const UPDATE_WIDGET_DATA_ITEM = 'UPDATE_WIDGET_DATA_ITEM'
+// ---------------widget select end
+
 // 事件 begin
 export const UPDATE_WIDGET_EVENT = 'UPDATE_WIDGET_EVENT'
 // 事件 end
