@@ -181,3 +181,34 @@ export const classnames = data => {
 export const generateId = key => {
   return key + '_' + new Date().getTime()
 }
+
+/**
+ * @description 根据界面配置获取请求条件
+ * @param {Object} condition
+ * @returns
+ */
+export function getHttpConfigByCondition(condition) {
+  const { url, type, pageSize, orderBy, orderDesc, params } = condition
+  let paramData = {
+    pageSize,
+    orderBy,
+    orderDesc
+  }
+
+  params.map(item => {
+    paramData[item.key] = item.value
+  })
+
+  let httpCfg = {
+    method: type,
+    url
+  }
+
+  if (type == 'get') {
+    httpCfg.params = paramData
+  } else {
+    httpCfg.data = paramData
+  }
+
+  return httpCfg
+}

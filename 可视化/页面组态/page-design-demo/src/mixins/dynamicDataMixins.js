@@ -8,6 +8,7 @@
  * Task: #1
  * Write a description of the code here.
  */
+import { getHttpConfigByCondition } from '@/utils/tools'
 export default {
   data() {
     return {
@@ -31,12 +32,22 @@ export default {
     async getDatasFromServer() {
       const op = this.options
       if (op.isDynamic) {
-        let chooseFields = op.chooseFields,
-          valueField = op.valueField,
-          labelField = op.labelField
-        let fields = chooseFields.split('.')
+        const { dynamicCfg } = op
+        const { chooseFields, valueField, labelField } = dynamicCfg
+        let res = await this.$http(getHttpConfigByCondition(dynamicCfg))
+        if (!chooseFields) {
+          // 如果没有输入筛选字段
+          res instanceof Array
+            ? (this.optionList = res)
+            : this.$message.error('请配置筛选字段')
+          return
+        }
 
-        let res = await this.$http.get(op.dynamicUrl)
+        if (!valueField || !labelField) {
+          this.$message.error('值或文本属性不能为空')
+          return
+        }
+        let fields = chooseFields.split('.')
 
         let data = fields.reduce((a, b) => {
           if (a && a[b] !== void 0) {
@@ -56,7 +67,7 @@ export default {
         } else {
           for (let key in data) {
             result.push({
-              value: key,
+              value: data[key],
               label: key
             })
           }

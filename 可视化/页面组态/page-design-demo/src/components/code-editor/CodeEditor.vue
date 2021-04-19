@@ -35,7 +35,8 @@ export default {
       type: String,
       default: 'javascript'
     },
-    type: String
+    type: String,
+    readOnly: Boolean
   },
   components: {},
   data() {
@@ -55,7 +56,7 @@ export default {
           selectOnLineNumbers: true, //显示行号
           quickSuggestionsDelay: 500, //代码提示延时
           cursorStyle: 'line', //光标样式
-          readOnly: false,
+          readOnly: this.readOnly,
           fontSize: 13 //字体大小
         }
       )
@@ -119,8 +120,5 @@ export default {
 .code-editor {
   width: 100%;
   height: 100%;
-  .monaco-editor {
-    min-height: 668px;
-  }
 }
 </style>

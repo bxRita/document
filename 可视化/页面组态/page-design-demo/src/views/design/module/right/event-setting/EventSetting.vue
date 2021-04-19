@@ -406,6 +406,11 @@ export default {
 </script>
 
 <style lang="less">
+.code-editor {
+  .monaco-editor {
+    min-height: 668px;
+  }
+}
 .event-setting {
   &-title {
     display: inline-block;

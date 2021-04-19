@@ -32,6 +32,12 @@ module.exports = {
         https: true,
         secure: false,
         changeOrigin: true
+      },
+      '/data': {
+        target: 'http://ebr.hollicube.com',
+        https: true,
+        secure: false,
+        changeOrigin: true
       }
     }
   }

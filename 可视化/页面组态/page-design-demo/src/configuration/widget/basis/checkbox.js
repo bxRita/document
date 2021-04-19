@@ -18,9 +18,6 @@ export const buttonConfig = {
     defaultValue: [],
     disabled: false,
     name: 'checkbox_' + new Date().getTime(),
-    isDynamic: false, // 是否加载服务url数据
-    chooseFields: '',
-    dynamicUrl: '/api/pass/appResource/systemNameText', // 服务url接口地址
     options: [{ label: '选项1', value: '1' }] // 静态数据
   },
   style: Object.assign({}, commonConfig.style),
@@ -68,27 +65,9 @@ export const buttonConfig = {
       inactiveText: '启用'
     },
     {
-      id: 'props.isDynamic',
-      label: '动态加载',
-      type: 'switch',
-      activeText: '否',
-      inactiveText: '是'
-    },
-    {
       id: 'props.options',
       label: '静态数据',
       type: 'selectOption'
-    },
-    {
-      id: 'props.dynamicUrl',
-      label: 'url地址',
-      type: 'dynamicUrl'
-    },
-    {
-      id: 'props.chooseFields',
-      label: '筛选字段',
-      type: 'input',
-      placeholder: '字段属性用.隔开'
     }
   ])
 }

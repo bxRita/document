@@ -74,7 +74,7 @@ export default {
   watch: {
     designData: {
       handler(val, old) {
-        console.log('designData change ----------', val, old)
+        val != old && console.log('designData change ----------', val, old)
       },
       deep: true
     }

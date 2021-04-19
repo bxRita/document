@@ -25,10 +25,17 @@ export const buttonConfig = {
     showArrow: true,
     size: 'default',
     isDynamic: false, // 是否加载服务url数据
-    chooseFields: '',
-    valueField: '',
-    labelField: '',
-    dynamicUrl: '/api/pass/appResource/systemNameText', // 服务url接口地址
+    dynamicCfg: {
+      url: '/api/pass/appResource/systemNameText', // 服务url接口地址
+      type: '',
+      pageSize: 30,
+      orderBy: null,
+      orderDesc: false,
+      chooseFields: '',
+      valueField: 'value',
+      labelField: 'label',
+      params: []
+    },
     options: [
       // 静态数据
       {
@@ -155,27 +162,9 @@ export const buttonConfig = {
       type: 'selectOption'
     },
     {
-      id: 'props.dynamicUrl',
-      label: 'url地址',
-      type: 'dynamicUrl'
-    },
-    {
-      id: 'props.chooseFields',
-      label: '筛选字段',
-      type: 'input',
-      placeholder: '字段属性用.隔开'
-    },
-    {
-      id: 'props.valueField',
-      label: '值属性',
-      type: 'input',
-      placeholder: '请输入选项值属性'
-    },
-    {
-      id: 'props.labelField',
-      label: '文本属性',
-      type: 'input',
-      placeholder: '请输入文本属性'
+      id: 'props.dynamicCfg',
+      label: '数据集',
+      type: 'dynamicCfg'
     }
   ])
 }

@@ -1,4 +1,4 @@
-import { options } from 'less'
+import { extend } from '@/utils/tools'
 
 /*
  * 根据属性类型 生成属性栏
@@ -115,15 +115,10 @@ export function createItem(h, item, vm) {
       )
 
       break
-    case 'dynamicUrl': // 动态数据源
+    case 'dynamicCfg': // 动态数据源
       renderDom = (
         <DynamicUrl
-          defaultVal={vm.handlerData(item.id, 'get')}
-          disabled={
-            item.options && item.options.disabled !== undefined
-              ? item.options.disabled
-              : false
-          }
+          widgetProps={extend(true, {}, vm.currentWidget.props)}
           on-change={value => {
             vm.handlerData({ id: item.id, value }, 'set')
           }}
