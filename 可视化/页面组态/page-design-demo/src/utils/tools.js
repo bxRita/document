@@ -212,3 +212,41 @@ export function getHttpConfigByCondition(condition) {
 
   return httpCfg
 }
+
+/**
+ * @description 将数组 转换成树型结构
+ * @param {Array} list 待转换的数据
+ * @param {String} parentKey 父节点的key
+ * @param {String} valueKey 树节点的值key
+ * @param {String} parentVal 父节点的值
+ * @param {String} labelKey 树节点的文本key
+ */
+export function transArrToTree(
+  list,
+  parentKey,
+  valueKey = 'value',
+  parentVal = '-1'
+) {
+  let len = list.length,
+    obj = {},
+    result = []
+  list.map(item => {
+    obj[item[valueKey]] = item
+  })
+
+  for (let i = 0; i < len; i++) {
+    let pid = list[i][parentKey]
+    if (parentVal == pid) {
+      result.push(list[i])
+      continue
+    }
+
+    if (obj[pid].children) {
+      obj[pid].children.push(list[i])
+    } else {
+      obj[pid].children = [list[i]]
+    }
+  }
+
+  return result
+}

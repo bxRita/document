@@ -92,10 +92,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('design', ['currentSelectItem', 'getAllWidget']),
+    ...mapGetters('design', [
+      'currentSelectItem',
+      'getAllWidget',
+      'getWidgetById'
+    ]),
+    // 关联组件的配置事件
     widgetPropsCfg() {
-      let custom = this.currentSelectItem.custom
-      return (custom && custom.linkageEventConfig) || []
+      let relateId = this.form.relateId
+      if (relateId) {
+        const refItem = this.getWidgetById(relateId)
+        return refItem
+          ? refItem.custom && refItem.custom.linkageEventConfig
+          : []
+      } else {
+        return []
+      }
     },
     allWidgets() {
       let all = this.getAllWidget()

@@ -10,12 +10,13 @@
 
 import commonConfig from '@/configuration/common/basis'
 
-export const buttonConfig = {
+export const checkboxConfig = {
   type: commonConfig.compType,
   key: 'xaCheckbox',
   icon: 'icon-button-remove',
   props: {
     defaultValue: [],
+    value: [],
     disabled: false,
     name: 'checkbox_' + new Date().getTime(),
     options: [{ label: '选项1', value: '1' }] // 静态数据
@@ -72,4 +73,4 @@ export const buttonConfig = {
   ])
 }
 
-export default buttonConfig
+export default checkboxConfig

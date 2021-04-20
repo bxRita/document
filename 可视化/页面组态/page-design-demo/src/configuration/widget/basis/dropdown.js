@@ -10,7 +10,7 @@
 
 import commonConfig from '@/configuration/common/basis'
 
-export const buttonConfig = {
+export const dropdownConfig = {
   type: commonConfig.compType,
   key: 'xaDropdown',
   icon: 'icon-select',
@@ -104,4 +104,4 @@ export const buttonConfig = {
   ])
 }
 
-export default buttonConfig
+export default dropdownConfig

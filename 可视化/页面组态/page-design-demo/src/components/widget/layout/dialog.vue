@@ -17,19 +17,7 @@
     <component
       :is="currentComp"
       class="grid-row"
-      :title="options.title"
-      :width="options.width"
-      :cancelText="options.cancelText"
-      :centered="options.centered"
-      :closable="options.closable"
-      :confirmLoading="options.confirmLoading"
-      :destroyOnClose="options.destroyOnClose"
-      :keyboard="options.keyboard"
-      :mask="options.mask"
-      :maskClosable="options.maskClosable"
-      :okText="options.okText"
-      :okType="options.okType"
-      :visible="options.visible"
+      v-bind="options"
       @ok="okEvent"
       @cancel="cancelEvent"
     >
@@ -106,8 +94,9 @@ export default {
       this.eventFunctionHandler('cancel', ...args)
       this.options.visible = false
     },
-    setDisplay() {
+    setDisplay(...arg) {
       this.options.visible = !this.options.visible
+      console.log('dialogDisplay args >>>', ...arg)
     }
   },
   mounted() {

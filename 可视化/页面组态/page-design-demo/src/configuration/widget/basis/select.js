@@ -27,7 +27,7 @@ export const buttonConfig = {
     isDynamic: false, // 是否加载服务url数据
     dynamicCfg: {
       url: '/api/pass/appResource/systemNameText', // 服务url接口地址
-      type: '',
+      type: 'get',
       pageSize: 30,
       orderBy: null,
       orderDesc: false,

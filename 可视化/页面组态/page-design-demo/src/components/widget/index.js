@@ -13,6 +13,8 @@ import xaButton from '@/components/widget/basis/button.vue'
 import xaSelect from '@/components/widget/basis/select.vue'
 import xaDropdown from '@/components/widget/basis/dropdown.vue'
 import xaCheckbox from '@/components/widget/basis/checkbox.vue'
+import xaMenu from '@/components/widget/basis/menu.vue'
+import xaDatepicker from '@/components/widget/basis/datepicker.vue'
 
 // 布局组件
 import xaCard from '@/components/widget/layout/card.vue'
@@ -39,6 +41,8 @@ export default {
   xaSelect,
   xaDropdown,
   xaCheckbox,
+  xaMenu,
+  xaDatepicker,
   // 容器布局组件
   xaCard,
   xaGrid,

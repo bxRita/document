@@ -13,6 +13,8 @@ import InputConfig from '@/configuration/widget/basis/input'
 import SelectConfig from '@/configuration/widget/basis/select'
 import DropdownConfig from '@/configuration/widget/basis/dropdown'
 import CheckboxConfig from '@/configuration/widget/basis/checkbox'
+import MenuConfig from '@/configuration/widget/basis/menu'
+import DatepickerConfig from '@/configuration/widget/basis/datepicker'
 //布局控件
 import GridConfig from '@/configuration/widget/layout/grid'
 import CardConfig from '@/configuration/widget/layout/card'
@@ -37,6 +39,8 @@ export default [
   SelectConfig,
   DropdownConfig,
   CheckboxConfig,
+  MenuConfig,
+  DatepickerConfig,
   // 布局控件
   GridConfig,
   CardConfig,

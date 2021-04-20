@@ -14,7 +14,6 @@
     :disabled="options.disabled"
     :options="optionList"
     :name="options.name"
-    :value="options.value"
     @change="changeEvent"
   >
   </a-checkbox-group>

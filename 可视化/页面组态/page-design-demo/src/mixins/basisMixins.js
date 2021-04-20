@@ -42,15 +42,19 @@ export default {
   },
 
   methods: {
-    // 联动事件处理函数
-    linkageEventFunctionHandler: async function (eventName) {
+    /**
+     * 联动事件处理函数
+     * @param {String} eventName 事件名
+     * @param  {...any} arg 事件触发参数
+     * @returns
+     */
+    linkageEventFunctionHandler: async function (eventName, ...arg) {
       let i = -1
       let items = Object.keys(this.custom.eventListener).filter(
         item => item.indexOf(`${eventName}$$`) > -1
       )
       let len = items.length
       this.linkageEventBackValueStack = []
-      debugger
       while (++i < len) {
         let item = items[i]
         let levels = item.split('$$')
@@ -66,7 +70,10 @@ export default {
           typeof refs[componentId][componentEventhandlerName] === 'function'
         ) {
           let result = await this.custom.eventListener[item](this)
-          let backValue = refs[componentId][componentEventhandlerName](result)
+          let backValue = refs[componentId][componentEventhandlerName](
+            ...arg,
+            result
+          )
 
           if (typeof backValue !== undefined) {
             // 执行联动事件后如果有返回值,存储当前返回值，
@@ -82,17 +89,21 @@ export default {
     // 组件事件处理函数
     eventFunctionHandler(eventName, ...arg) {
       if (!eventName) return
+      console.log(`eventHandle ${eventName} params: `, arg)
       let execFun = this.custom.eventListener[eventName]
       if (execFun && typeof execFun == 'string') {
         execFun = new Function(`return ${execFun}`)()
       }
       execFun && execFun(this, ...arg)
 
-      this.linkageEventFunctionHandler(eventName)
+      this.linkageEventFunctionHandler(eventName, ...arg)
     },
     // 设置组件显示隐藏
     setDisplay(show) {
       this.show = show
+    },
+    setDisabled() {
+      this.options.disabled = true
     }
   },
 
