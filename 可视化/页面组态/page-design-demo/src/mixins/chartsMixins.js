@@ -61,7 +61,7 @@ export default {
     init() {
       this.echartsBase.load(
         extend(true, {}, this.options.chartConfig),
-        document.querySelector('#' + this.widgetItem.id),
+        document.querySelector('#' + this.record.id),
         this.options.chartTheme
       )
     },

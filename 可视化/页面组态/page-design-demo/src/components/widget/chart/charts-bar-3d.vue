@@ -21,7 +21,7 @@ export default {
       <div
         class="xa-echarts-bar-3d"
         style={this.styles}
-        id={this.widgetItem.id}
+        id={this.record.id}
       ></div>
     )
   }

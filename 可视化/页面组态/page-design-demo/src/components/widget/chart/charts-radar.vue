@@ -22,11 +22,9 @@ export default {
       <div
         class="xa-echarts-radar"
         style={this.styles}
-        id={this.widgetItem.id}
+        id={this.record.id}
       ></div>
     )
   }
 }
 </script>
-
-<style lang="scss"></style>

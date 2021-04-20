@@ -7,10 +7,12 @@
  * Task: #1
  * Write a description of the code here.
  */
+import basisMixins from './basisMixins'
 import draggable from 'vuedraggable'
 import layoutItem from '@/views/design/module/LayoutItem.vue'
 
 export default {
+  mixins: [basisMixins],
   components: {
     draggable,
     layoutItem
@@ -19,10 +21,6 @@ export default {
     isRuntime: {
       type: Boolean,
       default: false
-    },
-    record: {
-      type: Object,
-      required: true
     },
     selectItem: {
       type: Object,
@@ -47,11 +45,6 @@ export default {
     }
   },
   methods: {
-    eventFunctionHandler(eventName, ...arg) {
-      if (!eventName) return
-      this.record.custom.eventListener[eventName] &&
-        this.record.custom.eventListener[eventName](this, ...arg)
-    },
     /**
      * @description 选中元素
      */

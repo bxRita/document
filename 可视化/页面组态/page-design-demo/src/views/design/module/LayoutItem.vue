@@ -20,6 +20,8 @@
       v-bind="$attrs"
       v-on="$listeners"
       :record="record"
+      :custom="record.custom"
+      :options="record.props"
       :ref="record.id"
     ></component>
   </div>
@@ -28,6 +30,7 @@
 import { WidgetType } from '@/constants'
 import FormNode from './FormNode'
 import CompUpdateMixins from '@/views/design/module/mixins/updateWidget'
+import { addRefs } from '@/utils/globalWidgetRef'
 export default {
   inheritAttrs: false,
   name: 'layoutItem',
@@ -50,6 +53,10 @@ export default {
   mounted() {
     this.currentComp =
       this.record.type === WidgetType.layout ? this.record.key : 'FormNode'
+
+    this.$nextTick(() => {
+      addRefs(this.$refs)
+    })
   }
 }
 </script>

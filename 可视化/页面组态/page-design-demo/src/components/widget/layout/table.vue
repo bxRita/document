@@ -16,11 +16,11 @@
     <table
       class="table-layout custom-table"
       :class="{
-        bright: record.props.bright,
-        small: record.props.small,
-        bordered: record.props.bordered
+        bright: options.bright,
+        small: options.small,
+        bordered: options.bordered
       }"
-      :style="record.props.customStyle"
+      :style="options.customStyle"
     >
       <tr v-for="(trItem, trIndex) in record.trs" :key="trIndex">
         <td

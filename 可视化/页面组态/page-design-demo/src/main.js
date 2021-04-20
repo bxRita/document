@@ -7,7 +7,7 @@ import { EventBus } from '@/utils/EventBus'
 import installComponents from '@/components/index'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css' // or 'ant-design-vue/dist/antd.less'
-
+import '@/utils/globalWidgetRef'
 Vue.config.productionTip = false
 
 installComponents() // 自定义组件安装

@@ -16,11 +16,11 @@
     <a-tabs
       class="grid-row"
       :defaultActiveKey="0"
-      :tabBarGutter="record.props.tabBarGutter || null"
-      :type="record.props.type"
-      :size="record.props.size"
-      :tabPosition="record.props.tabPosition"
-      :animated="record.props.animated"
+      :tabBarGutter="options.tabBarGutter || null"
+      :type="options.type"
+      :size="options.size"
+      :tabPosition="options.tabPosition"
+      :animated="options.animated"
     >
       <a-tab-pane
         v-for="(tabItem, index) in record.columns"

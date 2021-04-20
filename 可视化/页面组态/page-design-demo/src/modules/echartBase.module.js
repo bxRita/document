@@ -33,7 +33,6 @@ export default class EchartBase extends Observable {
     if (this.echartInstance) {
       this.echartInstance.clear()
     } else {
-      console.log(echarts)
       this.echartInstance = echarts.init(parent, theme)
     }
     this.setOption(options)

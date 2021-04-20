@@ -29,18 +29,13 @@ export const gridConfig = {
     maskClosable: true,
     okText: '确定',
     okType: 'primary',
-    visible: true
+    visible: false
   },
   style: Object.assign({}, layoutConfig.style),
   custom: Object.assign({}, layoutConfig.custom, {
     name: '弹框',
     linkageEventConfig: [].concat(
-      [
-        {
-          id: 'setDisplay',
-          label: '获取组件显示隐藏'
-        }
-      ],
+      [],
       ...layoutConfig.custom.linkageEventConfig
     ),
     eventConfig: [].concat(
@@ -48,12 +43,12 @@ export const gridConfig = {
         {
           eventType: '1', // 组件事件
           eventName: 'ok',
-          eventDes: '点击确定'
+          eventDes: '点击弹框确定'
         },
         {
           eventType: '1', // 组件事件
           eventName: 'cancel',
-          eventDes: '点击取消'
+          eventDes: '点击弹框取消'
         }
       ],
       ...layoutConfig.custom.eventConfig

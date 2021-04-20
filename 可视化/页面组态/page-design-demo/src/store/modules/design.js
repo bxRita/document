@@ -16,7 +16,11 @@ import {
   COPY_SELECT_WIDGET,
   RESET_DESIGN_PANEL
 } from '../mutation-types'
-import { updateWidgetPropById } from '@/utils/store2design'
+import {
+  updateWidgetPropById,
+  getWidgetPropById,
+  getPageAllWidget
+} from '@/utils/store2design'
 import { extend } from '@/utils/tools'
 import widgetCfg from './widget' // 设计面板右侧 grid相关属性配置修改更新
 import eventCfg from './event' // 设计面板右侧 事件相关属性配置修改更新
@@ -85,7 +89,13 @@ const design = {
     currentSelectItem: state => state.currentSelectItem,
     pageData: state => state.pageData,
     pageConfig: state => state.pageData.config, // 页面属性
-    compList: state => state.pageData.list // 页面组件
+    compList: state => state.pageData.list, // 页面组件
+    getWidgetById: state => id => {
+      return getWidgetPropById(state.pageData.list, id)
+    },
+    getAllWidget: state => () => {
+      return getPageAllWidget(state.pageData.list)
+    }
   },
   mutations: {
     ...widgetCfg.mutations,

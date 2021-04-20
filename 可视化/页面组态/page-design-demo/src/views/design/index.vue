@@ -128,7 +128,6 @@ export default {
       }
 
       handleOption(cloneData.list)
-      console.log(cloneData)
       // 将处理后的数据 保存到localstorage中
       localStorage.setItem(LocalPageDataKey, JSON.stringify(cloneData))
     },

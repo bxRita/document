@@ -10,8 +10,10 @@
  */
 import StaticDataOption from './StaticDataOption.vue'
 import DynamicUrl from './DynamicUrl.vue'
+import LinkEventConfig from './LinkEventConfig.vue'
 
 export default {
   StaticDataOption,
-  DynamicUrl
+  DynamicUrl,
+  LinkEventConfig
 }

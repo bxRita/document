@@ -15,10 +15,10 @@
   >
     <a-row
       class="grid-row"
-      :type="record.props.type"
-      :gutter="record.props.gutter"
-      :justify="record.props.justify"
-      :align="record.props.align"
+      :type="options.type"
+      :gutter="options.gutter"
+      :justify="options.justify"
+      :align="options.align"
     >
       <a-col
         class="grid-col"

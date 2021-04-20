@@ -19,11 +19,7 @@ export default {
 
   render(h) {
     return (
-      <div
-        class="xa-echarts-pie"
-        style={this.styles}
-        id={this.widgetItem.id}
-      ></div>
+      <div class="xa-echarts-pie" style={this.styles} id={this.record.id}></div>
     )
   }
 }

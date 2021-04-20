@@ -35,8 +35,8 @@ export const buttonConfig = {
     linkageEventConfig: [].concat(
       [
         {
-          id: 'setDisplay',
-          label: '获取组件显示隐藏'
+          id: 'setDisabled',
+          label: '设置组件灰化状态'
         }
       ],
       ...commonConfig.custom.linkageEventConfig

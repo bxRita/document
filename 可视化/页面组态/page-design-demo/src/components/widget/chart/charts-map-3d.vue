@@ -61,7 +61,7 @@ export default {
           },
           series: []
         },
-        document.querySelector('#' + this.widgetItem.id),
+        document.querySelector('#' + this.record.id),
         this.options.chartTheme
       )
     }
@@ -71,7 +71,7 @@ export default {
       <div
         class="xa-echarts-mapd"
         style={this.styles}
-        id={this.widgetItem.id}
+        id={this.record.id}
       ></div>
     )
   }

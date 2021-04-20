@@ -10,7 +10,7 @@
 // 组件公用代码块
 export default {
   props: {
-    widgetItem: Object,
+    record: Object,
     options: Object,
     custom: {
       type: Object,
@@ -50,7 +50,7 @@ export default {
       )
       let len = items.length
       this.linkageEventBackValueStack = []
-
+      debugger
       while (++i < len) {
         let item = items[i]
         let levels = item.split('$$')
@@ -82,9 +82,12 @@ export default {
     // 组件事件处理函数
     eventFunctionHandler(eventName, ...arg) {
       if (!eventName) return
+      let execFun = this.custom.eventListener[eventName]
+      if (execFun && typeof execFun == 'string') {
+        execFun = new Function(`return ${execFun}`)()
+      }
+      execFun && execFun(this, ...arg)
 
-      this.custom.eventListener[eventName] &&
-        this.custom.eventListener[eventName](this, ...arg)
       this.linkageEventFunctionHandler(eventName)
     },
     // 设置组件显示隐藏
@@ -120,7 +123,6 @@ export default {
   mounted() {
     this.custom.eventListener.mounted && this.custom.eventListener.mounted(this)
     this.linkageEventFunctionHandler('mounted')
-
     // 绑定自定义事件必须延迟支持，因为需要图表组件初始化完成后才能拿到图表实例
     setTimeout(() => {
       // 可以在cstomEvent函数绑定自定义事件

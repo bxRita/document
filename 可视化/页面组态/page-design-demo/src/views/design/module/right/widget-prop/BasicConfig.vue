@@ -31,9 +31,7 @@ export default {
     }
   },
   created() {},
-  mounted() {
-    console.log(this.currentWidget)
-  },
+  mounted() {},
   methods: {
     ...mapActions('design', ['updateWidgetProp']),
     // 属性变更 公共方法处理

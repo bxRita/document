@@ -30,18 +30,14 @@ export default {
             }
           ]
         },
-        document.querySelector('#' + this.widgetItem.id),
+        document.querySelector('#' + this.record.id),
         this.options.chartTheme
       )
     }
   },
   render(h) {
     return (
-      <div
-        class="xa-echarts-map"
-        style={this.styles}
-        id={this.widgetItem.id}
-      ></div>
+      <div class="xa-echarts-map" style={this.styles} id={this.record.id}></div>
     )
   }
 }

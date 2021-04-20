@@ -18,7 +18,7 @@
         :is="record.key"
         :options="record.props"
         :custom="record.custom"
-        :widgetItem="record"
+        :record="record"
         :ref="record.id"
         :key="record.id"
       />
@@ -43,6 +43,7 @@
 </template>
 <script>
 import CompUpdateMixins from '@/views/design/module/mixins/updateWidget'
+import { addRefs } from '@/utils/globalWidgetRef'
 export default {
   inheritAttrs: false,
   props: {
@@ -62,6 +63,11 @@ export default {
     curSelId() {
       return (this.selectItem && this.selectItem.id) || null
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      addRefs(this.$refs)
+    })
   }
 }
 </script>

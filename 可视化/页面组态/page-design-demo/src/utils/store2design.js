@@ -26,6 +26,13 @@ const flatPageList = (list, resultArr) => {
   }
 }
 
+// 获取当前页面所有组件
+export function getPageAllWidget(list) {
+  let result = []
+  flatPageList(list, result)
+  return result
+}
+
 // 从页面组件列表中查找对应组件
 export const getWidgetPropById = (pageList, id) => {
   let result = []

@@ -69,7 +69,7 @@
     <!--联动事件配置-->
     <div class="event-setting-title">添加组件联动事件:</div>
     <div class="event-setting-select">
-      <a-button @click="openLinkageEventSetting">组件联动事件</a-button>
+      <a-button @click="openLinkageEventDialog">组件联动事件</a-button>
     </div>
     <div class="event-setting-list">
       <a-table
@@ -88,7 +88,7 @@
           </div>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a @click="editEventCode(record)">编辑</a>
+          <a @click="editLinkEventCode(record)">编辑</a>
           <a-divider type="vertical" />
           <a-popconfirm
             title="您确定删除该事件吗？"
@@ -100,6 +100,7 @@
       </a-table>
     </div>
 
+    <!-- 组件事件 编辑框  begin -->
     <a-drawer
       title="事件回调函数在线编辑"
       :visible.sync="drawer"
@@ -118,6 +119,21 @@
         type="[object Function]"
       />
     </a-drawer>
+    <!-- 组件事件 编辑框  end -->
+
+    <!-- 组件联动事件 begin -->
+    <a-modal
+      v-model="linkEventVisible"
+      title="组件联动事件配置"
+      @ok="handleLinkOk"
+    >
+      <LinkEventConfig
+        v-if="linkEventVisible"
+        @change="linkEventHandler"
+        v-bind="editLinkEventOption"
+      ></LinkEventConfig>
+    </a-modal>
+    <!-- 组件联动事件 end -->
   </div>
 </template>
 
@@ -181,6 +197,9 @@ export default {
 
   data() {
     return {
+      linkEventVisible: false,
+      linkEventFormResult: null,
+      editLinkEventOption: null,
       eventColumns: [
         {
           title: '已有事件',
@@ -219,9 +238,7 @@ export default {
         title: '组件联动事件配置',
         classname: 'event-setting-dialog'
       },
-      linkageEventSettingActiveIndex: 0,
-      linkageEventConfig: [],
-      openLinkageEventDialog: false
+      linkageEventConfig: []
     }
   },
   beforeCreate() {
@@ -293,9 +310,7 @@ export default {
                 description: '代码存在语法错误!'
               })
             } else {
-              _this.openLinkageEventDialog
-                ? _this.saveLinkageCompoentEventCode(codeValue)
-                : _this.saveComponentEventCode(codeValue)
+              _this.saveComponentEventCode(codeValue)
               _this.drawer = false
               _this.currentEvent = {}
             }
@@ -329,26 +344,13 @@ export default {
       )
       this.saveEventCode()
     },
-    saveLinkageCompoentEventCode(codeValue) {
-      eventSettingIns.updateEventListener(
-        this.currentEvent.eventName,
-        codeValue
-      )
-      this.updateLinkageEventConfigCheck(this.linkageEventConfig)
-    },
     editEventCode(row) {
       if (!this.drawer) this.drawer = true
       this.currentEvent = Object.assign({}, row)
     },
     resetDialogData() {
-      this.linkageEventSettingActiveIndex = 0
       eventSettingIns.setLinkageEventLevel()
       this.currentLinkageEvent = []
-      this.openLinkageEventDialog = false
-    },
-    openLinkageEventSetting() {
-      // this.$refs.pageDialogViewRef.showDialog()
-      // this.openLinkageEventDialog = true
     },
     cancelDialogFn() {
       this.resetDialogData()
@@ -357,49 +359,41 @@ export default {
       this.saveEventCode()
       this.resetDialogData()
     },
-    previous() {
-      if (this.linkageEventSettingActiveIndex > 0) {
-        this.linkageEventSettingActiveIndex--
-      }
+    /**
+     * @description 打开联动事件配置对话框
+     */
+    openLinkageEventDialog() {
+      this.linkEventVisible = true
     },
-    next() {
-      if (this.linkageEventSettingActiveIndex <= 1) {
-        this.linkageEventSettingActiveIndex++
-      }
-    },
-    selectComponentEvent(item) {
-      eventSettingIns.setLinkageEventLevel(item.eventName, 0)
-      this.currentLinkageEvent = [...eventSettingIns.linkageEventLevel]
-      this.next()
-    },
-    selectLinkageComponent(item) {
-      eventSettingIns.setLinkageEventLevel(item.id, 1)
-      this.currentLinkageEvent = [...eventSettingIns.linkageEventLevel]
-      // 获取联动组件对应数据配置
-      let linkageEventConfig = this.pagePulgin.find(
-        pluginItem => pluginItem.id === item.id
-      ).custom.linkageEventConfig
-      this.updateLinkageEventConfigCheck(linkageEventConfig)
-      this.next()
-    },
-    selectLinkageComponentEventType(item) {
-      let currentEvent = eventSettingIns.setLinkageEventLevel(item.id, 2)
+    handleLinkOk() {
+      if (!this.linkEventFormResult) return
 
-      if (currentEvent) {
-        if (!this.drawer) this.drawer = true
-        this.currentEvent = currentEvent
-      }
+      this.saveLinkageCompoentEvent(this.linkEventFormResult)
 
-      this.currentLinkageEvent = eventSettingIns.linkageEventLevel
+      this.linkEventVisible = false
     },
-    updateLinkageEventConfigCheck(linkageEventConfig) {
-      let findLinkageEventData = eventSettingIns.findLinkageEvent()
-      linkageEventConfig.map(
-        linkageEventItem =>
-          (linkageEventItem['checked'] =
-            findLinkageEventData.indexOf(linkageEventItem.id) > -1)
-      )
-      this.linkageEventConfig = [...linkageEventConfig]
+    /**
+     * linkEventObj: {type, relateId, exectEvent}
+     */
+    saveLinkageCompoentEvent(linkEventObj) {
+      const { type, relateId, exectEvent } = linkEventObj
+      let eventName = `${type}$$${relateId}$$${exectEvent}`
+      this.updateWidgetEvent({
+        widgetId: this.currentWidget.id,
+        modify: {
+          id: 'custom.eventListener',
+          value: {
+            [eventName]: new Function(`return function ${exectEvent}(){}`)
+          }
+        }
+      })
+    },
+    linkEventHandler(result) {
+      this.linkEventFormResult = result
+    },
+    editLinkEventCode(record) {
+      this.editLinkEventOption = record
+      this.linkEventVisible = true
     }
   }
 }

@@ -13,11 +13,7 @@
     :class="{ active: record.id === currentWidgetId }"
     @click.stop="handleSelectItem(record)"
   >
-    <a-card
-      class="grid-row"
-      :title="record.props.title"
-      :size="record.props.size"
-    >
+    <a-card class="grid-row" :title="options.title" :size="options.size">
       <div class="grid-col">
         <draggable
           tag="div"

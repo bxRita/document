@@ -17,20 +17,19 @@
     <component
       :is="currentComp"
       class="grid-row"
-      :title="record.props.title"
-      :width="record.props.width"
-      :cancelText="record.props.cancelText"
-      :centered="record.props.centered"
-      :closable="record.props.closable"
-      :confirmLoading="record.props.confirmLoading"
-      :destroyOnClose="record.props.destroyOnClose"
-      :footer="record.props.footer"
-      :keyboard="record.props.keyboard"
-      :mask="record.props.mask"
-      :maskClosable="record.props.maskClosable"
-      :okText="record.props.okText"
-      :okType="record.props.okType"
-      :visible="record.props.visible"
+      :title="options.title"
+      :width="options.width"
+      :cancelText="options.cancelText"
+      :centered="options.centered"
+      :closable="options.closable"
+      :confirmLoading="options.confirmLoading"
+      :destroyOnClose="options.destroyOnClose"
+      :keyboard="options.keyboard"
+      :mask="options.mask"
+      :maskClosable="options.maskClosable"
+      :okText="options.okText"
+      :okType="options.okType"
+      :visible="options.visible"
       @ok="okEvent"
       @cancel="cancelEvent"
     >
@@ -99,11 +98,16 @@ export default {
     }
   },
   methods: {
-    okEvent() {
-      this.eventFunctionHandler('ok')
+    okEvent(...args) {
+      this.eventFunctionHandler('ok', ...args)
+      this.options.visible = false
     },
-    cancelEvent() {
-      this.eventFunctionHandler('cancel')
+    cancelEvent(...args) {
+      this.eventFunctionHandler('cancel', ...args)
+      this.options.visible = false
+    },
+    setDisplay() {
+      this.options.visible = !this.options.visible
     }
   },
   mounted() {

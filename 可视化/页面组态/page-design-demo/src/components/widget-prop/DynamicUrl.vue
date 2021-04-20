@@ -215,7 +215,7 @@ export default {
         if (valid) {
           this.getDataFromServer()
         } else {
-          console.log('error submit!!')
+          this.$message.warning('请确保所有必填项数据均填写')
           return false
         }
       })
@@ -244,8 +244,6 @@ export default {
      * @description 点击弹框的确定按钮
      */
     handleOk() {
-      // TODO:
-      console.log(this.form)
       this.$emit('change', this.form)
       this.visible = false
     },

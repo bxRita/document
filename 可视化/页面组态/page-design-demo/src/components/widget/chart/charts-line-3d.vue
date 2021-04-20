@@ -22,7 +22,7 @@ export default {
       <div
         class="xa-echarts-line-d"
         style={this.styles}
-        id={this.widgetItem.id}
+        id={this.record.id}
       ></div>
     )
   }
