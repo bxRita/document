@@ -9,14 +9,14 @@
 -->
 
 <script>
-import pluginChartsMixins from '@/mixins/chartsMixins'
+import chartsMixins from '@/mixins/chartsMixins'
 import chinaJson from './china.json'
 
 // 地图
 export default {
   name: 'xaEchartsMap',
 
-  mixins: [pluginChartsMixins],
+  mixins: [chartsMixins],
 
   methods: {
     init() {

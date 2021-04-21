@@ -45,6 +45,7 @@
             @handleCopy="copySelectedWidget"
             @handleDelete="deleteSelectedWidget"
             @handleColAdd="handleColAdd"
+            @addSubWidget="addSubWidget"
           />
         </transition-group>
       </draggable>
@@ -87,8 +88,12 @@ export default {
       'upsertWidget',
       'setSelectedWidget',
       'deleteSelectedWidget',
-      'copySelectedWidget'
+      'copySelectedWidget',
+      'addSubWidgetToLayout'
     ]),
+    addSubWidget(curLayoutWidget) {
+      this.addSubWidgetToLayout(curLayoutWidget)
+    },
     addWidget(evt) {
       const newIndex = evt.newIndex
       this.upsertWidget(this.designData.list[newIndex])
@@ -98,6 +103,7 @@ export default {
     dragStart(evt, list) {
       // 拖拽结束,自动选择拖拽的控件项
       this.$emit('handleSetSelectItem', list[evt.oldIndex])
+      console.log(list[evt.oldIndex])
     },
     handleSelectItem(record) {
       // 修改选择Item

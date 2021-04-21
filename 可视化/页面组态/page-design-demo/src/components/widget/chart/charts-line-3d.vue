@@ -9,13 +9,13 @@
 -->
 
 <script>
-import pluginChartsMixins from '@/mixins/chartsMixins'
+import chartsMixins from '@/mixins/chartsMixins'
 
 // 3D折线图
 export default {
   name: 'xaEchartsLineD',
 
-  mixins: [pluginChartsMixins],
+  mixins: [chartsMixins],
 
   render(h) {
     return (

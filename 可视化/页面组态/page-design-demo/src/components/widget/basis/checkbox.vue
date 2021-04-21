@@ -10,6 +10,7 @@
 
 <template>
   <a-checkbox-group
+    :style="styles"
     :defaultValue="options.defaultValue"
     :disabled="options.disabled"
     :options="optionList"

@@ -32,9 +32,9 @@ export const gridConfig = {
     type: null
   },
   style: Object.assign({}, layoutConfig.style),
-  custom: {
+  custom: Object.assign({}, layoutConfig.custom, {
     name: '栅格布局'
-  },
+  }),
   options: [].concat(layoutConfig.options, [
     {
       label: '属性配置',

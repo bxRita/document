@@ -137,8 +137,8 @@ export const inputConfig = {
       id: 'props.disabled',
       label: '禁用状态',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '启用',
+      inactiveText: '禁用'
     },
     {
       id: 'props.readonly',

@@ -11,7 +11,8 @@
 <script>
 import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
-import { extend, transArrToTree } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
+import { transArrToTree } from '@/utils/tools'
 export default {
   name: 'xaMenu',
   inheritAttrs: false,
@@ -42,7 +43,7 @@ export default {
       const { dynamicCfg } = this.options
       const { parentKey, topParentVal, valueField } = dynamicCfg
       let result = transArrToTree(
-        extend(true, [], data),
+        cloneDeep(data),
         parentKey,
         valueField,
         topParentVal
@@ -75,6 +76,7 @@ export default {
   render(h) {
     return (
       <a-menu
+        style={this.styles}
         onClick={this.clickEvent}
         onDeselect={this.deselectEvent}
         onSelect={this.selectEvent}

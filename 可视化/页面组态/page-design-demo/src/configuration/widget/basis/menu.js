@@ -87,6 +87,21 @@ export const menuConfig = {
           eventType: '1', // 组件事件
           eventName: 'click',
           eventDes: '点击触发'
+        },
+        {
+          eventType: '1', // 组件事件
+          eventName: 'select',
+          eventDes: '选择触发'
+        },
+        {
+          eventType: '1', // 组件事件
+          eventName: 'deselect',
+          eventDes: '取消选择触发'
+        },
+        {
+          eventType: '1', // 组件事件
+          eventName: 'openChange',
+          eventDes: '展开菜单触发'
         }
       ],
       ...commonConfig.custom.eventConfig
@@ -102,8 +117,8 @@ export const menuConfig = {
       id: 'props.selectable',
       label: '允许选中',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '是',
+      inactiveText: '否'
     },
     {
       id: 'props.multiple',

@@ -9,7 +9,8 @@
  */
 import basisMixins from './basisMixins'
 import EchartsBase from '@/modules/echartBase.module'
-import { extend, throttle } from '@/utils/tools'
+import { throttle } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
 import { isEqual } from 'lodash'
 
 let _this = null
@@ -60,7 +61,7 @@ export default {
   methods: {
     init() {
       this.echartsBase.load(
-        extend(true, {}, this.options.chartConfig),
+        cloneDeep(this.options.chartConfig),
         document.querySelector('#' + this.record.id),
         this.options.chartTheme
       )

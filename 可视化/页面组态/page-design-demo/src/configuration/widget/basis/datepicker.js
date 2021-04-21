@@ -36,8 +36,13 @@ export const datepickerConfig = {
       [
         {
           eventType: '1', // 组件事件
-          eventName: 'click',
-          eventDes: '点击触发'
+          eventName: 'panelChange',
+          eventDes: '弹出日历和关闭日历的回调'
+        },
+        {
+          eventType: '1', // 组件事件
+          eventName: 'panelChange',
+          eventDes: '日期面板变化时的回调'
         }
       ],
       ...commonConfig.custom.eventConfig

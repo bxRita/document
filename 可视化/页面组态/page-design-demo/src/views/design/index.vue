@@ -9,7 +9,7 @@
 -->
 <template>
   <a-layout>
-    <a-layout-header>header</a-layout-header>
+    <!-- <a-layout-header>header</a-layout-header> -->
     <a-layout class="content">
       <a-layout-sider class="left">
         <left-component></left-component>
@@ -27,7 +27,7 @@
           @handleClose="handleClose"
         ></operate-area>
         <design-panel
-          :designData="pageData"
+          :designData="designData"
           :selectItem="selectItem"
         ></design-panel>
       </a-layout-content>
@@ -35,7 +35,7 @@
         <right-prop-area :currentSelectItem="currentItem"></right-prop-area>
       </a-layout-sider>
     </a-layout>
-    <a-layout-footer>copy right@2021</a-layout-footer>
+    <!-- <a-layout-footer>copy right@2021</a-layout-footer> -->
   </a-layout>
 </template>
 
@@ -46,7 +46,7 @@ import OperateArea from './module/OperateArea.vue'
 import LeftComponent from './module/LeftComponent.vue'
 import DesignPanel from './module/DesignPanel.vue'
 import RightPropArea from './module/RightPropArea.vue'
-import { extend } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
 import { LocalPageDataKey } from '@/constants'
 export default {
   name: 'Design',
@@ -96,8 +96,11 @@ export default {
   },
   computed: {
     ...mapGetters('design', ['pageData', 'currentSelectItem']),
+    designData() {
+      return cloneDeep(this.pageData)
+    },
     currentItem() {
-      return extend(true, {}, this.currentSelectItem)
+      return cloneDeep(this.currentSelectItem)
     }
   },
   created() {},
@@ -108,12 +111,12 @@ export default {
     ...mapActions('design', ['resetDesignPanel']),
     init() {
       const clientH = document.body.clientHeight,
-        contentH = clientH - 135
+        contentH = clientH - 3
 
       this.contentStyle.height = `${contentH}px`
     },
     saveDataToLocal() {
-      let cloneData = extend(true, {}, this.pageData)
+      let cloneData = cloneDeep(this.pageData)
       // 保存的数据中 删除右侧属性栏options的配置项
       const handleOption = list => {
         list.forEach(l => {

@@ -12,19 +12,12 @@
     class="grid-box"
     :class="{ active: record.id === currentWidgetId }"
     @click.stop="handleSelectItem(record)"
+    :style="styles"
   >
-    <a-tabs
-      class="grid-row"
-      :defaultActiveKey="0"
-      :tabBarGutter="options.tabBarGutter || null"
-      :type="options.type"
-      :size="options.size"
-      :tabPosition="options.tabPosition"
-      :animated="options.animated"
-    >
+    <a-tabs class="grid-row" v-bind="options" @change="changeTabEvent">
       <a-tab-pane
-        v-for="(tabItem, index) in record.columns"
-        :key="index"
+        v-for="tabItem in record.columns"
+        :key="tabItem.value"
         :tab="tabItem.label"
       >
         <div class="grid-col">
@@ -40,6 +33,7 @@
             }"
             v-model="tabItem.list"
             @start="$emit('dragStart', $event, tabItem.list)"
+            @add="addSubWidget(record)"
           >
             <transition-group tag="div" name="list" class="list-main">
               <layoutItem
@@ -55,6 +49,7 @@
                 @handleSelectItem="handleSelectItem"
                 @handleCopy="$emit('handleCopy')"
                 @handleDelete="$emit('handleDelete')"
+                @addSubWidget="addSubWidget(item)"
               />
             </transition-group>
           </draggable>
@@ -81,10 +76,36 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import layoutMixins from '@/mixins/layoutMixins'
 export default {
   name: 'xaTabs',
   inheritAttrs: false,
-  mixins: [layoutMixins]
+  mixins: [layoutMixins],
+  data() {
+    return {}
+  },
+  methods: {
+    ...mapActions('design', ['updateWidgetProp']),
+    changeTabEvent(val) {
+      this.eventFunctionHandler('change', val)
+      this.options.activeKey = val
+      this.updateWidgetProp({
+        widgetId: this.currentWidgetId,
+        propId: 'props.activeKey',
+        val
+      })
+    },
+    switchTabHandler(...args) {
+      let len = args.length
+      if (len > 0) {
+        const val = args[0]
+        this.options.activeKey =
+          typeof val == 'string'
+            ? val
+            : val instanceof 'array' && val.length && val[val.length - 1]
+      }
+    }
+  }
 }
 </script>

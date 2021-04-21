@@ -12,6 +12,7 @@
     class="table-box"
     :class="{ active: record.id === currentWidgetId }"
     @click.stop="handleSelectItem(record)"
+    :style="styles"
   >
     <table
       class="table-layout custom-table"
@@ -42,6 +43,7 @@
             }"
             v-model="tdItem.list"
             @start="$emit('dragStart', $event, tdItem.list)"
+            @add="addSubWidget(record)"
           >
             <transition-group tag="div" name="list" class="list-main">
               <layoutItem
@@ -57,6 +59,7 @@
                 @handleSelectItem="handleSelectItem"
                 @handleCopy="$emit('handleCopy')"
                 @handleDelete="$emit('handleDelete')"
+                @addSubWidget="addSubWidget(item)"
               />
             </transition-group>
           </draggable>

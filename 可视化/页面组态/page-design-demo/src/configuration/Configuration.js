@@ -7,7 +7,7 @@
  * Task: #1
  * Write a description of the code here.
  */
-import { extend } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
 import DEFAULT_CONFIG from './DefaultConfig'
 
 export default class Configuration {
@@ -16,14 +16,10 @@ export default class Configuration {
   }
   setOption() {}
   getOption(key) {
-    if (!key) return extend(true, [], this.options)
-    return extend(
-      true,
-      [],
-      this.options.filter(item => item.key === key)
-    )
+    if (!key) return cloneDeep(this.options)
+    return cloneDeep(this.options.filter(item => item.key === key))
   }
   getDefaultConfig() {
-    return extend(true, [], this.options)
+    return cloneDeep(this.options)
   }
 }

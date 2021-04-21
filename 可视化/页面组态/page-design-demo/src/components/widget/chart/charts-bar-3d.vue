@@ -9,12 +9,12 @@
 -->
 
 <script>
-import pluginChartsMixins from '@/mixins/chartsMixins'
+import chartsMixins from '@/mixins/chartsMixins'
 // 柱状3D图
 export default {
   name: 'xaEchartsBarD',
 
-  mixins: [pluginChartsMixins],
+  mixins: [chartsMixins],
 
   render(h) {
     return (

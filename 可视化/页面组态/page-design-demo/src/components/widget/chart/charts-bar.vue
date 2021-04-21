@@ -9,13 +9,13 @@
 -->
 
 <script>
-import pluginChartsMixins from '@/mixins/chartsMixins'
+import chartsMixins from '@/mixins/chartsMixins'
 
 // 柱状图
 export default {
   name: 'xaEchartsBar',
 
-  mixins: [pluginChartsMixins],
+  mixins: [chartsMixins],
 
   render(h) {
     return (

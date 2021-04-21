@@ -28,16 +28,37 @@ export const gridConfig = {
   ],
   props: {
     animated: true,
-    defaultActiveKey: '1',
     size: 'default',
     tabPosition: 'top',
     type: 'line',
-    tabBarGutter: null
+    tabBarGutter: null,
+    defaultActiveKey: '1',
+    activeKey: '1'
   },
   style: Object.assign({}, layoutConfig.style),
-  custom: {
-    name: '标签页'
-  },
+  custom: Object.assign({}, layoutConfig.custom, {
+    name: '标签页',
+    linkageEventConfig: [].concat(
+      [
+        {
+          id: 'switchTabHandler',
+          label: '切换Tab页签'
+        }
+      ],
+      ...layoutConfig.custom.linkageEventConfig
+    ),
+    eventConfig: [].concat(
+      [
+        {
+          eventType: '1', // 组件事件
+          eventName: 'click',
+          eventDes: '点击触发'
+        }
+      ],
+      ...layoutConfig.custom.eventConfig
+    ),
+    eventListener: {}
+  }),
   options: [].concat(layoutConfig.options, [
     {
       label: '属性配置',
@@ -45,15 +66,15 @@ export const gridConfig = {
     },
     {
       id: 'props.defaultActiveKey',
-      label: '初始化Tab值',
+      label: 'Tab值',
       type: 'input'
     },
     {
       id: 'props.animated',
       label: '动画切换',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '启用',
+      inactiveText: '禁用'
     },
     {
       id: 'columns',
@@ -90,10 +111,24 @@ export const gridConfig = {
           cols = curWidget.columns
         let dom = (
           <div>
+            <a-row gutter={5}>
+              <a-col span={11}>唯一key</a-col>
+              <a-col span={11}>名称</a-col>
+              <a-col span={2}></a-col>
+            </a-row>
             {cols.map((opt, idx) => {
               return (
-                <a-row>
-                  <a-col span={20}>
+                <a-row gutter={5}>
+                  <a-col span={11}>
+                    <a-input
+                      value={opt.value}
+                      placeholder="请输入"
+                      on-change={value => {
+                        updateTabCol(value, idx, vm, 'value')
+                      }}
+                    />
+                  </a-col>
+                  <a-col span={11}>
                     <a-input
                       value={opt.label}
                       placeholder="请输入"
@@ -102,8 +137,7 @@ export const gridConfig = {
                       }}
                     />
                   </a-col>
-                  <a-col span={1}></a-col>
-                  <a-col span={3}>
+                  <a-col span={2}>
                     <a-icon
                       type="delete"
                       on-click={() => {

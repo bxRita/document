@@ -1,4 +1,4 @@
-import { extend } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
 
 /*
  * 根据属性类型 生成属性栏
@@ -16,7 +16,7 @@ export function createItem(h, item, vm) {
     case 'input':
       renderDom = (
         <a-input
-          value={vm.handlerData(item.id, 'get')}
+          defaultValue={vm.handlerData(item.id, 'get')}
           size="small"
           placeholder={item.placeholder || '请输入'}
           disabled={
@@ -35,7 +35,7 @@ export function createItem(h, item, vm) {
     case 'select':
       renderDom = (
         <a-select
-          value={vm.handlerData(item.id, 'get')}
+          defaultValue={vm.handlerData(item.id, 'get')}
           size="small"
           on-change={value => {
             vm.handlerData({ id: item.id, value }, 'set')
@@ -57,7 +57,7 @@ export function createItem(h, item, vm) {
           size="small"
           style="width: 100%"
           placeholder="请输入"
-          value={vm.handlerData(item.id, 'get')}
+          defaultValue={vm.handlerData(item.id, 'get')}
           disabled={
             item.options && item.options.disabled !== undefined
               ? item.options.disabled
@@ -89,7 +89,7 @@ export function createItem(h, item, vm) {
           size="small"
           checked-children={item.activeText}
           un-checked-children={item.inactiveText}
-          checked={vm.handlerData(item.id, 'get')}
+          defaultChecked={vm.handlerData(item.id, 'get')}
           on-change={value => {
             vm.handlerData({ id: item.id, value }, 'set')
           }}
@@ -118,7 +118,7 @@ export function createItem(h, item, vm) {
     case 'dynamicCfg': // 动态数据源
       renderDom = (
         <DynamicUrl
-          widgetProps={extend(true, {}, vm.currentWidget.props)}
+          widgetProps={cloneDeep(vm.currentWidget.props)}
           on-change={value => {
             vm.handlerData({ id: item.id, value }, 'set')
           }}

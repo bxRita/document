@@ -9,13 +9,13 @@
 -->
 
 <script>
-import pluginChartsMixins from '@/mixins/chartsMixins'
+import chartsMixins from '@/mixins/chartsMixins'
 
 // 雷达图
 export default {
   name: 'xaEchartsRadar',
 
-  mixins: [pluginChartsMixins],
+  mixins: [chartsMixins],
 
   render(h) {
     return (

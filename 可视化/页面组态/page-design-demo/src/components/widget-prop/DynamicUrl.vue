@@ -150,7 +150,8 @@
 </template>
 
 <script>
-import { extend, getHttpConfigByCondition } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
+import { getHttpConfigByCondition } from '@/utils/tools'
 export default {
   name: 'DynamicUrl',
   inheritAttrs: false,
@@ -207,7 +208,8 @@ export default {
     }
   },
   mounted() {
-    this.form = extend(true, this.form, this.widgetProps.dynamicCfg)
+    let dyCfg = cloneDeep(this.widgetProps.dynamicCfg)
+    this.form = Object.assign(this.form, dyCfg)
   },
   methods: {
     previewData() {

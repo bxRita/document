@@ -19,9 +19,9 @@ export const gridConfig = {
     size: 'default'
   },
   style: Object.assign({}, layoutConfig.style),
-  custom: {
+  custom: Object.assign({}, layoutConfig.custom, {
     name: '卡片布局'
-  },
+  }),
   options: [].concat(layoutConfig.options, [
     {
       label: '属性配置',

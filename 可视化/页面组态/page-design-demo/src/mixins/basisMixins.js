@@ -34,8 +34,8 @@ export default {
   computed: {
     styles() {
       return {
-        width: '100%',
-        height: '100%',
+        // width: '100%',
+        // height: '100%',
         display: this.show ? 'block' : 'none'
       }
     }
@@ -100,7 +100,7 @@ export default {
     },
     // 设置组件显示隐藏
     setDisplay(show) {
-      this.show = show
+      this.show = !this.show
     },
     setDisabled() {
       this.options.disabled = true

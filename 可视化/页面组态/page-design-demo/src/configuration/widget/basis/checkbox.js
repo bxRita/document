@@ -19,7 +19,7 @@ export const checkboxConfig = {
     value: [],
     disabled: false,
     name: 'checkbox_' + new Date().getTime(),
-    options: [{ label: '选项1', value: '1' }] // 静态数据
+    options: [{ label: '选项1', value: '0' }] // 静态数据
   },
   style: Object.assign({}, commonConfig.style),
   custom: Object.assign({}, commonConfig.custom, {
@@ -62,8 +62,8 @@ export const checkboxConfig = {
       id: 'props.disabled',
       label: '禁用状态',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '启用',
+      inactiveText: '禁用'
     },
     {
       id: 'props.options',

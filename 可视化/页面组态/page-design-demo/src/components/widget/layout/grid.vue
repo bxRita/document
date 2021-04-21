@@ -12,6 +12,7 @@
     class="grid-box"
     :class="{ active: record.id === currentWidgetId }"
     @click.stop="handleSelectItem(record)"
+    :style="styles"
   >
     <a-row
       class="grid-row"
@@ -38,6 +39,7 @@
           }"
           v-model="colItem.list"
           @start="$emit('dragStart', $event, colItem.list)"
+          @add="addSubWidget(record)"
         >
           <transition-group tag="div" name="list" class="list-main">
             <layout-item
@@ -53,6 +55,7 @@
               @handleSelectItem="handleSelectItem"
               @handleCopy="$emit('handleCopy')"
               @handleDelete="$emit('handleDelete')"
+              @addSubWidget="addSubWidget(item)"
             />
           </transition-group>
         </draggable>

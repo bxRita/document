@@ -14,14 +14,15 @@ import {
   UPDATE_WIDGET_PROP,
   DELETE_SELECT_WIDGET,
   COPY_SELECT_WIDGET,
-  RESET_DESIGN_PANEL
+  RESET_DESIGN_PANEL,
+  ADD_SUB_WIDGET_TO_LAYOUT
 } from '../mutation-types'
 import {
   updateWidgetPropById,
   getWidgetPropById,
   getPageAllWidget
 } from '@/utils/store2design'
-import { extend } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
 import widgetCfg from './widget' // 设计面板右侧 grid相关属性配置修改更新
 import eventCfg from './event' // 设计面板右侧 事件相关属性配置修改更新
 
@@ -133,7 +134,7 @@ const design = {
           }
 
           if (element.id === currentSelectWidget.id) {
-            let cloneNode = extend(true, {}, element)
+            let cloneNode = cloneDeep(element)
             array.splice(
               index + 1,
               0,
@@ -190,11 +191,19 @@ const design = {
     },
     [RESET_DESIGN_PANEL]: (state, payload) => {
       state.pageData.list = []
+    },
+    [ADD_SUB_WIDGET_TO_LAYOUT]: (state, payload) => {
+      let cur = getWidgetPropById(state.pageData.list, payload.id)
+      const subProp = cur.subProp
+      cur[subProp] = cloneDeep(payload[subProp])
     }
   },
   actions: {
     ...widgetCfg.actions,
     ...eventCfg.actions,
+    addSubWidgetToLayout({ commit }, payload) {
+      commit(ADD_SUB_WIDGET_TO_LAYOUT, payload)
+    },
     /**
      * 更新组件属性值
      * @param {*} param0

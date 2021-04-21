@@ -45,6 +45,9 @@ export default {
     }
   },
   methods: {
+    addSubWidget(record) {
+      this.$emit('addSubWidget', record)
+    },
     /**
      * @description 选中元素
      */

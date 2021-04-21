@@ -9,6 +9,7 @@
 -->
 <template>
   <a-input
+    :style="styles"
     :placeholder="options.placeholder"
     :disabled="options.disabled"
     :size="options.size"

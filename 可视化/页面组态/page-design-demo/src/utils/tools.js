@@ -18,61 +18,6 @@ export const uuid = () => {
 export const types = data => {
   return Object.prototype.toString.call(data)
 }
-/**
- * 克隆
- * @param  {...any} arg
- * arg[0] 是否深度克隆
- * arg[1] 目标对象或数组
- * arg[2] 源对象或数组
- * @returns
- */
-export const extend = (...arg) => {
-  let [target, deep, i, clone, src, option, length, copy, isArray] = []
-  target = arg[0] || {}
-  i = 1
-  deep = false
-  length = arg.length
-
-  if (typeof target === 'boolean') {
-    deep = target
-    target = arg[i] || {}
-    i++
-  }
-
-  for (; i < length; i++) {
-    if ((option = arg[i]) !== null) {
-      for (let name in option) {
-        copy = option[name]
-
-        if (name === '__proto__' || target === copy) {
-          continue
-        }
-
-        if (
-          deep &&
-          copy !== void 0 &&
-          ((isArray = types(copy) === '[object Array]') ||
-            types(copy) === '[object Object]')
-        ) {
-          src = target[name]
-          if (isArray && types(src) !== '[object Array]') {
-            clone = []
-          } else if (!isArray && types(src) !== '[object Object]') {
-            clone = {}
-          } else {
-            clone = src
-          }
-          isArray = false
-
-          target[name] = extend(deep, clone, copy)
-        } else if (types(copy) !== void 0) {
-          target[name] = copy
-        }
-      }
-    }
-  }
-  return target
-}
 
 export const throttle = function (func, wait, options) {
   var timeout, context, args, result

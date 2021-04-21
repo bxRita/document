@@ -23,6 +23,7 @@ export const DELETE_SELECT_WIDGET = 'DELETE_SELECT_WIDGET'
 export const COPY_SELECT_WIDGET = 'COPY_SELECT_WIDGET'
 // 清空设计面板区域
 export const RESET_DESIGN_PANEL = 'RESET_DESIGN_PANEL'
+export const ADD_SUB_WIDGET_TO_LAYOUT = 'ADD_SUB_WIDGET_TO_LAYOUT'
 
 // ---------------widget grid begin
 export const ADD_GRID_COL = 'ADD_GRID_COL'

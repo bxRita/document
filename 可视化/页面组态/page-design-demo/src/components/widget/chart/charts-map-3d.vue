@@ -9,7 +9,7 @@
 -->
 
 <script>
-import pluginChartsMixins from '@/mixins/chartsMixins'
+import chartsMixins from '@/mixins/chartsMixins'
 const baseTexture = require('./images/earth.jpg')
 const heightTexture = require('./images/bathymetry_bw_composite_4k.jpg')
 const environment = require('./images/starfield.jpg')
@@ -19,7 +19,7 @@ const texture1 = require('./images/clouds.png')
 export default {
   name: 'xaEchartsMapD',
 
-  mixins: [pluginChartsMixins],
+  mixins: [chartsMixins],
 
   methods: {
     init() {

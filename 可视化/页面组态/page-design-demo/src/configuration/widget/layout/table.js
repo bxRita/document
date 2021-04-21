@@ -54,9 +54,9 @@ export const gridConfig = {
     customStyle: ''
   },
   style: Object.assign({}, layoutConfig.style),
-  custom: {
+  custom: Object.assign({}, layoutConfig.custom, {
     name: '表格布局'
-  },
+  }),
   options: [].concat(layoutConfig.options, [
     {
       label: '属性配置',

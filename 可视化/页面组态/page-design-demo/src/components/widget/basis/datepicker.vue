@@ -11,6 +11,7 @@
   <component
     :is="curComp"
     v-bind="options"
+    :style="styles"
     @openChange="openChangeEvent"
     @panelChange="panelChangeEvent"
   >

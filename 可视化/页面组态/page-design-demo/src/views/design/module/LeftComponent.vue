@@ -33,7 +33,8 @@
 import { mapActions } from 'vuex'
 import CollapseItem from './CollapseItem'
 import Configuration from '@/configuration/Configuration'
-import { extend, generateId } from '@/utils/tools'
+import { generateId } from '@/utils/tools'
+import { cloneDeep } from 'lodash'
 import { WidgetType } from '@/constants'
 export default {
   name: 'LeftComponent',
@@ -108,13 +109,8 @@ export default {
      * @param {Object} item 待添加元素的默认配置
      */
     handleListPush(item) {
-      let newWidget = extend(
-        true,
-        {
-          id: generateId(item.key)
-        },
-        item
-      )
+      let newWidget = cloneDeep(item)
+      newWidget.id = generateId(item.key)
       this.addWidget(newWidget)
     },
     /**

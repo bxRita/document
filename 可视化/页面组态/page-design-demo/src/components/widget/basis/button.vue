@@ -9,6 +9,7 @@
 -->
 <template>
   <a-button
+    :style="styles"
     :type="options.type"
     :disabled="options.disabled"
     :loading="options.loading"

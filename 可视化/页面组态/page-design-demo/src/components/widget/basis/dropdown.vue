@@ -9,6 +9,7 @@
 -->
 <template>
   <a-dropdown
+    :style="styles"
     @visibleChange="visibleChangeEvent"
     :placement="options.placement"
     :disabled="options.disabled"

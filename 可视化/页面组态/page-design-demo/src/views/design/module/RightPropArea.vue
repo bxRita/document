@@ -13,14 +13,19 @@
       <page-prop></page-prop>
     </a-collapse-panel>
     <a-collapse-panel key="2" header="组件属性">
-      <widget-prop :currentWidget="currentSelectItem"></widget-prop>
+      <widget-prop
+        v-if="currentSelectItem"
+        :currentWidget="currentSelectItem"
+        :key="currentSelectItem.id"
+        ref="widgetProp"
+      ></widget-prop>
     </a-collapse-panel>
   </a-collapse>
 </template>
 
 <script>
 import { PageProp, WidgetProp } from './right'
-
+import { isEqual } from 'lodash'
 export default {
   name: 'RightPropArea',
   inheritAttrs: false,
@@ -36,6 +41,16 @@ export default {
   data() {
     return {
       activeKey: '1'
+    }
+  },
+  watch: {
+    currentSelectItem: {
+      handler(newVal, oldVal) {
+        isEqual(newVal, oldVal) &&
+          this.$refs.widgetProp &&
+          this.$refs.widgetProp.$forceUpdate()
+      },
+      deep: true
     }
   },
   created() {},

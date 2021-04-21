@@ -90,22 +90,22 @@ export const buttonConfig = {
       id: 'props.allowClear',
       label: '支持清除',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '是',
+      inactiveText: '否'
     },
     {
       id: 'props.showArrow',
       label: '展示箭头',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '是',
+      inactiveText: '否'
     },
     {
       id: 'props.disabled',
       label: '禁用状态',
       type: 'switch',
-      activeText: '禁用',
-      inactiveText: '启用'
+      activeText: '启用',
+      inactiveText: '禁用'
     },
     {
       id: 'props.mode',
@@ -153,8 +153,8 @@ export const buttonConfig = {
       id: 'props.isDynamic',
       label: '动态加载',
       type: 'switch',
-      activeText: '否',
-      inactiveText: '是'
+      activeText: '是',
+      inactiveText: '否'
     },
     {
       id: 'props.options',
