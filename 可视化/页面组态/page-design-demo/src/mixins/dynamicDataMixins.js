@@ -60,6 +60,7 @@ export default {
           let len = data.length
           for (let i = 0; i < len; i++) {
             result.push({
+              ...data[i],
               value: data[i][valueField],
               label: data[i][labelField]
             })
@@ -67,6 +68,7 @@ export default {
         } else {
           for (let key in data) {
             result.push({
+              ...data,
               value: data[key],
               label: key
             })

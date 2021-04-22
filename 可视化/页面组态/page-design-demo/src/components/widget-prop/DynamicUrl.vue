@@ -29,13 +29,13 @@
             v-bind="formItemLayout"
           >
             <a-row :gutter="10">
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-model-item label="URL" prop="url">
                   <a-input v-model="form.url" />
                 </a-form-model-item>
               </a-col>
 
-              <a-col :span="8">
+              <a-col :span="12">
                 <a-form-model-item label="请求类型" prop="type">
                   <a-select v-model="form.type" placeholder="请选择">
                     <a-select-option value="get"> Get </a-select-option>
@@ -43,8 +43,9 @@
                   </a-select>
                 </a-form-model-item>
               </a-col>
-
-              <a-col :span="8">
+            </a-row>
+            <a-row :gutter="10">
+              <a-col :span="12">
                 <a-form-model-item label="请求条数" prop="pageSize">
                   <a-select v-model="form.pageSize" placeholder="请选择">
                     <a-select-option
@@ -56,9 +57,8 @@
                   </a-select>
                 </a-form-model-item>
               </a-col>
-            </a-row>
-            <a-row :gutter="10">
-              <a-col :span="8">
+
+              <a-col :span="12">
                 <a-form-model-item
                   v-for="(param, index) in form.params"
                   :key="index"
@@ -71,13 +71,13 @@
                 >
                   <a-input
                     v-model="param.key"
-                    placeholder="请输入参数名"
-                    style="width: 38%; margin-right: 3px"
+                    placeholder="参数名"
+                    style="width: 46%; margin-right: 3px"
                   />
                   <a-input
                     v-model="param.value"
-                    placeholder="请输入参数值"
-                    style="width: 38%; margin-right: 3px"
+                    placeholder="参数值"
+                    style="width: 45%; margin-right: 3px"
                   />
                   <a-icon
                     class="dynamic-delete-button"
@@ -119,18 +119,12 @@
               </a-col>
               <a-col :span="8">
                 <a-form-model-item label="值字段" prop="valueField">
-                  <a-input
-                    v-model="form.valueField"
-                    placeholder="请输入选项值属性"
-                  />
+                  <a-input v-model="form.valueField" placeholder="选项值属性" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="8">
                 <a-form-model-item label="文本字段" prop="labelField">
-                  <a-input
-                    v-model="form.labelField"
-                    placeholder="请输入文本属性"
-                  />
+                  <a-input v-model="form.labelField" placeholder="文本属性" />
                 </a-form-model-item>
               </a-col>
             </a-row> </a-form-model
@@ -167,11 +161,11 @@ export default {
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 4 }
+          sm: { span: 6 }
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 20 }
+          sm: { span: 18 }
         }
       },
       formItemLayoutWithOutLabel: {
@@ -192,16 +186,10 @@ export default {
         params: []
       },
       rules: {
-        url: [
-          { required: true, message: '请输入URL接口地址', trigger: 'blur' }
-        ],
-        type: [{ required: true, message: '请选择请求类型', trigger: 'blur' }],
-        valueField: [
-          { required: true, message: '请输入值字段', trigger: 'blur' }
-        ],
-        labelField: [
-          { required: true, message: '请输入文本字段', trigger: 'blur' }
-        ]
+        url: [{ required: true, message: 'URL接口地址', trigger: 'blur' }],
+        type: [{ required: true, message: '请求类型', trigger: 'blur' }],
+        valueField: [{ required: true, message: '值字段', trigger: 'blur' }],
+        labelField: [{ required: true, message: '文本字段', trigger: 'blur' }]
       },
       visible: false,
       result: '' // 服务请求结果
@@ -266,6 +254,19 @@ export default {
   .code-editor {
     .monaco-editor {
       min-height: 300px;
+    }
+  }
+}
+::v-deep .ant-modal-body {
+  .ant-form {
+    .ant-row {
+      .ant-form-item-control-wrapper {
+        flex: 0 0 auto;
+        float: left;
+        display: block;
+        box-sizing: border-box;
+        width: 58.33333333%;
+      }
     }
   }
 }

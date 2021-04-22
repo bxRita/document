@@ -22,7 +22,7 @@
       :record="record"
       :custom="record.custom"
       :options="record.props"
-      :ref="record.id"
+      :ref="isLayout && record.id"
     ></component>
   </div>
 </template>
@@ -50,9 +50,13 @@ export default {
       currentComp: null
     }
   },
+  computed: {
+    isLayout() {
+      return this.record.type === WidgetType.layout
+    }
+  },
   mounted() {
-    this.currentComp =
-      this.record.type === WidgetType.layout ? this.record.key : 'FormNode'
+    this.currentComp = this.isLayout ? this.record.key : 'FormNode'
 
     this.$nextTick(() => {
       addRefs(this.$refs)

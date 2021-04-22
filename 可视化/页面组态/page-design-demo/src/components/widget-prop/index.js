@@ -11,9 +11,13 @@
 import StaticDataOption from './StaticDataOption.vue'
 import DynamicUrl from './DynamicUrl.vue'
 import LinkEventConfig from './LinkEventConfig.vue'
+import ConfigPagination from './ConfigPagination.vue'
+import DataTableColumnConfig from './DataTableColumnConfig.vue'
 
 export default {
   StaticDataOption,
   DynamicUrl,
-  LinkEventConfig
+  LinkEventConfig,
+  ConfigPagination,
+  DataTableColumnConfig
 }

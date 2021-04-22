@@ -31,7 +31,7 @@ export const buttonConfig = {
       pageSize: 30,
       orderBy: null,
       orderDesc: false,
-      chooseFields: '',
+      chooseFields: 'data',
       valueField: 'value',
       labelField: 'label',
       params: []
