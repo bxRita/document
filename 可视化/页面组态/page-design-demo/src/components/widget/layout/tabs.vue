@@ -16,7 +16,7 @@
   >
     <a-tabs class="grid-row" v-bind="options" @change="changeTabEvent">
       <a-tab-pane
-        v-for="tabItem in record.columns"
+        v-for="(tabItem, idx) in record.columns"
         :key="tabItem.value"
         :tab="tabItem.label"
       >
@@ -33,7 +33,7 @@
             }"
             v-model="tabItem.list"
             @start="$emit('dragStart', $event, tabItem.list)"
-            @add="addSubWidget(record)"
+            @add="addSubWidget($event, tabItem.list, record, { idx: idx })"
           >
             <transition-group tag="div" name="list" class="list-main">
               <layoutItem
@@ -49,7 +49,7 @@
                 @handleSelectItem="handleSelectItem"
                 @handleCopy="$emit('handleCopy')"
                 @handleDelete="$emit('handleDelete')"
-                @addSubWidget="addSubWidget(item)"
+                @addSubWidget="addSubWidget"
               />
             </transition-group>
           </draggable>

@@ -43,7 +43,12 @@
             }"
             v-model="tdItem.list"
             @start="$emit('dragStart', $event, tdItem.list)"
-            @add="addSubWidget(record)"
+            @add="
+              addSubWidget($event, tdItem.list, record, {
+                idx: tdIndex,
+                pidx: trIndex
+              })
+            "
           >
             <transition-group tag="div" name="list" class="list-main">
               <layoutItem
@@ -59,7 +64,7 @@
                 @handleSelectItem="handleSelectItem"
                 @handleCopy="$emit('handleCopy')"
                 @handleDelete="$emit('handleDelete')"
-                @addSubWidget="addSubWidget(item)"
+                @addSubWidget="addSubWidget"
               />
             </transition-group>
           </draggable>

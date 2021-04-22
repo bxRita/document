@@ -107,11 +107,8 @@ const design = {
       state.currentSelectItem = payload // 设置新增项为当前选中项
     },
     [UPSERT_DESIGN_CELL]: (state, payload) => {
-      let list = state.pageData.list,
-        existIdx = list.findIndex(item => payload.id == item.id)
-      if (existIdx === -1) {
-        list.push(payload)
-      }
+      state.pageData.list.push(payload)
+
       state.currentSelectItem = payload // 设置新增项为当前选中项
     },
     [SET_SELECT_WIDGET]: (state, payload) => {
@@ -193,9 +190,25 @@ const design = {
       state.pageData.list = []
     },
     [ADD_SUB_WIDGET_TO_LAYOUT]: (state, payload) => {
-      let cur = getWidgetPropById(state.pageData.list, payload.id)
-      const subProp = cur.subProp
-      cur[subProp] = cloneDeep(payload[subProp])
+      const { parentWidget, toAddWidget, idxObj } = payload
+      let tr
+      const idx = idxObj?.idx,
+        pidx = idxObj?.pidx
+
+      let cur = getWidgetPropById(state.pageData.list, parentWidget.id)
+      switch (cur.key) {
+        case 'xaGrid':
+        case 'xaTabs':
+          cur[cur.subProp][idx].list.push(toAddWidget)
+          break
+        case 'xaTable':
+          tr = cur[cur.subProp][pidx]
+          tr[tr.subProp][idx].list.push(toAddWidget)
+          break
+        default:
+          cur.list.push(toAddWidget)
+          break
+      }
     }
   },
   actions: {

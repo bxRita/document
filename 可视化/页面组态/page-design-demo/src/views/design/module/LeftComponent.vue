@@ -125,7 +125,7 @@ export default {
       // 生成key值
       const key = generateId(list[index].key)
       this.$set(list, index, {
-        ...list[index],
+        ...cloneDeep(list[index]),
         id: key
       })
     },

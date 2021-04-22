@@ -21,7 +21,6 @@
     <li
       v-for="(val, index) in list"
       :key="index"
-      @dragstart="$emit('generateKey', list, index)"
       @dblclick="$emit('handleListPush', val)"
     >
       <!-- <svg v-if="val.icon" class="icon" aria-hidden="true">

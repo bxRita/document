@@ -39,7 +39,7 @@
           }"
           v-model="colItem.list"
           @start="$emit('dragStart', $event, colItem.list)"
-          @add="addSubWidget(record)"
+          @add="addSubWidget($event, colItem.list, record, { idx: idnex })"
         >
           <transition-group tag="div" name="list" class="list-main">
             <layout-item
@@ -55,7 +55,7 @@
               @handleSelectItem="handleSelectItem"
               @handleCopy="$emit('handleCopy')"
               @handleDelete="$emit('handleDelete')"
-              @addSubWidget="addSubWidget(item)"
+              @addSubWidget="addSubWidget"
             />
           </transition-group>
         </draggable>

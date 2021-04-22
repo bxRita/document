@@ -53,9 +53,11 @@
   </div>
 </template>
 <script>
+import { cloneDeep } from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 import draggable from 'vuedraggable'
 import layoutItem from './LayoutItem.vue'
+import { generateId } from '@/utils/tools'
 export default {
   name: 'DesignPanel',
   inheritAttrs: false,
@@ -91,12 +93,24 @@ export default {
       'copySelectedWidget',
       'addSubWidgetToLayout'
     ]),
-    addSubWidget(curLayoutWidget) {
-      this.addSubWidgetToLayout(curLayoutWidget)
+    addSubWidget(evt, list, curLayoutWidget, idxObj) {
+      const newIndex = evt.newIndex
+      let newWidget = list[newIndex] // 当前新增的组件信息
+      newWidget.id = generateId(newWidget.key)
+
+      this.addSubWidgetToLayout({
+        parentWidget: curLayoutWidget,
+        toAddWidget: cloneDeep(newWidget),
+        idxObj
+      })
     },
     addWidget(evt) {
       const newIndex = evt.newIndex
-      this.upsertWidget(this.designData.list[newIndex])
+      let newWidget = this.designData.list[newIndex]
+      newWidget.id = generateId(newWidget.key)
+
+      this.upsertWidget(cloneDeep(newWidget))
+
       this.$emit('handleSetSelectItem', this.designData.list[newIndex])
     },
     handleColAdd(evt, columns, isCopy = false) {},
