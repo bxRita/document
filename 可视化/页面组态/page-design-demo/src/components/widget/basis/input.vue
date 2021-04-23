@@ -25,8 +25,9 @@
 
 <script>
 import basisMixins from '@/mixins/basisMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaInput',
+  name: WidgetComponentName.INPUT,
   inheritAttrs: false,
   mixins: [basisMixins],
   methods: {

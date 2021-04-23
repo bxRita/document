@@ -33,8 +33,9 @@
 <script>
 import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaSelect',
+  name: WidgetComponentName.SELECT,
   inheritAttrs: false,
   mixins: [basisMixins, dynamicDataMixins],
   methods: {

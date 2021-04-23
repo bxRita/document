@@ -32,8 +32,9 @@
 <script>
 import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaDropdown',
+  name: WidgetComponentName.DROPDOWN,
   inheritAttrs: false,
   mixins: [basisMixins, dynamicDataMixins],
   methods: {

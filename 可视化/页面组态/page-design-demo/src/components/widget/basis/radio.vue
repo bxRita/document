@@ -24,8 +24,9 @@
 <script>
 import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaRadio',
+  name: WidgetComponentName.RADIO,
   inheritAttrs: false,
   mixins: [basisMixins, dynamicDataMixins],
   computed: {

@@ -10,10 +10,10 @@
 
 <script>
 import chartsMixins from '@/mixins/chartsMixins'
-
+import { WidgetComponentName } from '@/constants'
 // 3D折线图
 export default {
-  name: 'xaEchartsLineD',
+  name: WidgetComponentName.ECHARTS_LINE3D,
 
   mixins: [chartsMixins],
 

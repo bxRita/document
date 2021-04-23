@@ -71,8 +71,9 @@
 
 <script>
 import layoutMixins from '@/mixins/layoutMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaCard',
+  name: WidgetComponentName.CARD,
   inheritAttrs: false,
   mixins: [layoutMixins]
 }

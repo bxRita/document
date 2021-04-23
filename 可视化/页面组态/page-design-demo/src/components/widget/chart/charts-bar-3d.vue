@@ -9,10 +9,11 @@
 -->
 
 <script>
+import { WidgetComponentName } from '@/constants'
 import chartsMixins from '@/mixins/chartsMixins'
 // 柱状3D图
 export default {
-  name: 'xaEchartsBarD',
+  name: WidgetComponentName.ECHARTS_BAR3D,
 
   mixins: [chartsMixins],
 

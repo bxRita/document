@@ -8,10 +8,11 @@
   Write a description of the code here.
 -->
 <script>
+import { WidgetComponentName } from '@/constants'
 import chartsMixins from '@/mixins/chartsMixins'
 // 折线图
 export default {
-  name: 'xaEchartsLine',
+  name: WidgetComponentName.ECHARTS_LINE,
 
   mixins: [chartsMixins],
 

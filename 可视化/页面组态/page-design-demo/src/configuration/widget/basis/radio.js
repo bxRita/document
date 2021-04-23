@@ -9,10 +9,10 @@
  */
 
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const radioConfig = {
   type: commonConfig.compType,
-  key: 'xaRadio',
+  key: WidgetComponentName.RADIO,
   icon: 'icon-button-remove',
   props: {
     defaultValue: '',

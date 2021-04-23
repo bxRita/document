@@ -16,9 +16,9 @@ import {
   chartyAxis,
   chartTooltip
 } from '@/configuration/common/chart'
-
+import { WidgetComponentName } from '@/constants'
 export const chartsLineConfig = {
-  key: 'xaEchartsLine',
+  key: WidgetComponentName.ECHARTS_LINE,
   type: 'chart',
   props: {
     chartConfig: {

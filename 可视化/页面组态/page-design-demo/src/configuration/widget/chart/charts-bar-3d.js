@@ -9,9 +9,9 @@
  */
 import commonConfig from '@/configuration/common/basis'
 import { chartTooltip } from '@/configuration/common/chart'
-
+import { WidgetComponentName } from '@/constants'
 export const chartsBarDConfing = {
-  key: 'xaEchartsBarD',
+  key: WidgetComponentName.ECHARTS_BAR3D,
   type: 'chart',
   props: {
     chartConfig: {

@@ -9,10 +9,10 @@
  */
 
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const datepickerConfig = {
   type: commonConfig.compType,
-  key: 'xaDatepicker',
+  key: WidgetComponentName.DATEPICKER,
   icon: 'icon-button-remove',
   props: {
     allowClear: true,

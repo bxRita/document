@@ -9,10 +9,10 @@
  */
 
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const buttonConfig = {
   type: commonConfig.compType,
-  key: 'xaSelect',
+  key: WidgetComponentName.SELECT,
   icon: 'icon-select',
   props: {
     defaultValue: '',

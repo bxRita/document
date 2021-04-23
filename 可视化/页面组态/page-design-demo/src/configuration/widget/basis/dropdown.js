@@ -9,10 +9,10 @@
  */
 
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const dropdownConfig = {
   type: commonConfig.compType,
-  key: 'xaDropdown',
+  key: WidgetComponentName.DROPDOWN,
   icon: 'icon-select',
   props: {
     disabled: false,

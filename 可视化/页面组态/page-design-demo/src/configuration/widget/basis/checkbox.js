@@ -9,10 +9,10 @@
  */
 
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const checkboxConfig = {
   type: commonConfig.compType,
-  key: 'xaCheckbox',
+  key: WidgetComponentName.CHECKBOX,
   icon: 'icon-button-remove',
   props: {
     defaultValue: [],

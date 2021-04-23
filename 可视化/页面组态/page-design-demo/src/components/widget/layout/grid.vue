@@ -82,8 +82,10 @@
 
 <script>
 import layoutMixins from '@/mixins/layoutMixins'
+import { WidgetComponentName } from '@/constants'
+
 export default {
-  name: 'xaGrid',
+  name: WidgetComponentName.GRID,
   inheritAttrs: false,
   mixins: [layoutMixins]
 }

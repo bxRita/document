@@ -10,10 +10,10 @@
 
 <script>
 import chartsMixins from '@/mixins/chartsMixins'
-
+import { WidgetComponentName } from '@/constants'
 // 柱状图
 export default {
-  name: 'xaEchartsBar',
+  name: WidgetComponentName.ECHARTS_BAR,
 
   mixins: [chartsMixins],
 

@@ -7,6 +7,7 @@
  * Task: #1
  * Write a description of the code here.
  */
+import { WidgetComponentName } from '@/constants'
 import commonConfig from '@/configuration/common/basis'
 import {
   chartTitle,
@@ -15,7 +16,7 @@ import {
 } from '@/configuration/common/chart'
 
 export const chartsPieConfig = {
-  key: 'xaEchartsPie',
+  key: WidgetComponentName.ECHARTS_PIE,
   type: 'chart',
   props: {
     chartConfig: {

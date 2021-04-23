@@ -9,10 +9,10 @@
  */
 
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const menuConfig = {
   type: commonConfig.compType,
-  key: 'xaMenu',
+  key: WidgetComponentName.MENU,
   icon: 'icon-button-remove',
   props: {
     mode: 'inline',

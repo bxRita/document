@@ -9,10 +9,10 @@
  * Write a description of the code here.
  */
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const inputConfig = {
   type: commonConfig.compType,
-  key: 'xaInput',
+  key: WidgetComponentName.INPUT,
   icon: 'icon-write',
   props: {
     type: 'text',

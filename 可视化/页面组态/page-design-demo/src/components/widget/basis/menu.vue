@@ -13,8 +13,9 @@ import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
 import { cloneDeep } from 'lodash'
 import { transArrToTree } from '@/utils/tools'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaMenu',
+  name: WidgetComponentName.MENU,
   inheritAttrs: false,
   mixins: [basisMixins, dynamicDataMixins],
   methods: {

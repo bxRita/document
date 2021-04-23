@@ -24,8 +24,9 @@
 <script>
 import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaButton',
+  name: WidgetComponentName.DATATABLE,
   inheritAttrs: false,
   mixins: [basisMixins, dynamicDataMixins],
   data() {

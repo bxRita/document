@@ -9,10 +9,10 @@
  * Write a description of the code here.
  */
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const buttonConfig = {
   type: commonConfig.compType,
-  key: 'xaButton',
+  key: WidgetComponentName.BUTTON,
   icon: 'icon-button-remove',
   props: {
     content: '按钮',

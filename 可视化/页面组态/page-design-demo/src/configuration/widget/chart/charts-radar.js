@@ -13,9 +13,10 @@ import {
   chartLegend,
   chartTooltip
 } from '@/configuration/common/chart'
+import { WidgetComponentName } from '@/constants'
 
 export const chartsRadarConfig = {
-  key: 'xaEchartsRadar',
+  key: WidgetComponentName.ECHARTS_RADAR,
   type: 'chart',
   props: {
     chartConfig: {

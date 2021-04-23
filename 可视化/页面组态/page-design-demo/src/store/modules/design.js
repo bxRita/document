@@ -25,6 +25,7 @@ import {
 import { cloneDeep } from 'lodash'
 import widgetCfg from './widget' // 设计面板右侧 grid相关属性配置修改更新
 import eventCfg from './event' // 设计面板右侧 事件相关属性配置修改更新
+import { WidgetComponentName } from '@/constants'
 
 const design = {
   namespaced: true,
@@ -197,11 +198,11 @@ const design = {
 
       let cur = getWidgetPropById(state.pageData.list, parentWidget.id)
       switch (cur.key) {
-        case 'xaGrid':
-        case 'xaTabs':
+        case WidgetComponentName.GRID:
+        case WidgetComponentName.TABS:
           cur[cur.subProp][idx].list.push(toAddWidget)
           break
-        case 'xaTable':
+        case WidgetComponentName.TABLE:
           tr = cur[cur.subProp][pidx]
           tr[tr.subProp][idx].list.push(toAddWidget)
           break

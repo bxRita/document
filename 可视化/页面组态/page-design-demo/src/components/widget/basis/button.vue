@@ -25,8 +25,9 @@
 
 <script>
 import basisMixins from '@/mixins/basisMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaButton',
+  name: WidgetComponentName.BUTTON,
   inheritAttrs: false,
   mixins: [basisMixins],
   methods: {

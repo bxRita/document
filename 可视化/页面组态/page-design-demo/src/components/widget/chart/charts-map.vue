@@ -11,10 +11,10 @@
 <script>
 import chartsMixins from '@/mixins/chartsMixins'
 import chinaJson from './china.json'
-
+import { WidgetComponentName } from '@/constants'
 // 地图
 export default {
-  name: 'xaEchartsMap',
+  name: WidgetComponentName.ECHARTS_MAP,
 
   mixins: [chartsMixins],
 

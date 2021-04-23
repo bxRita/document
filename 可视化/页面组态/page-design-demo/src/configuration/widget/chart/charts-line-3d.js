@@ -8,9 +8,9 @@
  * Write a description of the code here.
  */
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const chartsLineDConfig = {
-  key: 'xaEchartsLineD',
+  key: WidgetComponentName.ECHARTS_LINE3D,
   type: 'chart',
   props: {
     chartConfig: {

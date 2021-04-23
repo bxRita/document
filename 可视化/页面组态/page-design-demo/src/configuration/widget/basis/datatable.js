@@ -10,10 +10,10 @@
 
 import commonConfig from '@/configuration/common/basis'
 import { cloneDeep } from 'lodash'
-
+import { WidgetComponentName } from '@/constants'
 export const buttonConfig = {
   type: commonConfig.compType,
-  key: 'xaDatatable',
+  key: WidgetComponentName.DATATABLE,
   icon: 'icon-button-remove',
   props: {
     tableLayout: 'auto',

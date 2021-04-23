@@ -21,10 +21,11 @@
 </template>
 
 <script>
+import { WidgetComponentName } from '@/constants'
 import basisMixins from '@/mixins/basisMixins'
 import dynamicDataMixins from '@/mixins/dynamicDataMixins'
 export default {
-  name: 'xaCheckbox',
+  name: WidgetComponentName.CHECKBOX,
   inheritAttrs: false,
   mixins: [basisMixins, dynamicDataMixins],
   methods: {

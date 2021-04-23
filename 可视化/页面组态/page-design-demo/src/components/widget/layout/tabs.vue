@@ -76,10 +76,11 @@
 </template>
 
 <script>
+import { WidgetComponentName } from '@/constants'
 import { mapActions } from 'vuex'
 import layoutMixins from '@/mixins/layoutMixins'
 export default {
-  name: 'xaTabs',
+  name: WidgetComponentName.TABS,
   inheritAttrs: false,
   mixins: [layoutMixins],
   data() {

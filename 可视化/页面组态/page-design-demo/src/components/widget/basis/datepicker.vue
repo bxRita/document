@@ -26,9 +26,9 @@ const DateType = {
   week: 'a-week-picker'
 }
 import basisMixins from '@/mixins/basisMixins'
-
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaDatepicker',
+  name: WidgetComponentName.DATEPICKER,
   inheritAttrs: false,
   mixins: [basisMixins],
   data() {

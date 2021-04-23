@@ -16,9 +16,9 @@ import {
   chartyAxis,
   chartTooltip
 } from '@/configuration/common/chart'
-
+import { WidgetComponentName } from '@/constants'
 export const chartsBarConfig = {
-  key: 'xaEchartsBar',
+  key: WidgetComponentName.ECHARTS_BAR,
   type: 'chart',
   props: {
     chartConfig: {

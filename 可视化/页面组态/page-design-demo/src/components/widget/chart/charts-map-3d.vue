@@ -9,6 +9,7 @@
 -->
 
 <script>
+import { WidgetComponentName } from '@/constants'
 import chartsMixins from '@/mixins/chartsMixins'
 const baseTexture = require('./images/earth.jpg')
 const heightTexture = require('./images/bathymetry_bw_composite_4k.jpg')
@@ -17,7 +18,7 @@ const texture = require('./images/night.jpg')
 const texture1 = require('./images/clouds.png')
 // 3d地图
 export default {
-  name: 'xaEchartsMapD',
+  name: WidgetComponentName.ECHARTS_MAP3D,
 
   mixins: [chartsMixins],
 

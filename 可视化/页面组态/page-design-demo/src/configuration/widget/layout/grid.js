@@ -9,10 +9,10 @@
  * Write a description of the code here.
  */
 import layoutConfig from '@/configuration/common/layout'
-
+import { WidgetComponentName } from '@/constants'
 export const gridConfig = {
   type: layoutConfig.compType,
-  key: 'xaGrid',
+  key: WidgetComponentName.GRID,
   icon: 'icon-zhage',
   subProp: 'columns', // 包含子元素的属性名
   columns: [

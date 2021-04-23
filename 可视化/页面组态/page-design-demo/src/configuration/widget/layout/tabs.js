@@ -8,10 +8,10 @@
  * Write a description of the code here.
  */
 import layoutConfig from '@/configuration/common/layout'
-
+import { WidgetComponentName } from '@/constants'
 export const gridConfig = {
   type: layoutConfig.compType,
-  key: 'xaTabs',
+  key: WidgetComponentName.TABS,
   icon: 'icon-tabs',
   subProp: 'columns', // 包含子元素的属性名
   columns: [

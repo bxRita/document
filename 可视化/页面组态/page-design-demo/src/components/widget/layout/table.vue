@@ -92,8 +92,9 @@
 
 <script>
 import layoutMixins from '@/mixins/layoutMixins'
+import { WidgetComponentName } from '@/constants'
 export default {
-  name: 'xaTable',
+  name: WidgetComponentName.TABLE,
   inheritAttrs: false,
   mixins: [layoutMixins]
 }

@@ -79,8 +79,10 @@
 <script>
 import { Card, Modal } from 'ant-design-vue'
 import layoutMixins from '@/mixins/layoutMixins'
+import { WidgetComponentName } from '@/constants'
+
 export default {
-  name: 'xaDialog',
+  name: WidgetComponentName.DIALOG,
   inheritAttrs: false,
   mixins: [layoutMixins],
   data() {

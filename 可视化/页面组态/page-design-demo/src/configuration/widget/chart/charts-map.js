@@ -8,9 +8,9 @@
  * Write a description of the code here.
  */
 import commonConfig from '@/configuration/common/basis'
-
+import { WidgetComponentName } from '@/constants'
 export const chartsMapConfig = {
-  key: 'xaEchartsMap',
+  key: WidgetComponentName.ECHARTS_MAP,
   type: 'chart',
   props: {
     chartConfig: {}

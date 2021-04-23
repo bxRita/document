@@ -9,11 +9,12 @@
 -->
 
 <script>
+import { WidgetComponentName } from '@/constants'
 import chartsMixins from '@/mixins/chartsMixins'
 
 // 仪表盘
 export default {
-  name: 'xaEchartsGauge',
+  name: WidgetComponentName.ECHARTS_GAUGE,
 
   mixins: [chartsMixins],
 

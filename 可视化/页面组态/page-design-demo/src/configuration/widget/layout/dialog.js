@@ -8,10 +8,11 @@
  * Write a description of the code here.
  */
 import layoutConfig from '@/configuration/common/layout'
-import { WidgetType } from '@/constants'
+import { WidgetType, WidgetComponentName } from '@/constants'
+
 export const gridConfig = {
   type: WidgetType.layout,
-  key: 'xaDialog',
+  key: WidgetComponentName.DIALOG,
   icon: 'icon-qiapian',
   list: [],
   props: {
