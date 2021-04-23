@@ -20,11 +20,9 @@ const grid = {
   mutations: {
     [ADD_GRID_COL]: (state, payload) => {
       let pageWidgetList = state.pageData.list
-      let item = getWidgetPropById(pageWidgetList, payload.widgetId)
-      item.columns.push({
-        span: 12,
-        list: []
-      })
+      const { widgetId, col } = payload
+      let item = getWidgetPropById(pageWidgetList, widgetId)
+      item.columns.push(col)
     },
     [DELETE_GRID_COL]: (state, payload) => {
       let pageWidgetList = state.pageData.list

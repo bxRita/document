@@ -10,9 +10,7 @@
 -->
 <template>
   <div>
-    <a-button type="primary" size="small" @click="showModal">
-      配置数据集
-    </a-button>
+    <a-button size="small" @click="showModal"> 配置数据集 </a-button>
     <a-modal
       title="接口数据预览"
       :visible="visible"

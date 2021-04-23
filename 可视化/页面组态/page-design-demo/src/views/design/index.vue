@@ -100,7 +100,8 @@ export default {
       return cloneDeep(this.pageData)
     },
     currentItem() {
-      return cloneDeep(this.currentSelectItem)
+      let curItem = this.currentSelectItem
+      return cloneDeep(curItem)
     }
   },
   created() {},

@@ -24,7 +24,17 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      list: this.options
+    }
+  },
+  watch: {
+    options: {
+      handler: newVal => {
+        this && (this.list = newVal)
+      },
+      deep: true
+    }
   },
   created() {},
   mounted() {},
@@ -39,19 +49,23 @@ export default {
      */
     addDataItem() {
       const uid = uuid()
+      let newItem = {
+        label: `选项${uid}`,
+        value: uid
+      }
+
+      this.list.push(newItem)
       this.addWidgetDataItem({
         widgetId: this.widgetId,
         propId: this.propId,
-        val: {
-          label: `选项${uid}`,
-          value: uid
-        }
+        val: newItem
       })
     },
     /**
      * @description 删除数据项
      */
     deleteDataItem(idx) {
+      this.list.splice(idx, 1)
       this.deleteWidgetDataItem({
         widgetId: this.widgetId,
         propId: this.propId,
@@ -70,12 +84,12 @@ export default {
   },
   render() {
     return (
-      <div>
+      <div ref="datalist">
         <a-row>
           <a-col span={10}>值</a-col>
           <a-col span={10}>文本</a-col>
         </a-row>
-        {this.options.map((opt, idx) => {
+        {this.list.map((opt, idx) => {
           return (
             <a-row>
               <a-col span={10}>

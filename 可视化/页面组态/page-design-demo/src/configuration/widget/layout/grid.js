@@ -53,8 +53,13 @@ export const gridConfig = {
         // 新增列
         function addGridCol(vm) {
           let curWidget = vm.currentWidget
+          let col = {
+            span: 12,
+            list: []
+          }
           vm.$store.dispatch('design/addGridCol', {
-            widgetId: curWidget.id
+            widgetId: curWidget.id,
+            col
           })
         }
         // 删除列
@@ -84,7 +89,7 @@ export const gridConfig = {
                 <a-row>
                   <a-col span={20}>
                     <a-input-number
-                      value={opt.span}
+                      default-value={opt.span}
                       placeholder="请输入"
                       min={1}
                       max={24}

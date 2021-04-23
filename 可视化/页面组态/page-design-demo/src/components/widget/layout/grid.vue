@@ -17,7 +17,7 @@
     <a-row
       class="grid-row"
       :type="options.type"
-      :gutter="options.gutter"
+      :gutter="[5, 2]"
       :justify="options.justify"
       :align="options.align"
     >
