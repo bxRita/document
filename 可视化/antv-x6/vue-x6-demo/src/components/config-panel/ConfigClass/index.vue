@@ -23,38 +23,14 @@
       </a-row>
       <a-row align="middle">
         <a-col :span="8">属性</a-col>
-        <a-col :span="16">
-          <a-row>
-            <a-col :span="11"> 名称 </a-col>
-            <a-col :span="1"></a-col>
-            <a-col :span="12"> 类型 </a-col>
-          </a-row>
-          <a-row v-for="(item, idx) in lists" :key="idx">
-            <a-col :span="11">
-              <a-input
-                v-model="item.name"
-                style="width: 100%"
-                @change="changeField(1)"
-              />
-            </a-col>
-            <a-col :span="1"></a-col>
-            <a-col :span="12">
-              <a-select v-model="item.type" style="width: 100%">
-                <a-select-option
-                  :value="type"
-                  v-for="type in scaleTypes"
-                  :key="type"
-                >
-                  {{ type }}
-                </a-select-option>
-              </a-select>
-            </a-col>
-          </a-row>
-          <a-row align="middle">
-            <a-col :span="24">
-              <a-button block @click="add"> 添加字段 </a-button>
-            </a-col>
-          </a-row>
+        <a-col :span="8">
+          <a-button @click="showFiledManager">属性管理</a-button>
+          <FieldManager
+            v-bind="fieldOp"
+            v-if="fieldOp.show"
+            @ok="fieldManagerOk"
+            @cancel="fieldManagerCancel"
+          ></FieldManager>
         </a-col>
       </a-row>
     </a-tab-pane>
@@ -62,9 +38,15 @@
 </template>
 
 <script>
+import FieldManager from './FieldManager'
+
 export default {
   name: 'ConfigClass',
+  components: {
+    FieldManager
+  },
   props: {
+    id: String,
     cellData: {
       type: Object,
       default: () => {
@@ -77,22 +59,37 @@ export default {
       scaleTypes: ['Int', 'Float', 'String', 'Boolean', 'ID', 'DateTime'],
       name: '',
       type: 'Int',
-      lists: []
+      fieldOp: {
+        show: false,
+        fields: []
+      }
     }
   },
   mounted() {
-    this.name = this.cellData.bxDatas.name
-    this.lists = this.cellData.bxDatas.fields
-    this.type = this.cellData.cellType
+    this.init(this.cellData)
   },
   computed: {},
-  watch: {},
+  watch: {
+    id() {
+      this.init(this.cellData)
+    }
+  },
   methods: {
-    add() {
-      this.lists.push({
-        type: '',
-        name: ''
-      })
+    init(cellData) {
+      this.name = cellData.bxDatas.name
+      this.fieldOp.fields = cellData.bxDatas.fields
+      this.type = cellData.cellType
+    },
+    fieldManagerOk(fields) {
+      this.fieldOp.show = false
+      this.cellData.bxDatas.fields = fields
+      this.updateCell(this.cellData)
+    },
+    fieldManagerCancel() {
+      this.fieldOp.show = false
+    },
+    showFiledManager() {
+      this.fieldOp.show = true
     },
     updateCell() {
       this.$store.dispatch('design/updateCellById', this.cellData)
@@ -105,15 +102,6 @@ export default {
     changeName() {
       this.cellData.bxDatas.name = this.name
       this.updateCell(this.cellData)
-    },
-    changeField(idx) {
-      if (!this.cellData.bxDatas.fields) {
-        this.cellData.bxDatas.fields = []
-      }
-      // this.cellData.bxDatas.fields.splice(parseInt(idx), 1, {
-      //   name: this.attr[`field${idx}`],
-      //   type: parseInt(Math.random() * 10) / 2 === 0 ? 'String' : 'Boolean'
-      // })
     }
   }
 }

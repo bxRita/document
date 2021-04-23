@@ -123,28 +123,20 @@ export default {
     onLabelChange(e) {
       const val = e.target.value
       this.globalGridAttr.label = val
-      this.curCell.setLabels([
-        {
-          attrs: {
-            text: {
-              text: val
-            }
-          },
-          position: {
-            distance: 0.5
-          }
-        }
-      ])
-      // curCell.appendLabel({
-      //   attrs: {
-      //     text: {
-      //       text: val,
+      // this.curCell.setLabels([
+      //   {
+      //     attrs: {
+      //       label: {
+      //         text: val
+      //       }
       //     },
-      //   },
-      //   position: {
-      //     distance: 0.25,
-      //   },
-      // })
+      //     position: {
+      //       distance: 0.5
+      //     }
+      //   }
+      // ])
+      //
+      this.curCell.appendLabel(val)
     }
   }
 }

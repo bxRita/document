@@ -27,8 +27,11 @@ export function getClassNode(graph, options) {
         name: ComponentType.C,
         fields: [
           {
-            type: 'String',
-            name: 'id'
+            fieldType: 'String',
+            fieldName: 'id',
+            fieldIsNull: true,
+            defaultValue: '',
+            primaryType: '0'
           }
         ]
       },

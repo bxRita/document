@@ -3,8 +3,8 @@
     <a-card :title="title" :bordered="false" size="small">
       <a-list item-layout="horizontal" :data-source="bxData.fields">
         <a-list-item slot="renderItem" slot-scope="item">
-          <b>{{ item.name }}</b>
-          <span slot="actions">{{ item.type }}</span>
+          <b>{{ item.fieldName }}</b>
+          <span slot="actions">{{ item.fieldType }}</span>
         </a-list-item>
       </a-list>
     </a-card>
@@ -17,7 +17,15 @@ import globalStore from '@/store'
 const DEFAULT = {
   name: '类/接口',
   type: 'Class',
-  fields: [{ name: 'id', type: 'ID!' }]
+  fields: [
+    {
+      fieldType: 'String',
+      fieldName: 'id',
+      fieldIsNull: true,
+      defaultValue: '',
+      primaryType: '0'
+    }
+  ]
 }
 export default {
   name: 'GqlClass',

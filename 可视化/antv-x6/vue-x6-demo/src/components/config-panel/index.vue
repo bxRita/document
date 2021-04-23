@@ -1,6 +1,6 @@
 <template>
   <div class="config">
-    <component :is="curComp" v-bind="op" v-if="curComp" />
+    <component :is="curComp" v-bind="op" v-if="curComp" ref="configPanel" />
   </div>
 </template>
 
@@ -27,7 +27,6 @@ export default {
     ConfigClass,
     ConfigEdge
   },
-
   data() {
     return {
       curComp: ConfigGrid,
