@@ -1,12 +1,30 @@
-const path = require("path");
-const resolve = (dir) => {
-  return path.join(__dirname, dir);
-};
+const path = require('path')
+const resolve = dir => {
+  return path.join(__dirname, dir)
+}
 
 module.exports = {
-  chainWebpack: (config) => {
-    config.resolve.alias.set("@", resolve("src"));
+  chainWebpack: config => {
+    config.resolve.alias.set('@', resolve('src'))
+    // GraphQL Loader
+    config.module
+      .rule('graphql')
+      .test(/\.(gql|graphql)$/)
+      .use('graphql-tag/loader')
+      .loader('graphql-tag/loader')
+      .end()
   },
   runtimeCompiler: true,
-  outputDir: "dist",
-};
+  outputDir: 'dist',
+  devServer: {
+    port: 8080,
+    proxy: {
+      '/graphql': {
+        target: 'http://172.26.15.106:9199',
+        https: true,
+        secure: false,
+        changeOrigin: true
+      }
+    }
+  }
+}

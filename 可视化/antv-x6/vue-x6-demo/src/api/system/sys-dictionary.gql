@@ -1,0 +1,36 @@
+query(
+  $where: SysDictionaryWhereInput
+  $orderBy: SysDictionaryOrderByInput
+  $before: SysDictionaryWhereUniqueInput
+  $after: SysDictionaryWhereUniqueInput
+  $first: Int = 100
+  $skip: Int = 0
+) {
+  list: sysDictionaries(
+    where: $where
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    before: $before
+    after: $after
+  ) {
+    id
+    type
+    code
+    name
+    name_en
+    display
+    description
+    orderNo
+    createdAt
+    updatedAt
+  }
+  total: sysDictionariesConnection(where: $where) {
+    aggregate {
+      count
+    }
+    pageInfo {
+      hasNextPage
+    }
+  }
+}

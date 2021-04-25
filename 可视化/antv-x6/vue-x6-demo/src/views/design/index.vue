@@ -28,6 +28,8 @@ import ConfigPanel from '@/components/config-panel/index.vue'
 const { Rect, Circle } = Shape
 import { setCurrentGraph } from '@/utils/graphUtil'
 import ToolBar from '@/components/Toolbar.vue'
+import { getSysDictField } from '@/api/system'
+getSysDictField()
 export default {
   name: 'Design',
   inheritAttrs: false,
