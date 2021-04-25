@@ -244,7 +244,7 @@ export default {
       })
 
       this.stencil.load([r1, r2], 'basic')
-      this.stencil.load([c], 'combination')
+      // this.stencil.load([c], 'combination')
     },
     /**
      * @description 获取可视区的宽高

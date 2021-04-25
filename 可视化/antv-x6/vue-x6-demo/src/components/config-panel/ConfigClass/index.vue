@@ -1,6 +1,6 @@
 <template>
   <a-tabs defaultActiveKey="1">
-    <a-tab-pane tab="属性" key="1">
+    <a-tab-pane tab="类/接口配置" key="1">
       <a-row align="middle">
         <a-col :span="8">类/接口名</a-col>
         <a-col :span="16">
@@ -31,6 +31,12 @@
             @ok="fieldManagerOk"
             @cancel="fieldManagerCancel"
           ></FieldManager>
+        </a-col>
+      </a-row>
+      <a-row>
+        <a-col :span="8">操作</a-col>
+        <a-col :span="8">
+          <a-button type="primary" ghost>保存</a-button>
         </a-col>
       </a-row>
     </a-tab-pane>

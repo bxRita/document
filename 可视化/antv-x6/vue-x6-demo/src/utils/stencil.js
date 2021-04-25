@@ -34,16 +34,16 @@ export default class X6Stencil {
             columns: 2,
             marginX: 10
           }
-        },
-        {
-          name: 'combination',
-          title: '业务节点',
-          layoutOptions: {
-            columns: 2,
-            marginX: 10
-          },
-          graphHeight: 260
         }
+        // {
+        //   name: 'combination',
+        //   title: '业务节点',
+        //   layoutOptions: {
+        //     columns: 2,
+        //     marginX: 10
+        //   },
+        //   graphHeight: 260
+        // }
       ],
       getDropNode: draggingNode => {
         // 根据类型返回指定 自定义vue节点

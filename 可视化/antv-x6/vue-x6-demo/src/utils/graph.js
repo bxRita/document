@@ -99,7 +99,12 @@ export default class X6BaseGraph {
             router: {
               name: 'manhattan'
             },
-            zIndex: 0
+            zIndex: 0,
+            bxDatas: {
+              resourceField: '',
+              targetField: '',
+              relType: ''
+            }
           })
         },
         validateConnection({

@@ -1,6 +1,66 @@
 <template>
   <a-tabs defaultActiveKey="1">
-    <a-tab-pane tab="线条" key="1">
+    <a-tab-pane tab="关联关系配置" key="1">
+      <a-row>
+        <a-col><b>基本信息</b></a-col>
+      </a-row>
+      <a-row align="middle">
+        <a-col :span="8">源字段</a-col>
+        <a-col :span="14">
+          <a-select
+            v-model="cellModel.resourceField"
+            style="width: 100%"
+            @change="changeResource"
+          >
+            <a-select-option
+              :key="idx"
+              v-for="(field, idx) in resourceFields"
+              :value="field.fieldName || field"
+              >{{ field.fieldName || field }}</a-select-option
+            >
+          </a-select>
+        </a-col>
+      </a-row>
+      <a-row align="middle">
+        <a-col :span="8">目标字段</a-col>
+        <a-col :span="14">
+          <a-select
+            v-model="cellModel.targetField"
+            style="width: 100%"
+            @change="changeTarget"
+          >
+            <a-select-option
+              :key="idx"
+              v-for="(field, idx) in targetFields"
+              :value="field.fieldName || field"
+              >{{ field.fieldName || field }}</a-select-option
+            >
+          </a-select>
+        </a-col>
+      </a-row>
+
+      <a-row align="middle">
+        <a-col :span="8">关联类型</a-col>
+        <a-col :span="14">
+          <a-select
+            v-model="cellModel.relType"
+            placeholder="请选择"
+            style="width: 100%"
+            @change="onRelType"
+          >
+            <a-select-option
+              :value="item.value"
+              :key="idx"
+              v-for="(item, idx) in relTypes"
+              >{{ item.label }}</a-select-option
+            >
+          </a-select>
+        </a-col>
+      </a-row>
+
+      <a-row>
+        <a-col><b>线条设置</b></a-col>
+      </a-row>
       <a-row align="middle">
         <a-col :span="8">Width</a-col>
         <a-col :span="12">
@@ -42,16 +102,6 @@
           </a-select>
         </a-col>
       </a-row>
-      <a-row align="middle">
-        <a-col :span="8">Label</a-col>
-        <a-col :span="14">
-          <a-input
-            :value="globalGridAttr.label"
-            style="width: 100%"
-            @change="onLabelChange"
-          />
-        </a-col>
-      </a-row>
     </a-tab-pane>
   </a-tabs>
 </template>
@@ -74,42 +124,80 @@ export default {
   },
   data() {
     return {
-      curCell: ''
-    }
-  },
-  computed: {
-    edgeIdCpt() {
-      return {
-        id: this.id
-      }
+      cellModel: {
+        resourceField: '',
+        targetField: '',
+        relType: ''
+      },
+      resourceFields: [],
+      targetFields: [],
+      curCell: '',
+      graph: null,
+      relTypes: [
+        { value: '0', label: '没有关联关系' },
+        { value: '1', label: '一对一关联' },
+        { value: '2', label: '一对多关联' },
+        { value: '3', label: '多对多关联' }
+      ]
     }
   },
   watch: {
-    edgeIdCpt: {
-      handler(nv) {
-        const graph = getCurrentGraph()
-
-        const cell = graph.getCellById(nv.id)
-        if (!cell || !cell.isEdge()) {
-          return
-        }
-        this.curCell = cell
-        const connector = cell.getConnector() || {
-          name: 'normal'
-        }
-        this.globalGridAttr.stroke = cell.attr('line/stroke')
-        this.globalGridAttr.strokeWidth = cell.attr('line/strokeWidth')
-        this.globalGridAttr.connector = connector.name
-        this.globalGridAttr.label = cell.getLabels()[0]?.attrs.text.text || ''
-      },
-      immediate: false,
-      deep: false
+    id(newVal) {
+      if (!newVal) return
+      const cell = this.graph.getCellById(newVal)
+      console.log('newVal:', newVal, cell)
+      if (!cell || !cell.isEdge()) {
+        return
+      }
+      this.init(newVal)
+      this.cellModel = Object.assign(
+        {},
+        this.cellModel,
+        this.curCell.store.data?.bxDatas
+      )
+      const connector = cell.getConnector() || {
+        name: 'normal'
+      }
+      this.globalGridAttr.stroke = cell.attr('line/stroke')
+      this.globalGridAttr.strokeWidth = cell.attr('line/strokeWidth')
+      this.globalGridAttr.connector = connector.name
+      this.globalGridAttr.label = cell.getLabels()[0]?.attrs.text.text || ''
     }
   },
+  mounted() {
+    this.graph = getCurrentGraph()
+    this.init(this.id)
+  },
   methods: {
+    init(cellId) {
+      this.curCell = this.graph.getCellById(cellId)
+      this.cellModel = Object.assign(
+        {},
+        this.cellModel,
+        this.curCell.store.data?.bxDatas
+      )
+      this.getFromTofields(this.curCell)
+    },
+    updateCell() {
+      this.$store.dispatch('design/updateCellById', this.curCell)
+    },
     onStrokeWidthChange(val) {
       this.globalGridAttr.strokeWidth = val
       this.curCell.attr('line/strokeWidth', val)
+    },
+    /**
+     * @description 获取 起始，结束 表 的 关联字段
+     */
+    getFromTofields(curCell) {
+      let nodeData = curCell.store.data
+      const { source, target } = nodeData
+      let sid = source.cell,
+        tid = target.cell
+      const sourceNode = this.graph.getCellById(sid)
+      const targetNode = this.graph.getCellById(tid)
+
+      this.resourceFields = sourceNode?.store.data?.bxDatas?.fields
+      this.targetFields = targetNode?.store.data?.bxDatas?.fields
     },
     onStrokeChange(e) {
       const val = e.target.value
@@ -120,23 +208,37 @@ export default {
       this.globalGridAttr.connector = val
       this.curCell.setConnector(val)
     },
-    onLabelChange(e) {
-      const val = e.target.value
-      this.globalGridAttr.label = val
-      // this.curCell.setLabels([
-      //   {
-      //     attrs: {
-      //       label: {
-      //         text: val
-      //       }
-      //     },
-      //     position: {
-      //       distance: 0.5
-      //     }
-      //   }
-      // ])
-      //
-      this.curCell.appendLabel(val)
+    setFieldVal(fieldName, val) {
+      let bxDatas = this.curCell.store.data.bxDatas
+
+      bxDatas[fieldName] = val
+    },
+    /**
+     * @description 切换源表字段
+     */
+    changeResource(v) {
+      this.setFieldVal('resourceField', v)
+
+      this.updateCell()
+    },
+    /**
+     * @description 切换目标表字段
+     */
+    changeTarget(v) {
+      this.setFieldVal('targetField', v)
+
+      this.updateCell()
+    },
+    onRelType(val) {
+      this.setFieldVal('relType', val)
+
+      let item = this.relTypes.find(item => item.value === val)
+      if (item) {
+        const label = item.label
+        this.globalGridAttr.label = label
+        this.curCell.appendLabel(label)
+      }
+      this.updateCell()
     }
   }
 }
