@@ -8,9 +8,33 @@
  * Write a description of the code here.
  */
 import DefConfig from './common'
+import { color, ComponentType } from '@/config'
 import GqlClass from './GqlClass.vue'
 import GqlEnum from './GqlEnum.vue'
-import { color, ComponentType } from '@/config'
+/**
+ *
+ * @returns 返回类别vue组件
+ */
+export function getClassComponent() {
+  return {
+    template: '<gql-class></gql-class>',
+    components: {
+      GqlClass
+    }
+  }
+}
+/**
+ *
+ * @returns 返回枚举的vue组件
+ */
+export function getEnumComponent() {
+  return {
+    template: '<gql-enum></gql-enum>',
+    components: {
+      GqlEnum
+    }
+  }
+}
 
 /**
  * @description  创建类别节点
@@ -24,8 +48,10 @@ export function getClassNode(graph, options) {
     Object.assign(cfg.config, options, {
       cellType: ComponentType.C,
       bxDatas: {
-        name: ComponentType.C,
-        fields: [
+        modelName: ComponentType.C,
+        modelType: '',
+        modelDesc: '',
+        fieldsList: [
           {
             fieldType: 'String',
             fieldName: 'id',
@@ -35,12 +61,7 @@ export function getClassNode(graph, options) {
           }
         ]
       },
-      component: {
-        template: '<gql-class></gql-class>',
-        components: {
-          GqlClass
-        }
-      }
+      component: getClassComponent()
     })
   )
 }
@@ -57,15 +78,12 @@ export function getEnumNode(graph, options) {
     Object.assign(cfg.config, options, {
       cellType: ComponentType.E,
       bxDatas: {
-        name: ComponentType.E,
-        fields: ['Y', 'N']
+        modelName: ComponentType.E,
+        modelType: '',
+        modelDesc: '',
+        fieldsList: [{ fieldName: 'Y' }, { fieldName: 'N' }]
       },
-      component: {
-        template: '<gql-enum></gql-enum>',
-        components: {
-          GqlEnum
-        }
-      }
+      component: getEnumComponent()
     })
   )
 }

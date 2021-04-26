@@ -25,6 +25,7 @@ export async function pagination(where = {}, orderBy, first = 30, skip = 0) {
   return res.data || []
 }
 
-export async function getSysDictField() {
-  return await pagination({ type: { equals: 'BASE_FIELD_TYPE' } })
+export async function getSysDictField(type) {
+  let data = await pagination({ type: { equals: type } })
+  return data.list
 }

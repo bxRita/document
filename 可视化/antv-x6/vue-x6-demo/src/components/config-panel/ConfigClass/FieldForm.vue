@@ -25,13 +25,20 @@
         <a-input v-model="form.fieldName" />
       </a-form-model-item>
       <a-form-model-item label="字段类型" prop="fieldType">
-        <a-select v-model="form.fieldType" placeholder="请选择字段类型">
+        <a-select
+          v-model="form.fieldType"
+          placeholder="请选择字段类型"
+          show-search
+          option-filter-prop="children"
+          :filter-option="filterOption"
+          allowClear
+        >
           <a-select-option
-            :value="item"
+            :value="item.code"
             :key="idx"
-            v-for="(item, idx) in fieldTypes"
+            v-for="(item, idx) in types"
           >
-            {{ item }}
+            {{ item.code }}
           </a-select-option>
         </a-select>
       </a-form-model-item>
@@ -60,6 +67,9 @@
 </template>
 
 <script>
+import { DICTIONARY_TYPE } from '@/constants'
+import { getSysDictField } from '@/api/system'
+
 export default {
   name: 'FieldForm',
   inheritAttrs: false,
@@ -72,11 +82,15 @@ export default {
     item: {
       type: Object,
       default: () => {}
+    },
+    fieldTypes: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      fieldTypes: ['String', 'Int', 'Float', 'Boolean', 'ID', 'DateTime'],
+      types: [],
       primaryTypes: [
         {
           value: '0',
@@ -109,15 +123,30 @@ export default {
             message: '请输入字段名',
             trigger: 'blur'
           }
+        ],
+        fieldType: [
+          {
+            required: true,
+            message: '请输入字段类型',
+            trigger: 'blur'
+          }
         ]
       }
     }
   },
-  created() {},
-  mounted() {
+  async mounted() {
     this.form = Object.assign({}, this.form, this.item)
+    const basisTypes = await getSysDictField(DICTIONARY_TYPE.BASE_FIELD_TYPE)
+    this.types = basisTypes.concat(this.fieldTypes)
   },
   methods: {
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      )
+    },
     handleOk() {
       this.visible = false
       this.$emit('ok', this.form)

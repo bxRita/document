@@ -1,7 +1,7 @@
 <template>
   <div class="enum">
     <a-card :title="title" :bordered="false" size="small">
-      <a-list item-layout="horizontal" :data-source="bxData.fields">
+      <a-list item-layout="horizontal" :data-source="bxData.fieldsList">
         <a-list-item slot="renderItem" slot-scope="item">
           <b>{{ item.fieldName }}</b>
           <span slot="actions">{{ item.fieldType }}</span>
@@ -15,9 +15,9 @@
 import globalStore from '@/store'
 // 组件默认展示值
 const DEFAULT = {
-  name: '类/接口',
-  type: 'Class',
-  fields: [
+  modelName: '实体类',
+  modelType: 'Class',
+  fieldsList: [
     {
       fieldType: 'String',
       fieldName: 'id',
@@ -49,7 +49,7 @@ export default {
       return this.nodeData.bxDatas || DEFAULT
     },
     title() {
-      return this.bxData.name
+      return this.bxData.modelName
     }
   },
   created() {},

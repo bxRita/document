@@ -5,7 +5,7 @@
       <div class="panel">
         <!--画板顶部工具栏-->
         <div class="toolbar">
-          <tool-bar v-if="isReady" />
+          <tool-bar v-if="isReady" @change="changeGraph" />
         </div>
         <!--中间画板区-->
         <div class="x6-graph" id="erContainer">design</div>
@@ -20,6 +20,7 @@
 
 <script>
 import { Shape, FunctionExt } from '@antv/x6'
+import { GridLayout } from '@antv/layout'
 import store from '@/store'
 import BaseGraph from '@/utils/graph'
 import './index.less'
@@ -28,8 +29,10 @@ import ConfigPanel from '@/components/config-panel/index.vue'
 const { Rect, Circle } = Shape
 import { setCurrentGraph } from '@/utils/graphUtil'
 import ToolBar from '@/components/Toolbar.vue'
-import { getSysDictField } from '@/api/system'
-getSysDictField()
+import { getClassComponent, getEnumComponent } from '@/components/nodes'
+import { getAllModel } from '@/api/base'
+import DefConfig from '@/components/nodes/common'
+
 export default {
   name: 'Design',
   inheritAttrs: false,
@@ -56,9 +59,77 @@ export default {
     this.initStencil()
     this.initResizeEvent()
     this.initGraphEvent()
+    this.initGraphData()
     this.isReady = true
   },
   methods: {
+    /**
+     * @description 顶部操作区 操作界面后更新graph 数据到store
+     */
+    changeGraph() {
+      let graph = this.baseGraph.graph,
+        pageData = graph.toJSON()
+      this.updateDesignGraph(pageData.cells)
+    },
+    async initGraphData() {
+      let graph = this.baseGraph.graph
+      let graphData = localStorage.getItem('GRAPH_DATA_ITEM')
+      console.log('graphData', JSON.parse(graphData))
+      let arrObj = await getAllModel()
+      console.log(arrObj)
+      let layoutData = {
+        nodes: [],
+        edges: []
+      }
+      if (arrObj) {
+        let arrs = arrObj.data,
+          len = arrs.length
+        for (let i = 0; i < len; i++) {
+          let temp = arrs[i]
+          if (temp.modelType === 'TABLE') {
+            const cfg = new DefConfig(color.blue)
+            layoutData.nodes.push(
+              Object.assign(cfg.config, {
+                id: `${i}`,
+                cellType: ComponentType.C,
+                bxDatas: temp,
+                component: getClassComponent()
+              })
+            )
+          } else if (temp.modelType === 'ENUM') {
+            const cfg = new DefConfig(color.yellow)
+            layoutData.nodes.push(
+              Object.assign(cfg.config, {
+                id: `${i}`,
+                cellType: ComponentType.E,
+                bxDatas: temp,
+                component: getEnumComponent()
+              })
+            )
+          } else {
+            layoutData.edges.push()
+          }
+        }
+
+        const gridLayout = new GridLayout({
+          type: 'dagre',
+          rankdir: 'LR',
+          align: 'UL',
+          ranksep: 30,
+          nodesep: 15,
+          controlPoints: true
+        })
+
+        const model = gridLayout.layout(layoutData)
+        console.log('model', model)
+        // 将设计区数据存储到store
+        this.updateDesignGraph(model.nodes.concat(model.edges))
+        graph.fromJSON(model)
+      }
+    },
+    updateDesignGraph(datas) {
+      this.$store.dispatch('design/initDesignCells', datas)
+    },
     /**
      * 初始化设计界面的画布
      */
@@ -215,7 +286,7 @@ export default {
         height: 40,
         attrs: {
           rect: { fill: color.blue, stroke: '#4B4A67', strokeWidth: 2 },
-          text: { text: '类/接口', fill: 'white' }
+          text: { text: '实体类', fill: 'white' }
         },
         data: {
           type: ComponentType.C

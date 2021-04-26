@@ -27,7 +27,14 @@
           <span slot="action" slot-scope="text, record">
             <a @click="editField(record)">Edit</a>
             <a-divider type="vertical" />
-            <a @click="deleteField(record)">Delete</a>
+            <a-popconfirm
+              title="确定删除该字段?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="deleteField(record)"
+            >
+              <a>Delete</a>
+            </a-popconfirm>
           </span>
         </a-table>
       </a-col>
@@ -54,6 +61,10 @@ export default {
     fields: {
       type: Array,
       default: () => []
+    },
+    fieldTypes: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -61,7 +72,8 @@ export default {
       visible: true,
       fieldFormOp: {
         show: false,
-        item: null
+        item: null,
+        fieldTypes: []
       },
       columns: [
         {
@@ -96,6 +108,7 @@ export default {
   },
   mounted() {
     this.data = cloneDeep(this.fields)
+    this.fieldFormOp.fieldTypes = this.fieldTypes
   },
   methods: {
     /**

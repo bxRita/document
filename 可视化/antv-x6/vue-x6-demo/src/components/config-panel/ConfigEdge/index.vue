@@ -196,8 +196,8 @@ export default {
       const sourceNode = this.graph.getCellById(sid)
       const targetNode = this.graph.getCellById(tid)
 
-      this.resourceFields = sourceNode?.store.data?.bxDatas?.fields
-      this.targetFields = targetNode?.store.data?.bxDatas?.fields
+      this.resourceFields = sourceNode?.store.data?.bxDatas?.fieldsList
+      this.targetFields = targetNode?.store.data?.bxDatas?.fieldsList
     },
     onStrokeChange(e) {
       const val = e.target.value

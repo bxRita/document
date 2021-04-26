@@ -13,9 +13,17 @@ import fetch from 'unfetch'
  */
 const options = {
   fetch,
-  credentials: 'include',
+  /**
+   * credentials项，其有3个值：
+   * omit: 默认值，忽略cookie的发送
+   * same-origin: 表示cookie只能同域发送，不能跨域发送
+   * include: cookie既可以同域发送，也可以跨域发送
+   *
+   * fetch默认对服务端通过Set-Cookie头设置的cookie也会忽略，若想选择接受来自服务端的cookie信息，也必须要配置credentials选项；
+   */
+  credentials: 'omit', //FIXME: 'include',
   fetchOptions: {
-    credentials: 'include'
+    credentials: 'omit' //FIXME: 'include'
   }
 }
 

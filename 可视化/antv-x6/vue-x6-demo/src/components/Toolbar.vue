@@ -238,12 +238,15 @@ export default {
       switch (name) {
         case 'undo':
           this.graph.history.undo()
+          this.$emit('change')
           break
         case 'redo':
           this.graph.history.redo()
+          this.$emit('change')
           break
         case 'delete':
           this.graph.clearCells()
+          this.$emit('change')
           break
         case 'savePNG':
           this.graph.toPNG(
@@ -274,20 +277,28 @@ export default {
           break
         case 'copy':
           this.copy()
+          this.$emit('change')
           break
         case 'cut':
           this.cut()
+          this.$emit('change')
           break
         case 'paste':
           this.paste()
+          this.$emit('change')
           break
         case 'toJSON':
           console.log(this.graph.toJSON())
+          localStorage.setItem(
+            'GRAPH_DATA_ITEM',
+            JSON.stringify(this.graph.toJSON())
+          )
           // graph.fromJSON({cells:[graph.toJSON().cells[0],graph.toJSON().cells[1]]})
           break
         default:
           break
       }
+      this.$emit('change')
     }
   }
 }

@@ -11,10 +11,9 @@
 import { ApolloLink } from 'apollo-link'
 
 const authLink = new ApolloLink((operation, forward) => {
-  const token = localStorage.getItem('tocken')
+  // const token = localStorage.getItem('tocken')
   const _defHeaders = {
-    'x-requested-with': 'XMLHttpRequest',
-    'Access-Control-Allow-Origin': '*'
+    'x-requested-with': 'XMLHttpRequest'
   }
   // _defHeaders['Authorization'] = token
 
