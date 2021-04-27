@@ -1,6 +1,6 @@
 ### 项目介绍
 
-本项目是基于 [antv-x6](https://antv-x6.gitee.io/zh/docs/tutorial/about) 实现的一个可拖拽的 ER 模型设计 DEMO（仅供学习参考）
+本项目是基于 [antv-x6](https://antv-x6.gitee.io/zh/docs/tutorial/about) 实现的一个可拖拽的 ER 模型设计 DEMO（数据根据graphql 定义进行设计，仅供学习参考）
 
 - 左侧为控件区
 
@@ -23,6 +23,15 @@ demo源码地址 [vue-x6-demo](./vue-x6-demo) ，下载下来后 安装即可运
 最终效果展示如下：
 
 ![1](./imgs/1.png)
+
+选择一个类，点击右侧属性管理 -> 类别属性管理界面（对类别中的字段进行维护）：
+![2](./imgs/2.png)
+
+枚举属性管理界面：
+![2](./imgs/3.png)
+
+关联关系管理界面：
+![4](./imgs/4.png)
 
 
 #### 技术点：
