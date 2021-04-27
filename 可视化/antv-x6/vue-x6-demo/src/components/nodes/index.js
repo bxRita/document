@@ -11,6 +11,39 @@ import DefConfig from './common'
 import { color, ComponentType } from '@/config'
 import GqlClass from './GqlClass.vue'
 import GqlEnum from './GqlEnum.vue'
+
+/**
+ * @description 获取连线通用配置
+ * @param {*} param0
+ * @returns
+ */
+export function getEdgeCommonCfg({
+  sourceId,
+  targetId,
+  labelText,
+  sourcePort,
+  targetPort
+}) {
+  return {
+    source: { cell: sourceId, port: sourcePort },
+    target: { cell: targetId, port: targetPort },
+    labels: [labelText],
+    attrs: {
+      line: {
+        stroke: '#5F95FF',
+        strokeWidth: 1,
+        targetMarker: {
+          name: 'classic',
+          size: 8
+        }
+      }
+    },
+    router: {
+      name: 'er'
+    },
+    zIndex: 0
+  }
+}
 /**
  *
  * @returns 返回类别vue组件
@@ -48,16 +81,16 @@ export function getClassNode(graph, options) {
     Object.assign(cfg.config, options, {
       cellType: ComponentType.C,
       bxDatas: {
-        modelName: ComponentType.C,
-        modelType: '',
+        modelName: 'table',
+        modelType: ComponentType.C,
         modelDesc: '',
         fieldsList: [
           {
             fieldType: 'String',
             fieldName: 'id',
-            fieldIsNull: true,
+            fieldIsNull: false,
             defaultValue: '',
-            primaryType: '0'
+            primaryType: '2'
           }
         ]
       },
@@ -78,10 +111,13 @@ export function getEnumNode(graph, options) {
     Object.assign(cfg.config, options, {
       cellType: ComponentType.E,
       bxDatas: {
-        modelName: ComponentType.E,
-        modelType: '',
+        modelName: 'enum',
+        modelType: ComponentType.E,
         modelDesc: '',
-        fieldsList: [{ fieldName: 'Y' }, { fieldName: 'N' }]
+        fieldsList: [
+          { fieldName: 'Y', fieldType: 'String', primaryType: '0' },
+          { fieldName: 'N', fieldType: 'String', primaryType: '0' }
+        ]
       },
       component: getEnumComponent()
     })

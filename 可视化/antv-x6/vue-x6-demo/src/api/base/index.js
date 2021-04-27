@@ -9,6 +9,7 @@
  */
 import client from './client'
 import gqlAllModel from './all-models.gql'
+import gqlCreateModel from './create-model.gql'
 
 /**
  * @description 查询所有模型
@@ -18,4 +19,19 @@ export async function getAllModel() {
     query: gqlAllModel
   })
   return res.data.list || []
+}
+
+/**
+ * 新增模型
+ * @param {Object} where
+ * @param {Object} create
+ * @param {Object} update
+ */
+export async function createModel(data) {
+  let param = {
+    mutation: gqlCreateModel,
+    variables: { data }
+  }
+  const res = await client.mutate(param)
+  return res.data || {}
 }

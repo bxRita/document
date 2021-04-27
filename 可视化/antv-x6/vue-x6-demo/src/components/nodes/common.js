@@ -86,6 +86,7 @@ export default class NodeConfig {
           }
         },
         items: [
+          // 连续桩 配置
           {
             group: 'top'
           },

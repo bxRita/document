@@ -86,7 +86,7 @@ export default {
           len = arrs.length
         for (let i = 0; i < len; i++) {
           let temp = arrs[i]
-          if (temp.modelType === 'TABLE') {
+          if (temp.modelType === ComponentType.C) {
             const cfg = new DefConfig(color.blue)
             layoutData.nodes.push(
               Object.assign(cfg.config, {
@@ -96,7 +96,7 @@ export default {
                 component: getClassComponent()
               })
             )
-          } else if (temp.modelType === 'ENUM') {
+          } else if (temp.modelType === ComponentType.E) {
             const cfg = new DefConfig(color.yellow)
             layoutData.nodes.push(
               Object.assign(cfg.config, {
@@ -123,8 +123,10 @@ export default {
         const model = gridLayout.layout(layoutData)
         console.log('model', model)
         // 将设计区数据存储到store
-        this.updateDesignGraph(model.nodes.concat(model.edges))
-        graph.fromJSON(model)
+        if (model) {
+          this.updateDesignGraph(model.nodes.concat(model.edges))
+          graph.fromJSON(model)
+        }
       }
     },
     updateDesignGraph(datas) {
@@ -181,15 +183,15 @@ export default {
       graph.on(
         'node:mouseenter',
         FunctionExt.debounce(() => {
-          const ports = container.querySelectorAll('.x6-port-body')
-          this.showPorts(ports, true)
+          // const ports = container.querySelectorAll('.x6-port-body') // 展示链接桩
+          // this.showPorts(ports, true)
         }),
         500
       )
       // 鼠标移出节点时，隐藏链接桩
       graph.on('node:mouseleave', () => {
-        const ports = container.querySelectorAll('.x6-port-body')
-        this.showPorts(ports, false)
+        // const ports = container.querySelectorAll('.x6-port-body') // 隐藏链接桩
+        // this.showPorts(ports, false)
       })
 
       graph.on('node:collapse', ({ node, e }) => {

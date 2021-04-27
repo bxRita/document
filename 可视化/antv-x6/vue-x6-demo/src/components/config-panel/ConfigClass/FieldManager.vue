@@ -65,6 +65,14 @@ export default {
     fieldTypes: {
       type: Array,
       default: () => []
+    },
+    basisTypes: {
+      type: Array,
+      default: () => []
+    },
+    foreignTypes: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -73,7 +81,9 @@ export default {
       fieldFormOp: {
         show: false,
         item: null,
-        fieldTypes: []
+        fieldTypes: [],
+        basisTypes: [],
+        foreignTypes: []
       },
       columns: [
         {

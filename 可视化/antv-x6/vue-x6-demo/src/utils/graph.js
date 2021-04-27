@@ -97,7 +97,7 @@ export default class X6BaseGraph {
               }
             },
             router: {
-              name: 'manhattan'
+              name: 'er'
             },
             zIndex: 0,
             bxDatas: {

@@ -9,8 +9,8 @@
  */
 
 export const ComponentType = {
-  E: 'enum', // 枚举
-  C: 'class', // 类
+  E: 'ENUM', // 枚举
+  C: 'TABLE', // 类
   I: 'interface', // 接口
   S: 'Scalar' // 标量
 }

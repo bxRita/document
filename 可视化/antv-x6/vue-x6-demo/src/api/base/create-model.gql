@@ -1,0 +1,5 @@
+mutation($data: BussinesModelInput) {
+  item: CreateOrUpdateModel(data: $data) {
+    data
+  }
+}

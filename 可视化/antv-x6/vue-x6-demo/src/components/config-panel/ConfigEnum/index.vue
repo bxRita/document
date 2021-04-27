@@ -45,11 +45,20 @@
           </a-button>
         </a-col>
       </a-row>
+      <a-row>
+        <a-col :span="6">操作</a-col>
+        <a-col :span="8">
+          <a-button type="primary" ghost @click="saveModel">保存</a-button>
+        </a-col>
+      </a-row>
     </a-tab-pane>
   </a-tabs>
 </template>
 
 <script>
+import { ComponentType } from '@/config'
+import { createModel } from '@/api/base'
+import { cloneDeep } from 'lodash'
 export default {
   name: 'ConfigEnum',
   props: {
@@ -81,6 +90,23 @@ export default {
     this.init()
   },
   methods: {
+    /**
+     * @description 保存模型
+     */
+    async saveModel() {
+      let cellData = cloneDeep(this.cellData),
+        modelData = cloneDeep(cellData.bxDatas)
+      delete cellData.component
+      // delete cellData.bxDatas
+      await createModel(
+        Object.assign(modelData, {
+          modelType: ComponentType.E,
+          extends: {
+            saveData: [cellData]
+          }
+        })
+      )
+    },
     init() {
       this.name = this.cellData.bxDatas.modelName
       this.lists = this.cellData.bxDatas.fieldsList
@@ -92,7 +118,7 @@ export default {
       this.updateCell(this.cellData)
     },
     add() {
-      this.lists.push({ fieldName: '', primaryType: 0, fieldType: 'String' })
+      this.lists.push({ fieldName: '', primaryType: '0', fieldType: 'String' })
     },
     // 更新store中节点数据
     updateCell() {

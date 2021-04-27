@@ -21,9 +21,9 @@ const DEFAULT = {
     {
       fieldType: 'String',
       fieldName: 'id',
-      fieldIsNull: true,
+      fieldIsNull: false,
       defaultValue: '',
-      primaryType: '0'
+      primaryType: '2'
     }
   ]
 }
