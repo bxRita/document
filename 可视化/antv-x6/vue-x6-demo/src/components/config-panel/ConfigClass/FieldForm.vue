@@ -97,7 +97,7 @@
 
 <script>
 import { cloneDeep } from 'lodash'
-import { DICTIONARY_TYPE } from '@/constants'
+import { DICTIONARY_TYPE } from '@/config'
 import { getSysDictField } from '@/api/system'
 export default {
   name: 'FieldForm',
@@ -200,6 +200,9 @@ export default {
     },
     handleOk() {
       this.visible = false
+      let typeItem = this.typeItem
+      typeItem.isBasic && delete this.form.foreignRela
+
       console.log(this.form)
       this.$emit('ok', this.form)
     },

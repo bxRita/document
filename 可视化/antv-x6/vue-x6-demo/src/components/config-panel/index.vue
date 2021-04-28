@@ -12,12 +12,12 @@ import ConfigEdge from './ConfigEdge/index.vue'
 import './index.less'
 import { globalGridAttr } from './global'
 import { getCurrentGraph } from '@/utils/graphUtil'
-import { ComponentType } from '@/config'
+import { ComponentType, X6CellType } from '@/config'
 
 const PanelType = {
   G: 'grid',
   N: 'node',
-  E: 'edge'
+  E: X6CellType.edge
 }
 export default {
   name: 'Index',
@@ -44,10 +44,18 @@ export default {
       this.boundEvent()
     }, 200)
   },
+  watch: {
+    type(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$emit('selectNode', this.op.cellData)
+      }
+    }
+  },
   methods: {
     boundEvent() {
       this.op.graph.on('blank:click', () => {
         this.type = PanelType.G
+        this.op.cellData = null
         this.showAttrPanel(this.type)
       })
       this.op.graph.on('cell:click', ({ cell, view }) => {

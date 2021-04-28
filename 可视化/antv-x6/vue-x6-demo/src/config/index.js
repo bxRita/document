@@ -20,3 +20,14 @@ export const color = {
   blue: 'rgb(95, 149, 255)',
   yellow: 'rgb(254, 133, 79)'
 }
+
+export const X6CellType = {
+  edge: 'edge'
+}
+
+// 数据字段中 type分类
+export const DICTIONARY_TYPE = {
+  BASE_FIELD_TYPE: 'BASE_FIELD_TYPE', // 类别基本字段
+  BASE_MODELPRIMARY_TYPE: 'BASE_MODELPRIMARY_TYPE', // 主键类型
+  BASE_MODELREL_TYPE: 'BASE_MODELREL_TYPE' // 模型关系
+}

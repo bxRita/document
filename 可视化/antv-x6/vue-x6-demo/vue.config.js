@@ -20,7 +20,7 @@ module.exports = {
     port: 8080,
     proxy: {
       '/graphql': {
-        target: 'http://172.26.166.54:9199',
+        target: 'http://172.26.166.31:9199',
         https: true,
         secure: false,
         changeOrigin: true

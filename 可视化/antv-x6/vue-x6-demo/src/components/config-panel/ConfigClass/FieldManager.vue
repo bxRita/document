@@ -82,8 +82,8 @@ export default {
         show: false,
         item: null,
         fieldTypes: [],
-        basisTypes: [],
-        foreignTypes: []
+        basisTypes: this.basisTypes,
+        foreignTypes: this.foreignTypes
       },
       columns: [
         {

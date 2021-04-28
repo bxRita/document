@@ -1,6 +1,6 @@
 <template>
   <div class="enum">
-    <a-card :title="bxData.modelName" :bordered="false" size="small">
+    <a-card :title="title" :bordered="false" size="small">
       <div v-for="(item, idx) in bxData.fieldsList" :key="idx">
         <b>{{ item.fieldName }}</b>
       </div>
@@ -27,24 +27,28 @@ export default {
   components: {},
   data() {
     return {
-      id: null,
-      bxData: DEFAULT
+      id: null
     }
   },
-  watch: {
-    id(newVal) {
-      if (newVal) {
-        const nodeData = globalStore.getters['design/getCellById'](newVal)
-        nodeData && (this.bxData = nodeData.bxDatas)
-      }
+  computed: {
+    nodeData() {
+      return (
+        globalStore.getters['design/getCellById'](this.id) || {
+          bxDatas: DEFAULT
+        }
+      )
+    },
+    bxData() {
+      return this.nodeData.bxDatas || DEFAULT
+    },
+    title() {
+      return this.bxData.modelName
     }
   },
   mounted() {
     const { store } = this.getNode()
     this.id = store.data.id
-    const nodeData =
-      this.id && globalStore.getters['design/getCellById'](this.id)
-    nodeData && (this.bxData = nodeData.bxDatas)
+    console.log('enum node id: ', this.id)
   },
   methods: {}
 }

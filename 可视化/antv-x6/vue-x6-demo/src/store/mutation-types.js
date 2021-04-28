@@ -18,3 +18,15 @@ export const INIT_DESIGN_CELL = 'INIT_DESIGN_CELL'
  * 初始化设计区组件
  */
 export const CLEAN_DESIGN_CELL = 'CLEAN_DESIGN_CELL'
+/**
+ * 初始化设计区组件
+ */
+export const BAK_DESIGN_CELL = 'BAK_DESIGN_CELL'
+/**
+ * 设置当前选中
+ */
+export const SET_CURRENT_SELECT_CELL = 'SET_CURRENT_SELECT_CELL'
+/**
+ * 设置当前选中
+ */
+export const UPDATE_RELATE_CELL_EDGE = 'UPDATE_RELATE_CELL_EDGE'

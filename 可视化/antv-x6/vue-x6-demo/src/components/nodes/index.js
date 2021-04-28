@@ -8,23 +8,21 @@
  * Write a description of the code here.
  */
 import DefConfig from './common'
-import { color, ComponentType } from '@/config'
+import { color, ComponentType, X6CellType } from '@/config'
 import GqlClass from './GqlClass.vue'
 import GqlEnum from './GqlEnum.vue'
-
 /**
  * @description 获取连线通用配置
  * @param {*} param0
  * @returns
  */
-export function getEdgeCommonCfg({
-  sourceId,
-  targetId,
-  labelText,
-  sourcePort,
-  targetPort
-}) {
+export function getEdgeCommonCfg(
+  { sourceId, targetId, labelText, sourcePort, targetPort },
+  otherOption
+) {
   return {
+    ...otherOption,
+    shape: X6CellType.edge,
     source: { cell: sourceId, port: sourcePort },
     target: { cell: targetId, port: targetPort },
     labels: [labelText],
@@ -39,7 +37,7 @@ export function getEdgeCommonCfg({
       }
     },
     router: {
-      name: 'er'
+      name: 'normal' // 可选值：normal,orth,oneSide,manhattan,metro,er
     },
     zIndex: 0
   }

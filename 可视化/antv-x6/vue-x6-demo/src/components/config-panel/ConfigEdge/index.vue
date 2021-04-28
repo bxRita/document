@@ -5,12 +5,13 @@
         <a-col><b>基本信息</b></a-col>
       </a-row>
       <a-row align="middle">
-        <a-col :span="8">源字段</a-col>
+        <a-col :span="8">源表属性</a-col>
         <a-col :span="14">
           <a-select
             v-model="cellModel.resourceField"
             style="width: 100%"
             @change="changeResource"
+            disabled
           >
             <a-select-option
               :key="idx"
@@ -49,10 +50,10 @@
             @change="onRelType"
           >
             <a-select-option
-              :value="item.value"
+              :value="item.code"
               :key="idx"
               v-for="(item, idx) in relTypes"
-              >{{ item.label }}</a-select-option
+              >{{ item.name }}</a-select-option
             >
           </a-select>
         </a-col>
@@ -107,6 +108,10 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import { DICTIONARY_TYPE } from '@/config'
+import { getSysDictField } from '@/api/system'
+
 import { getCurrentGraph } from '@/utils/graphUtil'
 export default {
   name: 'Index',
@@ -133,12 +138,7 @@ export default {
       targetFields: [],
       curCell: '',
       graph: null,
-      relTypes: [
-        { value: '0', label: '没有关联关系' },
-        { value: '1', label: '一对一关联' },
-        { value: '2', label: '一对多关联' },
-        { value: '3', label: '多对多关联' }
-      ]
+      relTypes: []
     }
   },
   watch: {
@@ -155,13 +155,14 @@ export default {
         this.cellModel,
         this.curCell.store.data?.bxDatas
       )
+      console.log('edgeModel:', this.cellModel)
       const connector = cell.getConnector() || {
         name: 'normal'
       }
       this.globalGridAttr.stroke = cell.attr('line/stroke')
       this.globalGridAttr.strokeWidth = cell.attr('line/strokeWidth')
       this.globalGridAttr.connector = connector.name
-      this.globalGridAttr.label = cell.getLabels()[0]?.attrs.text.text || ''
+      this.globalGridAttr.label = cell.getLabels()[0]?.attrs?.text?.text || ''
     }
   },
   mounted() {
@@ -169,7 +170,8 @@ export default {
     this.init(this.id)
   },
   methods: {
-    init(cellId) {
+    ...mapActions('design', ['updateCellById', 'updateRelateNodeCell']),
+    async init(cellId) {
       this.curCell = this.graph.getCellById(cellId)
       this.cellModel = Object.assign(
         {},
@@ -177,9 +179,13 @@ export default {
         this.curCell.store.data?.bxDatas
       )
       this.getFromTofields(this.curCell)
+      // 外键关联类型
+      this.relTypes = await getSysDictField(DICTIONARY_TYPE.BASE_MODELREL_TYPE)
     },
     updateCell() {
-      this.$store.dispatch('design/updateCellById', this.curCell)
+      this.updateCellById(this.curCell)
+      // 更新连线所在节点的相关数据
+      this.updateRelateNodeCell(this.curCell.store.data?.bxDatas)
     },
     onStrokeWidthChange(val) {
       this.globalGridAttr.strokeWidth = val

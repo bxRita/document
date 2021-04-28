@@ -1,38 +1,7 @@
 query {
-  list: getModels {
+  list: getAllModels {
     data {
-      #模型名称
-      modelName
-      #模型类型
-      modelType
-      #模型描述
-      modelDesc
-      fieldsList {
-        #字段名称
-        fieldName
-        #字段类型
-        fieldType
-        #字段是否为空
-        fieldIsNull
-        #字段描述
-        fieldDes
-        #默认值
-        defaultValue
-        #关联类型  0非关系类型 1外键关系 2主键自定义
-        primaryType
-        #暂无
-        direct
-        #暂无
-        extends
-        foreignRela {
-          #外键类型  0非外键 1一对一 2一对多 3多对多
-          foreignKeyType
-          #自定义外键ID名称
-          from
-          #关联表名称
-          to
-        }
-      }
+      modelPosition
     }
   }
 }

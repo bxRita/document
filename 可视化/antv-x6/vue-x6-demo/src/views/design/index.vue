@@ -12,15 +12,15 @@
       </div>
       <!--右侧属性栏-->
       <div class="config">
-        <config-panel v-if="isReady" />
+        <config-panel v-if="isReady" @selectNode="setSelectedNode" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { cloneDeep } from 'lodash'
 import { Shape, FunctionExt } from '@antv/x6'
-import { GridLayout } from '@antv/layout'
 import store from '@/store'
 import BaseGraph from '@/utils/graph'
 import './index.less'
@@ -30,8 +30,8 @@ const { Rect, Circle } = Shape
 import { setCurrentGraph } from '@/utils/graphUtil'
 import ToolBar from '@/components/Toolbar.vue'
 import { getClassComponent, getEnumComponent } from '@/components/nodes'
-import { getAllModel } from '@/api/base'
-import DefConfig from '@/components/nodes/common'
+import { getAllModel, deleteModel } from '@/api/base'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Design',
@@ -63,74 +63,57 @@ export default {
     this.isReady = true
   },
   methods: {
+    ...mapActions('design', ['initDesignCells', 'bakDesignCells', 'setSelect']),
+    setSelectedNode(cell) {
+      this.setSelect(cell)
+    },
     /**
      * @description 顶部操作区 操作界面后更新graph 数据到store
      */
     changeGraph() {
       let graph = this.baseGraph.graph,
         pageData = graph.toJSON()
-      this.updateDesignGraph(pageData.cells)
+      this.initDesignCells(pageData.cells)
     },
     async initGraphData() {
       let graph = this.baseGraph.graph
       let graphData = localStorage.getItem('GRAPH_DATA_ITEM')
-      console.log('graphData', JSON.parse(graphData))
-      let arrObj = await getAllModel()
-      console.log(arrObj)
+      console.log('graphData :', JSON.parse(graphData))
+      let arrs = await getAllModel(),
+        len = arrs.length
+      console.log('allModels :', arrs)
       let layoutData = {
         nodes: [],
         edges: []
       }
-      if (arrObj) {
-        let arrs = arrObj.data,
-          len = arrs.length
+      if (len) {
         for (let i = 0; i < len; i++) {
-          let temp = arrs[i]
-          if (temp.modelType === ComponentType.C) {
-            const cfg = new DefConfig(color.blue)
-            layoutData.nodes.push(
-              Object.assign(cfg.config, {
-                id: `${i}`,
-                cellType: ComponentType.C,
-                bxDatas: temp,
-                component: getClassComponent()
-              })
-            )
-          } else if (temp.modelType === ComponentType.E) {
-            const cfg = new DefConfig(color.yellow)
-            layoutData.nodes.push(
-              Object.assign(cfg.config, {
-                id: `${i}`,
-                cellType: ComponentType.E,
-                bxDatas: temp,
-                component: getEnumComponent()
-              })
-            )
-          } else {
-            layoutData.edges.push()
+          let temp = arrs[i],
+            modelPosition = temp.modelPosition,
+            busData = modelPosition.bxDatas,
+            isTable = modelPosition.cellType === ComponentType.C
+          layoutData.nodes.push(
+            Object.assign(modelPosition, {
+              isSaved: true, // 识别是否是服务端已保存的模型
+              component: isTable ? getClassComponent() : getEnumComponent()
+            })
+          )
+          if (isTable && busData) {
+            let fieldsList = busData?.fieldsList,
+              fLen = (fieldsList && fieldsList.length) || 0
+            for (let i = 0; i < fLen; i++) {
+              const field = fieldsList[i]
+              field.extends && layoutData.edges.push(field.extends)
+            }
           }
         }
 
-        const gridLayout = new GridLayout({
-          type: 'dagre',
-          rankdir: 'LR',
-          align: 'UL',
-          ranksep: 30,
-          nodesep: 15,
-          controlPoints: true
-        })
+        const cells = layoutData.nodes.concat(layoutData.edges)
+        this.bakDesignCells(cloneDeep(cells))
+        this.initDesignCells(cells)
 
-        const model = gridLayout.layout(layoutData)
-        console.log('model', model)
-        // 将设计区数据存储到store
-        if (model) {
-          this.updateDesignGraph(model.nodes.concat(model.edges))
-          graph.fromJSON(model)
-        }
+        graph.fromJSON(layoutData)
       }
-    },
-    updateDesignGraph(datas) {
-      this.$store.dispatch('design/initDesignCells', datas)
     },
     /**
      * 初始化设计界面的画布
@@ -216,6 +199,7 @@ export default {
         const cells = graph.getSelectedCells()
         if (cells.length) {
           graph.removeCells(cells)
+          this.deleteModel(cells)
         }
       })
       // 撤销
@@ -236,6 +220,24 @@ export default {
       )
       graph.bindKey(['ctrl+plus'], e => this.scaleView(e, 'up'))
       graph.bindKey(['ctrl+-'], e => this.scaleView(e, 'down'))
+    },
+    /**
+     * @description 删除画布上的模型
+     */
+    async deleteModel(cells) {
+      let len = cells.length
+      for (let i = 0; i < len; i++) {
+        let data = cells[i]?.store?.data,
+          busData = data?.bxDatas
+        if (busData && data.isSaved) {
+          // 只有服务端保存的模型 才需要调服务接口
+          const { modelName, modelType } = busData
+          await deleteModel({
+            modelName,
+            modelType
+          })
+        }
+      }
     },
     /**
      * @description 画布放大缩小

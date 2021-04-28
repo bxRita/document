@@ -1,5 +1,5 @@
 mutation($data: BussinesModelInput) {
-  item: CreateModel(data: $data) {
+  item: DeleteModel(data: $data) {
     data
   }
 }

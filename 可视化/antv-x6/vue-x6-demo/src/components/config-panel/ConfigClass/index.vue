@@ -46,18 +46,18 @@
 <script>
 import { Shape } from '@antv/x6'
 import FieldManager from './FieldManager'
-import { createModel } from '@/api/base'
 import { cloneDeep } from 'lodash'
-import { ComponentType } from '@/config'
 import { getCurrentGraph } from '@/utils/graphUtil'
-import { DICTIONARY_TYPE } from '@/constants'
+import { DICTIONARY_TYPE, X6CellType } from '@/config'
 import { getSysDictField } from '@/api/system'
 import { getEdgeCommonCfg } from '@/components/nodes'
+import SaveMixins from '../saveMixins'
 export default {
   name: 'ConfigClass',
   components: {
     FieldManager
   },
+  mixins: [SaveMixins],
   props: {
     id: String,
     cellData: {
@@ -90,24 +90,6 @@ export default {
     }
   },
   methods: {
-    /**
-     * @description 保存模型
-     */
-    async saveModel() {
-      let cellData = cloneDeep(this.cellData),
-        modelData = cloneDeep(cellData.bxDatas)
-      delete cellData.component
-      // delete cellData.bxDatas
-      await createModel(
-        Object.assign(modelData, {
-          modelType: ComponentType.C,
-          extends: {
-            saveData: [cellData]
-          }
-        })
-      )
-    },
-
     async init(cellData) {
       this.name = cellData.bxDatas.modelName
       this.fieldOp.fields = cellData.bxDatas.fieldsList
@@ -189,15 +171,29 @@ export default {
             target = this.getTargetIdByModelName(fieldType)
           if (!target) continue
 
-          let edge = new Shape.Edge(
-            getEdgeCommonCfg({
+          let edgeCfg = getEdgeCommonCfg(
+            {
+              // 线条基本信息配置
               sourceId: this.id,
               targetId: target.id,
-              labelText: (forKeyDetail && forKeyDetail.name) || '',
+              labelText: forKeyDetail?.name || '',
               sourcePort: this.cellData.ports.items[1].id,
               targetPort: target.ports.items[3].id
-            })
+            },
+            {
+              // 其它配置信息
+
+              bxDatas: {
+                refTableId: this.id,
+                resourceField: temp.fieldName, // 连线关联的是源表 的 哪个属性
+                targetField: temp?.foreignRela?.to,
+                relType: foreignKeyType
+              }
+            }
           )
+          temp.extends = cloneDeep(edgeCfg)
+          let edge = new Shape.Edge(edgeCfg)
+
           this.graph.addEdge(edge)
         }
       }
@@ -210,6 +206,8 @@ export default {
             target = this.getTargetIdByModelName(fieldType)
           let curEdge = this.getEdgeBySourceAndTarget(this.id, target.id)
           curEdge && this.graph.removeEdge(curEdge.id)
+
+          temp.extends = null
         }
       }
     },
@@ -219,7 +217,7 @@ export default {
     getEdgeBySourceAndTarget(sourceId, targetId) {
       let cellObj = this.graph.toJSON(),
         cells = cellObj.cells,
-        edges = cells.filter(item => item.shape === 'edge')
+        edges = cells.filter(item => item.shape === X6CellType.edge)
 
       return edges.find(
         item => item.source.cell === sourceId && item.target.cell === targetId

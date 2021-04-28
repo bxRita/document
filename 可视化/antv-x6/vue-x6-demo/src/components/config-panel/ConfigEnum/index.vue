@@ -56,9 +56,7 @@
 </template>
 
 <script>
-import { ComponentType } from '@/config'
-import { createModel } from '@/api/base'
-import { cloneDeep } from 'lodash'
+import SaveMixins from '../saveMixins'
 export default {
   name: 'ConfigEnum',
   props: {
@@ -73,6 +71,7 @@ export default {
       }
     }
   },
+  mixins: [SaveMixins],
   data() {
     return {
       name: '',
@@ -90,23 +89,6 @@ export default {
     this.init()
   },
   methods: {
-    /**
-     * @description 保存模型
-     */
-    async saveModel() {
-      let cellData = cloneDeep(this.cellData),
-        modelData = cloneDeep(cellData.bxDatas)
-      delete cellData.component
-      // delete cellData.bxDatas
-      await createModel(
-        Object.assign(modelData, {
-          modelType: ComponentType.E,
-          extends: {
-            saveData: [cellData]
-          }
-        })
-      )
-    },
     init() {
       this.name = this.cellData.bxDatas.modelName
       this.lists = this.cellData.bxDatas.fieldsList
