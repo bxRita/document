@@ -8,10 +8,10 @@
  * Write a description of the code here.
  */
 import layoutConfig from '@/configuration/common/layout'
-import { WidgetType, WidgetComponentName } from '@/constants'
+import { WidgetComponentName } from '@/constants'
 
 export const gridConfig = {
-  type: WidgetType.layout,
+  type: layoutConfig.compType,
   key: WidgetComponentName.DIALOG,
   icon: 'icon-qiapian',
   list: [],

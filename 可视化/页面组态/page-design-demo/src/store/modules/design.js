@@ -190,6 +190,7 @@ const design = {
     [RESET_DESIGN_PANEL]: (state, payload) => {
       state.pageData.list = []
     },
+    // 添加子组件到 布局或容器组件
     [ADD_SUB_WIDGET_TO_LAYOUT]: (state, payload) => {
       const { parentWidget, toAddWidget, idxObj } = payload
       let tr
@@ -200,6 +201,7 @@ const design = {
       switch (cur.key) {
         case WidgetComponentName.GRID:
         case WidgetComponentName.TABS:
+        case WidgetComponentName.LAYOUT_SIMPLE:
           cur[cur.subProp][idx].list.push(toAddWidget)
           break
         case WidgetComponentName.TABLE:

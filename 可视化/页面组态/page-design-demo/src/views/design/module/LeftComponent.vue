@@ -50,7 +50,7 @@ export default {
           list: []
         },
         [WidgetType.layout]: {
-          title: '布局控件',
+          title: '容器控件',
           list: []
         },
         [WidgetType.chart]: {

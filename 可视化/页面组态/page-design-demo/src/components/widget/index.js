@@ -18,12 +18,15 @@ import xaDatepicker from '@/components/widget/basis/datepicker.vue'
 import xaRadio from '@/components/widget/basis/radio.vue'
 import xaDatatable from '@/components/widget/basis/datatable.vue'
 
-// 布局组件
+// 容器组件
 import xaCard from '@/components/widget/layout/card.vue'
 import xaGrid from '@/components/widget/layout/grid.vue'
 import xaTable from '@/components/widget/layout/table.vue'
 import xaTabs from '@/components/widget/layout/tabs.vue'
 import xaDialog from '@/components/widget/layout/dialog.vue'
+
+// 布局组件
+import xaLayoutSimple from '@/components/widget/layout/layout-simple.vue'
 
 // 图表组件
 import xaEchartsLine from '@/components/widget/chart/charts-line.vue'
@@ -53,6 +56,7 @@ export default {
   xaTable,
   xaTabs,
   xaDialog,
+  xaLayoutSimple,
   // 图表组件
   xaEchartsLine,
   xaEchartsLineD,

@@ -51,6 +51,48 @@
 <script>
 import { cloneDeep } from 'lodash'
 import FieldForm from './FieldForm.vue'
+// 默认基本属性类型
+const DEFAULT_BASIC = [
+  {
+    code: 'String',
+    name: '字符串'
+  },
+  {
+    code: 'Int',
+    name: '整数'
+  },
+  {
+    code: 'DateTime',
+    name: '日期'
+  },
+  {
+    code: 'JSON',
+    name: '对象类型'
+  },
+  {
+    code: 'Boolean',
+    name: '布尔类型'
+  }
+]
+// 默认外键类型
+const DEFAULT_FOREIGN = [
+  {
+    code: '0',
+    name: '没有关联关系'
+  },
+  {
+    code: '1',
+    name: '1:1'
+  },
+  {
+    code: '2',
+    name: '1:N'
+  },
+  {
+    code: '3',
+    name: 'N:N'
+  }
+]
 export default {
   name: 'FieldManager',
   inheritAttrs: false,
@@ -82,8 +124,10 @@ export default {
         show: false,
         item: null,
         fieldTypes: [],
-        basisTypes: this.basisTypes,
-        foreignTypes: this.foreignTypes
+        basisTypes: this.basisTypes.length ? this.basisTypes : DEFAULT_BASIC,
+        foreignTypes: this.foreignTypes.length
+          ? this.foreignTypes
+          : DEFAULT_FOREIGN
       },
       columns: [
         {

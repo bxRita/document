@@ -33,6 +33,7 @@ export const WidgetComponentName = {
   GRID: 'xaGrid',
   TABLE: 'xaTable',
   TABS: 'xaTabs',
+  LAYOUT_SIMPLE: 'xaLayoutSimple',
   // 图表组件
   ECHARTS_BAR3D: 'xaEchartsBarD',
   ECHARTS_BAR: 'xaEchartsBar',

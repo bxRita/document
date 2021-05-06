@@ -8,6 +8,8 @@
 
 - 右侧为设计区组件属性配置
 
+- demo 中服务使用的graphql，客户端使用的[vue-apollo](https://vue-apollo.netlify.com/)
+
 ### 特性
 
 - 可视化设计界面

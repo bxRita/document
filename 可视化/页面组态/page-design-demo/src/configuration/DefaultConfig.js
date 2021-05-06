@@ -17,12 +17,14 @@ import MenuConfig from '@/configuration/widget/basis/menu'
 import DatepickerConfig from '@/configuration/widget/basis/datepicker'
 import RadioConfig from '@/configuration/widget/basis/radio'
 import DatatableConfig from '@/configuration/widget/basis/datatable'
-//布局控件
+//容器控件
 import GridConfig from '@/configuration/widget/layout/grid'
 import CardConfig from '@/configuration/widget/layout/card'
 import TabsConfig from '@/configuration/widget/layout/tabs'
 import TableConfig from '@/configuration/widget/layout/table'
 import DialogConfig from '@/configuration/widget/layout/dialog'
+// 布局控件
+import LayoutSimpleConfig from '@/configuration/widget/layout/layout-simple'
 // 图表控件
 import ChartsLineConfig from '@/configuration/widget/chart/charts-line'
 import ChartsLine3DConfig from '@/configuration/widget/chart/charts-line-3d'
@@ -45,12 +47,14 @@ export default [
   DatepickerConfig,
   RadioConfig,
   DatatableConfig,
-  // 布局控件
+  // 容器控件
   GridConfig,
   CardConfig,
   TabsConfig,
   TableConfig,
   DialogConfig,
+  // 布局控件
+  LayoutSimpleConfig,
   // 图表控件
   ChartsLineConfig,
   ChartsLine3DConfig,

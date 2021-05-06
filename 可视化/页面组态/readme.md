@@ -47,5 +47,5 @@ demo源码地址 [page-design-demo](./page-design-demo) ，下载下来后 安�
 1. 框架使用的vue-cli3 ,vue 版本2.6，组件库使用的是ant-design
 
 2. 左侧组件列表是对ant-design中组件进行一层包装处理
-    - 组件属性配置 参考![ant-design](https://www.antdv.com/components/popconfirm-cn/)
+    - 组件属性配置 参考[ant-design](https://www.antdv.com/components/popconfirm-cn/)
     - 组件的可配置属性和事件，都在项目中配置
