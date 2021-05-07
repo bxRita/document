@@ -24,6 +24,8 @@ export const COPY_SELECT_WIDGET = 'COPY_SELECT_WIDGET'
 // 清空设计面板区域
 export const RESET_DESIGN_PANEL = 'RESET_DESIGN_PANEL'
 export const ADD_SUB_WIDGET_TO_LAYOUT = 'ADD_SUB_WIDGET_TO_LAYOUT'
+// 多个元素 拖拽位置更新
+export const UPDATE_SUB_WIDGET_TO_LAYOUT = 'UPDATE_SUB_WIDGET_TO_LAYOUT'
 
 // ---------------widget grid begin
 export const ADD_GRID_COL = 'ADD_GRID_COL'

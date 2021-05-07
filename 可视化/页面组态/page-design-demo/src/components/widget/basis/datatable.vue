@@ -17,6 +17,7 @@
     :dataSource="optionList"
     @change="changeEvent"
     :ref="'XaDataTable_' + record.id"
+    rowKey="id"
   >
   </a-table>
 </template>
@@ -31,6 +32,12 @@ export default {
   mixins: [basisMixins, dynamicDataMixins],
   data() {
     return {
+      // rowSelection: {
+      //   type: 'radio',
+      //   onChange: (selectedRowKeys, selectedRows) => {
+      //     console.log(arguments)
+      //   }
+      // },
       customRow: record => {
         return {
           props: {

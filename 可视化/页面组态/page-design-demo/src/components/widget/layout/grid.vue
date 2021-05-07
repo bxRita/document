@@ -38,7 +38,9 @@
             handle: '.drag-move'
           }"
           v-model="colItem.list"
-          @start="$emit('dragStart', $event, colItem.list)"
+          @remove="$emit('dragRemove', $event, colItem.list, record)"
+          @start="$emit('dragStart', $event, colItem.list, record)"
+          @end="$emit('dragEnd', $event, colItem.list, record, { idx: idnex })"
           @add="addSubWidget($event, colItem.list, record, { idx: idnex })"
         >
           <transition-group tag="div" name="list" class="list-main">

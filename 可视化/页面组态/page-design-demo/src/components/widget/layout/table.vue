@@ -42,7 +42,13 @@
               handle: '.drag-move'
             }"
             v-model="tdItem.list"
-            @start="$emit('dragStart', $event, tdItem.list)"
+            @start="$emit('dragStart', $event, tdItem.list, record)"
+            @end="
+              $emit('dragEnd', $event, tdItem.list, record, {
+                idx: tdIndex,
+                pidx: trIndex
+              })
+            "
             @add="
               addSubWidget($event, tdItem.list, record, {
                 idx: tdIndex,

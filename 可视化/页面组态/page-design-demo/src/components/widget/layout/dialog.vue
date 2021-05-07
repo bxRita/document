@@ -34,7 +34,8 @@
             handle: '.drag-move'
           }"
           v-model="record.list"
-          @start="$emit('dragStart', $event, record.list)"
+          @start="$emit('dragStart', $event, record.list, record)"
+          @end="$emit('dragEnd', $event, record.list, record)"
           @add="addSubWidget($event, record.list, record)"
         >
           <transition-group tag="div" name="list" class="list-main">

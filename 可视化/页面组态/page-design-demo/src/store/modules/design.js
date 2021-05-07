@@ -15,7 +15,8 @@ import {
   DELETE_SELECT_WIDGET,
   COPY_SELECT_WIDGET,
   RESET_DESIGN_PANEL,
-  ADD_SUB_WIDGET_TO_LAYOUT
+  ADD_SUB_WIDGET_TO_LAYOUT,
+  UPDATE_SUB_WIDGET_TO_LAYOUT
 } from '../mutation-types'
 import {
   updateWidgetPropById,
@@ -119,6 +120,7 @@ const design = {
       const currentSelectWidget = state.currentSelectItem
       const traverse = array => {
         array.forEach((element, index) => {
+          // 容器组件
           if (element.subProp) {
             element[element.subProp].forEach(item => {
               if (item.subProp) {
@@ -129,6 +131,10 @@ const design = {
                 traverse(item.list)
               }
             })
+          }
+          // 子列表
+          if (element.list) {
+            traverse(element.list)
           }
 
           if (element.id === currentSelectWidget.id) {
@@ -162,6 +168,11 @@ const design = {
               }
             })
           }
+
+          if (element.list) {
+            element.list = traverse(element.list)
+          }
+
           // 校验是否是当前选中组件
           if (element.id !== currentSelectWidget.id) {
             return true
@@ -190,9 +201,37 @@ const design = {
     [RESET_DESIGN_PANEL]: (state, payload) => {
       state.pageData.list = []
     },
+    // 更新组件到 布局或容器组件
+    [UPDATE_SUB_WIDGET_TO_LAYOUT]: (state, payload) => {
+      const { parentWidget, idxObj, newList } = payload
+      let tr
+      const idx = idxObj?.idx,
+        pidx = idxObj?.pidx
+      if (!parentWidget) {
+        // 一级 组件
+        state.pageData.list = newList
+      } else {
+        // 子组件
+        let cur = getWidgetPropById(state.pageData.list, parentWidget.id)
+        switch (cur.key) {
+          case WidgetComponentName.GRID:
+          case WidgetComponentName.TABS:
+          case WidgetComponentName.LAYOUT_SIMPLE:
+            cur[cur.subProp][idx].list = newList
+            break
+          case WidgetComponentName.TABLE:
+            tr = cur[cur.subProp][pidx]
+            tr[tr.subProp][idx].list = newList
+            break
+          default:
+            cur.list = newList
+            break
+        }
+      }
+    },
     // 添加子组件到 布局或容器组件
     [ADD_SUB_WIDGET_TO_LAYOUT]: (state, payload) => {
-      const { parentWidget, toAddWidget, idxObj } = payload
+      const { parentWidget, toAddWidget, idxObj, widgetIdx } = payload
       let tr
       const idx = idxObj?.idx,
         pidx = idxObj?.pidx
@@ -202,14 +241,14 @@ const design = {
         case WidgetComponentName.GRID:
         case WidgetComponentName.TABS:
         case WidgetComponentName.LAYOUT_SIMPLE:
-          cur[cur.subProp][idx].list.push(toAddWidget)
+          cur[cur.subProp][idx].list.splice(widgetIdx, 0, toAddWidget)
           break
         case WidgetComponentName.TABLE:
           tr = cur[cur.subProp][pidx]
-          tr[tr.subProp][idx].list.push(toAddWidget)
+          tr[tr.subProp][idx].list.splice(widgetIdx, 0, toAddWidget)
           break
         default:
-          cur.list.push(toAddWidget)
+          cur.list.splice(widgetIdx, 0, toAddWidget)
           break
       }
     }
@@ -217,6 +256,9 @@ const design = {
   actions: {
     ...widgetCfg.actions,
     ...eventCfg.actions,
+    updateSubWidgetToLayout({ commit }, payload) {
+      commit(UPDATE_SUB_WIDGET_TO_LAYOUT, payload)
+    },
     addSubWidgetToLayout({ commit }, payload) {
       commit(ADD_SUB_WIDGET_TO_LAYOUT, payload)
     },

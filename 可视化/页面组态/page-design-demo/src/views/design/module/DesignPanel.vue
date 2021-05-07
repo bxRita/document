@@ -31,6 +31,7 @@
         v-model="designData.list"
         @add="addWidget"
         @start="dragStart($event, designData.list)"
+        @end="dragEnd($event, designData.list)"
       >
         <transition-group tag="div" name="list" class="list-main">
           <layoutItem
@@ -41,6 +42,7 @@
             :config="designData.config"
             :selectItem.sync="currentSelectItem"
             @dragStart="dragStart"
+            @dragEnd="dragEnd"
             @handleSelectItem="handleSelectItem"
             @handleCopy="copySelectedWidget"
             @handleDelete="deleteSelectedWidget"
@@ -91,17 +93,18 @@ export default {
       'setSelectedWidget',
       'deleteSelectedWidget',
       'copySelectedWidget',
-      'addSubWidgetToLayout'
+      'addSubWidgetToLayout',
+      'updateSubWidgetToLayout'
     ]),
     addSubWidget(evt, list, curLayoutWidget, idxObj) {
       const newIndex = evt.newIndex
       let newWidget = list[newIndex] // 当前新增的组件信息
       newWidget.id = generateId(newWidget.key)
-
       this.addSubWidgetToLayout({
         parentWidget: curLayoutWidget,
         toAddWidget: cloneDeep(newWidget),
-        idxObj
+        idxObj,
+        widgetIdx: newIndex
       })
     },
     addWidget(evt) {
@@ -114,10 +117,18 @@ export default {
       this.$emit('handleSetSelectItem', this.designData.list[newIndex])
     },
     handleColAdd(evt, columns, isCopy = false) {},
-    dragStart(evt, list) {
+    dragEnd(evt, list, curLayoutWidget, idxObj) {
+      console.log('dragEnd: ', arguments)
+      this.updateSubWidgetToLayout({
+        parentWidget: curLayoutWidget,
+        idxObj,
+        newList: list
+      })
+    },
+    dragStart(evt, list, curLayoutWidget) {
+      console.log('dragStart: ', arguments)
       // 拖拽结束,自动选择拖拽的控件项
       this.$emit('handleSetSelectItem', list[evt.oldIndex])
-      console.log(list[evt.oldIndex])
     },
     handleSelectItem(record) {
       // 修改选择Item

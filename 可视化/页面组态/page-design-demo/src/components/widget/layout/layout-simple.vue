@@ -17,8 +17,8 @@
   >
     <a-layout>
       <component
-        :is="tabItem.key"
-        v-for="(tabItem, idx) in record.columns"
+        :is="colItem.key"
+        v-for="(colItem, idx) in record.columns"
         :key="idx"
         :class="!isRuntime && designCls"
       >
@@ -33,14 +33,15 @@
               animation: 180,
               handle: '.drag-move'
             }"
-            v-model="tabItem.list"
-            @start="$emit('dragStart', $event, tabItem.list)"
-            @add="addSubWidget($event, tabItem.list, record, { idx: idx })"
+            v-model="colItem.list"
+            @start="$emit('dragStart', $event, colItem.list, record)"
+            @end="$emit('dragEnd', $event, colItem.list, record, { idx: idx })"
+            @add="addSubWidget($event, colItem.list, record, { idx: idx })"
           >
             <transition-group tag="div" name="list" class="list-main">
               <layoutItem
                 class="drag-move"
-                v-for="item in tabItem.list"
+                v-for="item in colItem.list"
                 :key="item.id"
                 :selectItem.sync="selectItem"
                 :insertAllowedType="insertAllowedType"
