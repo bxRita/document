@@ -22,7 +22,7 @@
 
 - 属性修改后，提供实时预览，生成json数据
 
-demo源码地址 [page-design-demo](https://github.com/bxRita/page-design-demo) ，下载下来后 安装即可运行查看效果
+demo源码地址 [page-design-demo](https://github.com/bxRita/demo/tree/master/page-design-demo) ，下载下来后 安装即可运行查看效果
 
 如：设计一个带表格的搜索界面，1、点击新增弹出Dialog对话框，2、点击下拉框 刷新表格数据：   
 

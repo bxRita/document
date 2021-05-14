@@ -20,7 +20,7 @@
 
 - 支持x6 常用的事件（删除，撤销、重做、复制、粘贴、下载、打印）
 
-demo源码地址 [vue-x6-demo](https://github.com/bxRita/vue-x6-demo) ，下载下来后 安装即可运行查看效果
+demo源码地址 [vue-x6-demo](https://github.com/bxRita/demo/tree/master/vue-x6-demo) ，下载下来后 安装即可运行查看效果
 
 最终效果展示如下：
 
