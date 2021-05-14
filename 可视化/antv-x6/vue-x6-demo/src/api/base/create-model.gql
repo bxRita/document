@@ -1,5 +1,0 @@
-mutation($data: BussinesModelInput) {
-  item: CreateModel(data: $data) {
-    data
-  }
-}

@@ -1,5 +1,0 @@
-mutation($data: UpdateBussinesModelInput) {
-  item: UpdateModel(data: $data) {
-    data
-  }
-}

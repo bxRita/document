@@ -1,7 +1,0 @@
-query {
-  list: getAllModels {
-    data {
-      modelPosition
-    }
-  }
-}
