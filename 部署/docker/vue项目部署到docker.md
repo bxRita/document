@@ -214,3 +214,112 @@ Linux 本机访问展示效果如下图：
 ![tu](./img/14.png)
 
 部署完成！
+
+## 同域名下多项目部署
+
+要实现如下效果（其中er-model 和 admin 为 两个vue项目）： 
+
+http://192.168.42.136:3000/er-model/
+
+http://192.168.42.136:3000/admin/
+### 问题1：vue（cli3以上）中的二级打包问题，主要修改三个地方，如下三张图：
+
+publish/index.html文件中资源路径：
+
+![tu](./img/30.png)
+
+vue.config.js 静态文件路径：
+
+![tu](./img/31.png)
+
+router.js文件
+![tu](./img/32.png)
+
+如下，我有2个项目client-admin和er-model，将打包后的dist文件 分别拷贝到Linux服务器上
+
+![tu](./img/25.png)
+
+其中基本路径BASE_URL值配置如下：
+
+![tu](./img/33.png)
+
+修改完成后打包放在docker挂载的nginx目录下的html下即可访问项目的二级目录的项目了。
+
+### 问题2：404问题
+
+> 图中的参数，如果有多个项目，值需要修改下面的内容即可
+    ```
+    location /test {
+            root   /usr/share/nginx/html; //这个是不动的，因为安装nginx就存在了
+            index  index.html;  //访问的是html还是htm
+            try_files $uri $uri/ /test/index.html;  //这里就是解决vue打包项目后出现404的原因（/vue项目名称/index.html）
+        }  
+    ```
+
+
+nginx 配置文件内容为：
+```
+server {
+    listen       80;
+    server_name   localhost;
+    # server_name   172.21.21.27; # 修改为docker服务宿主机的ip
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /admin {
+        root   /usr/share/nginx/html;
+        index  index.html;
+        try_files $uri $uri/ /admin/index.html;
+    }
+
+    location /er-model {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        try_files $uri $uri/ /er-model/index.html;
+    }
+
+    location /api{
+    	proxy_pass http://172.26.15.106;
+    }
+
+    location /data{
+    	proxy_pass http://172.26.15.106;  
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+```
+
+### docker 配置文件内容：
+
+```
+# 选择registry.ebrserver更小体积的基础nginx镜像
+FROM nginx:alpine
+RUN chmod 777 -R /etc/nginx/conf.d/
+RUN chmod 777 -R /usr/share/nginx/html
+
+# nginx 配置文件
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+# 多个vue项目的dist文件
+COPY ./client-admin /usr/share/nginx/html/admin/
+COPY ./er-model /usr/share/nginx/html/er-model/
+```
+
+指定3000 端口，构建运行：
+
+![tu](./img/26.png)
+
+admin项目运行结果：
+
+![tu](./img/27.png)
+
+er-model 项目运行效果：
+
+![tu](./img/34.png)
