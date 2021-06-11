@@ -248,13 +248,14 @@ router.js文件
 ### 问题2：404问题
 
 > 图中的参数，如果有多个项目，值需要修改下面的内容即可
-    ```
-    location /test {
-            root   /usr/share/nginx/html; //这个是不动的，因为安装nginx就存在了
-            index  index.html;  //访问的是html还是htm
-            try_files $uri $uri/ /test/index.html;  //这里就是解决vue打包项目后出现404的原因（/vue项目名称/index.html）
-        }  
-    ```
+
+```
+location /test {
+        root   /usr/share/nginx/html; //这个是不动的，因为安装nginx就存在了
+        index  index.html;  //访问的是html还是htm
+        try_files $uri $uri/ /test/index.html;  //这里就是解决vue打包项目后出现404的原因（/vue项目名称/index.html）
+    }  
+```
 
 
 nginx 配置文件内容为：
