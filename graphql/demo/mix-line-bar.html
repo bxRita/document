@@ -1,0 +1,222 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=mix-line-bar
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+
+  <body style="height: 100%; margin: 0">
+    <div id="container" style="height: 100%"></div>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"
+    ></script>
+    <script type="text/javascript">
+      function getData() {
+        const query = `query{
+          business_test{
+            id
+          }
+        }`;
+
+        fetch("http://172.26.15.10:3030/v1/graphql", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "x-access-token":
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoid2FuZyIsImV4cCI6MTYzMDU2OTMzOTg4NywiaWF0IjoxNjI5OTY0NTM5fQ.NRetHR1YQqGiYNYGPgoz8mpUVEq74Xo-kWZJILRsdi0",
+          },
+          body: JSON.stringify({
+            query: query,
+            //variables: variables
+          }),
+        })
+          .then((res) => res.json())
+          .then((json) => {
+            initChart(json.data);
+          });
+      }
+      
+      getData();
+
+      function initChart(list) {
+        // 把这里的list  转换成图表 可用的数据
+        console.log(list);
+        var dom = document.getElementById("container");
+        var myChart = echarts.init(dom);
+        var list = [
+          {
+            date: '2020-01-01',
+            plan: '2',
+            actual: '2.6',
+            yield: '12'
+          },
+          {
+            date: '2020-01-02',
+            plan: '4.9',
+            actual: '5.9',
+            yield: '23.2'
+          },
+          {
+            date: '2020-01-03',
+            plan: '7',
+            actual: '9',
+            yield: '12.3'
+          },
+          {
+            date: '2020-01-04',
+            plan: '23.2',
+            actual: '26.6',
+            yield: '24.5'
+          },
+          {
+            date: '2020-01-05',
+            plan: '25.6',
+            actual: '28.7',
+            yield: '20.5'
+          },
+      ]; // DEMO数据
+        var option = getOption(list);
+        if (option && typeof option === "object") {
+          myChart.setOption(option);
+        }
+        //自适应大小
+        window.addEventListener("resize", function () {
+          myChart.resize();
+        });
+      }
+
+      // 将图表数据转换成 图表可用数据
+      function handleListData(list) {
+        var len = list.length;
+        var xAxis = [];
+        var planDatas = [], actualDatas = [], yieldDatas = []
+        for(var i = 0; i < len; i++) {
+          var temp = list[i];
+          xAxis.push(temp.date);
+          planDatas.push(temp.plan);
+          actualDatas.push(temp.actual);
+          yieldDatas.push(temp.yield);
+        }
+        return {
+          xAxis,
+          planDatas,
+          actualDatas,
+          yieldDatas
+        }
+      }
+      // 图表options
+      function getOption(list) {
+        var res = handleListData(list);
+        return {
+          title: {
+            text: "日发货达成率",
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              type: "cross",
+              crossStyle: {
+                color: "#999",
+              },
+            },
+          },
+          backgroundColor: "rgba(0,0,0,0)",
+          legend: {
+            data: ["计划发货量", "实际发货量", "达成率"],
+          },
+          xAxis: [
+            {
+              type: "category",
+              data: res.xAxis,
+              // [
+              //   "1月",
+              //   "2月",
+              //   "3月",
+              //   "4月",
+              //   "5月",
+              //   "6月",
+              //   "7月",
+              //   "8月",
+              //   "9月",
+              //   "10月",
+              //   "11月",
+              //   "12月",
+              // ],
+              // data: getData().query,
+              axisPointer: {
+                type: "shadow",
+              },
+            },
+          ],
+          yAxis: [
+            {
+              type: "value",
+              name: "数量",
+              // min: 0,
+              max: 500,
+              interval: 100,
+              axisLabel: {
+                formatter: "{value} ",
+              },
+            },
+            // {
+            //   type: "value",
+            //   name: "达成率",
+            //   min: 0,
+            //   max: 25,
+            //   interval: 5,
+            //   axisLabel: {
+            //     formatter: "{value} %",
+            //   },
+            // },
+          ],
+          series: [
+            {
+              name: "计划发货量",
+              type: "bar",
+              data: res.planDatas,
+              // [
+              //   2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4,
+              //   3.3,
+              // ],
+              emphasis: {
+                focus: "series",
+              },
+              itemStyle: {
+                normal: {
+                  color: "#6A5ACD",
+                },
+              },
+            },
+            {
+              name: "实际发货量",
+              type: "bar",
+              data: res.actualDatas,
+              // [
+              //   2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0,
+              //   2.3,
+              // ],
+              color: "#00FFFF",
+            },
+            {
+              name: "达成率",
+              type: "line",
+              // yAxisIndex: 1,
+              smooth: true,
+              data: res.yieldDatas,
+              // [
+              //   12.0, 23.2, 12.3, 24.5, 11.3, 20.2, 10.3, 23.4, 12.0, 26.5,
+              //   12.0, 26.2,
+              // ],
+              color: "#f3e335",
+            },
+          ],
+        }
+      }
+    </script>
+  </body>
+</html>
